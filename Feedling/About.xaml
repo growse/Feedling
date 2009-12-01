@@ -1,0 +1,12 @@
+﻿<Window x:Class="Feedling.About"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="About Feedling" Height="288" Width="277" WindowStartupLocation="CenterScreen" Icon="/Feedling;component/Resources/Feedling.ico" WindowStyle="ToolWindow">
+    <Grid>
+        <Image Name="image1" Stretch="UniformToFill" Source="/Feedling;component/Resources/aboutfrm.png" Margin="12,12,12,0" Height="83" VerticalAlignment="Top" />
+        <Button Height="23" Margin="88,0,88,19" Name="okbtn" VerticalAlignment="Bottom" Click="okbtn_Click">Ok</Button>
+        <Label Margin="14,0,12,118" Name="versionlabel" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="13" VerticalAlignment="Bottom" Height="27.29">Label</Label>
+        <TextBlock Height="21" Margin="14,0,12,57" Name="weblink" VerticalAlignment="Bottom" TextAlignment="Center" FontSize="13"><Hyperlink  NavigateUri="http://feedling.sourceforge.net" RequestNavigate="Hyperlink_RequestNavigate">http://feedling.sourceforge.net</Hyperlink></TextBlock>
+        <Label HorizontalContentAlignment="Center" Margin="14,0,12,84" Name="copyrightlabel" Height="28" VerticalAlignment="Bottom" FontSize="13">Label</Label>
+    </Grid>
+</Window>

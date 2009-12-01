@@ -1,0 +1,103 @@
+﻿<Window x:Class="Feedling.FeedwinManager"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Feedling" Height="399" Width="552" Icon="/Feedling;component/Resources/Feedling.ico" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" WindowState="Minimized" Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="227.5*" />
+            <RowDefinition Height="34.5*" />
+        </Grid.RowDefinitions>
+        <Button Grid.Row="1" HorizontalAlignment="Center" Name="OKBtn" Width="Auto" Height="Auto" VerticalAlignment="Center" Click="OKBtn_Click" IsDefault="True" Padding="35,5" Visibility="Visible">OK</Button>
+        <TabControl Margin="12,12,12,0" Name="tabControl1">
+            <TabItem Header="Feeds" Name="Feeds">
+                <Grid>
+                    <Grid Margin="6" Name="grid1" Width="Auto">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320*" />
+                            <ColumnDefinition Width="164*" />
+                        </Grid.ColumnDefinitions>
+                        <ListBox Grid.RowSpan="6" Name="feedlistbox" SelectionChanged="feedlistbox_SelectionChanged" />
+                        <Button Grid.Column="1" Margin="0" Name="feedaddbtn" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedaddbtn_Click">Add...</Button>
+                        <Button Name="feedtemplatebtn" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedtemplatebtn_Click">Duplicate...</Button>
+                        <Button Name="feededitbtn" Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feededitbtn_Click">Edit...</Button>
+                        <Button Name="feeddeletebtn" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feeddeletebtn_Click">Delete</Button>
+                        <Button Name="feedimportbtn" Grid.Column="1" Grid.Row="4" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedimportbtn_Click">Import...</Button>
+                        <Button Name="feedexportbtn" Grid.Column="1" Grid.Row="5" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedexportbtn_Click">Export...</Button>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Proxy" Name="Proxy">
+                <Grid>
+                    <Grid Margin="0" Name="grid2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="95*" />
+                            <ColumnDefinition Width="401*" />
+                        </Grid.ColumnDefinitions>
+                        <RadioButton Margin="0" Name="noproxybtn" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Center" Checked="proxybtn_Checked" TabIndex="1">No Proxy</RadioButton>
+                        <RadioButton Margin="0" Name="customproxybtn" Grid.Row="2" VerticalAlignment="Center" Grid.ColumnSpan="2" Checked="proxybtn_Checked" TabIndex="2">Specify Proxy Details</RadioButton>
+                        <Label Grid.Row="3" Name="label1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right">Proxy Host:</Label>
+                        <Label Name="label2" Grid.Row="4" VerticalContentAlignment="Center" HorizontalContentAlignment="Right">Proxy Port:</Label>
+                        <Label Name="label3" Grid.Row="6" VerticalContentAlignment="Center" HorizontalContentAlignment="Right">Username:</Label>
+                        <Label Name="label4" Grid.Row="7" VerticalContentAlignment="Center" HorizontalContentAlignment="Right">Password:</Label>
+                        <CheckBox Grid.ColumnSpan="2" Grid.Row="5" HorizontalAlignment="Left" Margin="0" Name="proxyauthcheck" Width="166" VerticalAlignment="Center" Click="proxyauthcheck_Click" TabIndex="5">Proxy Authentication</CheckBox>
+                        <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" Margin="0" Name="proxyhostbox" Width="Auto" VerticalAlignment="Center" TabIndex="3" />
+                        <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Name="proxyportbox" Width="50" LostFocus="proxyportbox_LostFocus" VerticalAlignment="Center" TabIndex="4" />
+                        <TextBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Stretch" Margin="0" Name="proxyuserbox" Width="Auto" VerticalAlignment="Center" TabIndex="6" />
+                        <PasswordBox Grid.Column="1" Grid.Row="7" HorizontalAlignment="Stretch" Margin="0" Name="proxypassbox" Width="Auto" VerticalAlignment="Center" TabIndex="7" />
+                        <RadioButton Grid.ColumnSpan="2" IsChecked="True" Margin="0" Name="systemproxybtn" VerticalAlignment="Center" Checked="proxybtn_Checked" TabIndex="0">System Proxy</RadioButton>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Plugins" Name="Pluginstab">
+                <Grid>
+                    <Grid Margin="0" Name="grid3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="361*" />
+                            <ColumnDefinition Width="135*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Click="pluginaboutbtn_Click" Grid.Column="1" Height="Auto" Margin="0" Name="pluginaboutbtn" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="35,5">About...</Button>
+                        <ListBox SelectionChanged="pluginlistbox_SelectionChanged" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="pluginlistbox" VerticalAlignment="Stretch" Width="Auto" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Misc" Name="Misc">
+                <Grid>
+                    <Grid Margin="0" Name="grid4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Margin="0" Name="label5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Grtid size (px):</Label>
+                        <Label HorizontalContentAlignment="Center" Name="label6" VerticalContentAlignment="Center" Grid.Row="2">Feed background opacity</Label>
+                        <Slider Grid.Column="1" Grid.Row="2" Name="opacitytrack" VerticalAlignment="Center" HorizontalAlignment="Stretch" ValueChanged="opacitytrack_ValueChanged" />
+                        <CheckBox Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Name="feedbackgroundimagescheck" VerticalAlignment="Center" HorizontalAlignment="Center">Display  feed background images</CheckBox>
+                        <TextBox Grid.Column="1" Height="23" Margin="0" Name="gridwidthbox" VerticalAlignment="Center">10</TextBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
