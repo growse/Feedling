@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Feedling_Installer", "Feedling_Installer\Feedling_Installer.vdproj", "{2DCED79A-6770-4798-BC8D-31BD3D20D510}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedHanderPluginInterface", "FeedHanderPluginInterface\FeedHanderPluginInterface.csproj", "{7DDEB766-D7C1-43B0-A966-8CF5488DA037}"

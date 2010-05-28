@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Windows.Input;
-using System.Windows.Controls;
 using System.Net;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media.Animation;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Xml;
 using FeedHanderPluginInterface;
 
@@ -17,15 +17,14 @@ namespace Feedling
     /// </summary>
     public partial class FeedWin : Window
     {
-        public event Action<FeedWin> FormMoved;
         private FeedConfigItem fci;
         private System.Drawing.Image feedimage;
         private Uri oldimageurl;
         private bool selected = false;
         private Color updatedcolor;
-        private int fader = 0;
         private Hashtable hotrects = new Hashtable();
         private IFeed rssfeed;
+        private bool updating = true;
         private bool pinned;
         private string errormsg = "Fetching...";
 
@@ -95,6 +94,10 @@ namespace Feedling
                     textbrush = new SolidColorBrush(Colors.White);
                     this.Background = new SolidColorBrush(Colors.Black);
                 }
+                if (updating)
+                {
+                    textbrush = new SolidColorBrush(Colors.Aqua);
+                }
                 double heightcounter = 0;
                 if (rssfeed != null && rssfeed.FeedItems.Count > 0)
                 {
@@ -126,7 +129,6 @@ namespace Feedling
                                 textblock.FontStyle = fci.FontStyle;
                                 textblock.FontWeight = fci.FontWeight;
                                 heightcounter += textblock.ActualHeight;
-
                             }
                             else
                             {
@@ -251,6 +253,7 @@ namespace Feedling
         }
         void rssfeed_Updated(object sender, EventArgs e)
         {
+            updating = false;
             if (rssfeed.ImageUrl != null && rssfeed.ImageUrl != oldimageurl)
             {
                 oldimageurl = rssfeed.ImageUrl;
@@ -268,6 +271,8 @@ namespace Feedling
             }
             else
             {
+                updating = true;
+                RedrawWin();
                 rssfeed.Update();
             }
         }

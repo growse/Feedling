@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_DBE6BC9B59538FC689CFCDB0AB907C11"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_DBE6BC9B59538FC689CFCDB0AB907C11"
-        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -88,19 +88,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DBE6BC9B59538FC689CFCDB0AB907C11"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
+        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,7 +100,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DBE6BC9B59538FC689CFCDB0AB907C11"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -212,7 +212,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "Version" = "8:2.0.50727"
+                "FrameworkVersion" = "8:2.0.50727"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -227,11 +227,6 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_32F83A3F753B180B4887A12319BB9F3A"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -278,11 +273,6 @@
             "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_DBE6BC9B59538FC689CFCDB0AB907C11"
-                    {
-                    "Name" = "8:FeedHanderPluginInterface.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:FeedHanderPluginInterface.dll"
             "TargetName" = "8:"
@@ -369,14 +359,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
-        "ProductCode" = "8:{A9C21136-ACBB-4E6A-9613-008C7FFFF0DC}"
-        "PackageCode" = "8:{DF6E4CA8-0FF3-43E2-A7E4-05E18923C4F0}"
+        "ProductCode" = "8:{74077065-0DB0-4966-A6A2-7CE9B413ED85}"
+        "PackageCode" = "8:{DC9E301E-78BD-4864-88A4-0757E1693F90}"
         "UpgradeCode" = "8:{E0E9745E-6A34-4D31-84C3-59B0982C1C16}"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.7"
+        "ProductVersion" = "8:0.8"
         "Manufacturer" = "8:Andrew Rowson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://feedling.sourceforge.net"
