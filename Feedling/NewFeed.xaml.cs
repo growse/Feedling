@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FeedHanderPluginInterface;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using FeedHanderPluginInterface;
 
 namespace Feedling
 {
@@ -29,15 +21,17 @@ namespace Feedling
         public NewFeed(FeedConfigItem givenfci)
         {
             fci = givenfci;
-            Log.DebugFormat("Loading NewFeed Window with given feed {0}",fci.Url);
+            Log.DebugFormat("Loading NewFeed Window with given feed {0}", fci.Url);
             InitializeComponent();
             this.Title = string.Format("Edit {0}", givenfci.Url);
         }
+
         private FeedConfigItem fci;
         public FeedConfigItem FeedConfig
         {
             get { return fci; }
         }
+
         private void LoadFeedConfigItem()
         {
             Log.Debug("Loading settings from the feedconfigitem");
@@ -57,7 +51,10 @@ namespace Feedling
                 fontlabel.FontWeight = fci.FontWeight;
                 fontlabel.FontStyle = fci.FontStyle;
                 fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fci.FontFamily, fci.FontSize, fci.FontStyle, fci.FontWeight);
+
                 updateintervalbox.Text = fci.UpdateInterval.ToString();
+                displayeditemsbox.Text = fci.DisplayedItems.ToString();
+
                 usernamebox.Text = fci.Username;
                 passwordbox.Password = fci.Password;
                 switch (fci.AuthType)
@@ -105,8 +102,7 @@ namespace Feedling
             }
         }
 
-
-
+        #region Events
 
         private void proxyportbox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -169,8 +165,14 @@ namespace Feedling
 
         private void updateintervalbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            fci.UpdateInterval = Convert.ToInt32(updateintervalbox.Text);
-            LoadFeedConfigItem();
+            //fci.UpdateInterval = int.Parse(updateintervalbox.Text);
+            //LoadFeedConfigItem();
+        }
+
+        private void displayeditemsbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //fci.DisplayedItems = int.Parse(displayeditemsbox.Text);
+            //LoadFeedConfigItem();
         }
 
         private void passwordbox_LostFocus(object sender, RoutedEventArgs e)
@@ -188,11 +190,11 @@ namespace Feedling
         private void authradio_Checked(object sender, RoutedEventArgs e)
         {
             fci.AuthType = FeedAuthTypes.None;
-            if (httpauthradio!=null && httpauthradio.IsChecked == true)
+            if (httpauthradio != null && httpauthradio.IsChecked == true)
             {
                 fci.AuthType = FeedAuthTypes.Basic;
             }
-            if (otherauthradio!=null && otherauthradio.IsChecked == true)
+            if (otherauthradio != null && otherauthradio.IsChecked == true)
             {
                 fci.AuthType = FeedAuthTypes.Other;
             }
@@ -215,11 +217,11 @@ namespace Feedling
         {
             fci.Url = urlbox.Text;
             fci.AuthType = FeedAuthTypes.None;
-            if (httpauthradio.IsChecked==true)
+            if (httpauthradio.IsChecked == true)
             {
                 fci.AuthType = FeedAuthTypes.Basic;
             }
-            if (otherauthradio.IsChecked==true)
+            if (otherauthradio.IsChecked == true)
             {
                 fci.AuthType = FeedAuthTypes.Other;
             }
@@ -229,17 +231,17 @@ namespace Feedling
             fci.FontStyle = fontlabel.FontStyle;
             fci.FontWeight = fontlabel.FontWeight;
             fci.Password = passwordbox.Password;
-            
+
             fci.Proxytype = ProxyType.Global;
-            if (noproxybtn.IsChecked==true)
+            if (noproxybtn.IsChecked == true)
             {
                 fci.Proxytype = ProxyType.None;
             }
-            if (systemproxybtn.IsChecked==true)
+            if (systemproxybtn.IsChecked == true)
             {
                 fci.Proxytype = ProxyType.System;
             }
-            if (customproxybtn.IsChecked==true)
+            if (customproxybtn.IsChecked == true)
             {
                 fci.Proxytype = ProxyType.Custom;
             }
@@ -255,8 +257,10 @@ namespace Feedling
             fci.DefaultColor = ((SolidColorBrush)defaultcolourbox.Fill).Color;
             fci.HoverColor = ((SolidColorBrush)hovercolourbox.Fill).Color;
             fci.UpdateInterval = int.Parse(updateintervalbox.Text);
+            fci.DisplayedItems = int.Parse(displayeditemsbox.Text);
             fci.Url = urlbox.Text;
             fci.Username = usernamebox.Text;
+
             if (fci.Url.Trim().Length > 0)
             {
                 this.DialogResult = true;
@@ -328,5 +332,8 @@ namespace Feedling
                 hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
             }
         }
+
+        #endregion
+
     }
 }

@@ -46,6 +46,10 @@ namespace FeedHanderPluginInterface
         /// </summary>
         Uri ImageUrl { get; set; }
         /// <summary>
+        /// Flag indicating whether the feed has been fetched, parsed and loaded.
+        /// </summary>
+        bool Loaded { get; set; }
+        /// <summary>
         /// Flag indicating whether there was an error fetching the feed
         /// </summary>
         bool HasError { get; set; }

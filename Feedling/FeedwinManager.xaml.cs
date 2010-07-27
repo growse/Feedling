@@ -12,7 +12,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
@@ -274,7 +273,7 @@ namespace Feedling
         public delegate void ReloadFeedConfigItemsCallBack(bool clearall);
         public void ReloadFeedConfigItems(bool clearall)
         {
-            
+
             if (this.Dispatcher.Thread != Thread.CurrentThread)
             {
                 Log.Debug("Received request to Reload FeedConfigItems - thread miss, reinvoking");
@@ -375,7 +374,7 @@ namespace Feedling
                 Properties.Settings.Default.FeedConfigItems = sb.ToString();
                 Properties.Settings.Default.Save();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Log.Error("Exception thrown when Saving the feed settings", ex);
                 throw ex;
@@ -529,7 +528,7 @@ namespace Feedling
         }
 
 
- 
+
         internal void LoadFeedConfig(XmlReader xmlr)
         {
             Log.Debug("Loading the FeedConfig");
@@ -559,7 +558,7 @@ namespace Feedling
         private void proxybtn_Checked(object sender, RoutedEventArgs e)
         {
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = (customproxybtn.IsChecked == true);
-            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true && proxyauthcheck.IsEnabled==true);
+            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true && proxyauthcheck.IsEnabled == true);
         }
 
         private void proxyauthcheck_Click(object sender, RoutedEventArgs e)
@@ -580,7 +579,7 @@ namespace Feedling
             }
             else
             {
-                proxyportbox.Text = Regex.Replace(proxyportbox.Text,"[^\\d]*","");
+                proxyportbox.Text = Regex.Replace(proxyportbox.Text, "[^\\d]*", "");
                 proxyportbox.Focus();
             }
         }
@@ -695,7 +694,7 @@ namespace Feedling
             Nullable<bool> dr = importfeeddlg.ShowDialog();
             if (dr == true)
             {
-                Log.DebugFormat("Importing feed list from {0}",importfeeddlg.FileName);
+                Log.DebugFormat("Importing feed list from {0}", importfeeddlg.FileName);
                 StreamReader sr = new StreamReader(importfeeddlg.FileName);
                 try
                 {
@@ -718,7 +717,7 @@ namespace Feedling
             Nullable<bool> dr = exportfeeddlg.ShowDialog();
             if (dr == true)
             {
-                Log.DebugFormat("Exporting feed list to {0}",exportfeeddlg.FileName);
+                Log.DebugFormat("Exporting feed list to {0}", exportfeeddlg.FileName);
                 SaveFeedSettings();
                 try
                 {
@@ -755,394 +754,13 @@ namespace Feedling
             OKBtn_Click(this, new RoutedEventArgs());
         }
 
-        
+
 
 
     }
-    [XmlRoot("FeedConfigItemList")]
-    public class FeedConfigItemList
-    {
-        private ArrayList feedconfiglist;
-        public FeedConfigItemList()
-        {
-            feedconfiglist = new ArrayList();
-        }
-        public int Add(FeedConfigItem fci)
-        {
-            return feedconfiglist.Add(fci);
-        }
-        public void Remove(FeedConfigItem fci)
-        {
-            feedconfiglist.Remove(fci);
-        }
-        [XmlElement("item")]
-        public FeedConfigItem[] Items
-        {
-            get
-            {
-                FeedConfigItem[] items = new FeedConfigItem[feedconfiglist.Count];
-                feedconfiglist.CopyTo(items);
-                return items;
-            }
-            set
-            {
-                if (value == null) return;
-                FeedConfigItem[] items = (FeedConfigItem[])value;
-                feedconfiglist.Clear();
-                foreach (FeedConfigItem item in items)
-                {
-                    feedconfiglist.Add(item);
-                }
-            }
-        }
-    }
+    
 
-    public class FeedConfigItem : Object
-    {
-        public FeedConfigItem()
-        {
-        }
-        public FeedConfigItem Copy()
-        {
-            FeedConfigItem fci = new FeedConfigItem();
-            fci.Url = this.Url;
-            fci.DefaultColor = this.DefaultColor;
-            fci.FontFamily = this.FontFamily;
-            fci.FontSize = this.FontSize;
-            fci.FontStyle = this.FontStyle;
-            fci.FontWeight = this.FontWeight;
-            fci.HoverColor = this.HoverColor;
-            fci.Position = this.Position;
-            fci.TitleFontFamily = this.TitleFontFamily;
-            fci.TitleFontSize = this.TitleFontSize;
-            fci.TitleFontStyle = this.TitleFontStyle;
-            fci.TitleFontWeight = this.TitleFontWeight;
-            fci.AuthType = this.AuthType;
-            fci.Username = this.Username;
-            fci.Password = this.Password;
-            fci.Proxyauth = this.Proxyauth;
-            fci.Proxyhost = this.Proxyhost;
-            fci.Proxytype = this.Proxytype;
-            fci.Proxyuser = this.Proxyuser;
-            fci.Proxypass = this.Proxypass;
-            fci.Proxyport = this.Proxyport;
-            return fci;
-        }
-        internal Point Position
-        {
-            get { return new Point(xpos, ypos); }
-            set
-            {
-                xpos = value.X;
-                ypos = value.Y;
-            }
-        }
-        private double xpos = 5;
-        [XmlAttribute("XPos")]
-        public double XPos
-        {
-            get { return xpos; }
-            set { xpos = value; }
-        }
-        private double ypos = 5;
-        [XmlAttribute("YPos")]
-        public double YPos
-        {
-            get { return ypos; }
-            set { ypos = value; }
-        }
-
-
-        private string url = "";
-        [XmlAttribute("Url")]
-        public string Url
-        {
-            get { return url; }
-            set { url = value; }
-        }
-        internal Color DefaultColor
-        {
-            get { return Color.FromRgb((byte)defaultcolorr, (byte)defaultcolorg, (byte)defaultcolorb); }
-            set
-            {
-                defaultcolorr = value.R;
-                defaultcolorg = value.G;
-                defaultcolorb = value.B;
-            }
-        }
-
-        private int defaultcolorr = 255;
-        [XmlAttribute("DefaultColorR")]
-        public int DefaultColorR
-        {
-            get { return defaultcolorr; }
-            set { defaultcolorr = value; }
-        }
-        private int defaultcolorg = 255;
-        [XmlAttribute("DefaultColorG")]
-        public int DefaultColorG
-        {
-            get { return defaultcolorg; }
-            set { defaultcolorg = value; }
-        }
-        private int defaultcolorb = 255;
-        [XmlAttribute("DefaultColorB")]
-        public int DefaultColorB
-        {
-            get { return defaultcolorb; }
-            set { defaultcolorb = value; }
-        }
-
-        internal Color HoverColor
-        {
-            get { return Color.FromRgb((byte)hovercolorr, (byte)hovercolorg, (byte)hovercolorb); }
-            set
-            {
-                hovercolorr = value.R;
-                hovercolorg = value.G;
-                hovercolorb = value.B;
-            }
-        }
-
-        private int hovercolorr = 255;
-        [XmlAttribute("HoverColorR")]
-        public int HoverColorR
-        {
-            get { return hovercolorr; }
-            set { hovercolorr = value; }
-        }
-        private int hovercolorg = 255;
-        [XmlAttribute("HoverColorG")]
-        public int HoverColorG
-        {
-            get { return hovercolorg; }
-            set { hovercolorg = value; }
-        }
-        private int hovercolorb = 255;
-        [XmlAttribute("HoverColorB")]
-        public int HoverColorB
-        {
-            get { return hovercolorb; }
-            set { hovercolorb = value; }
-        }
-
-
-        private string fontfamily = FeedwinManager.thisinst.FontFamily.ToString();
-        [XmlAttribute("FontFamily")]
-        public string FontFamilyString
-        {
-            get { return fontfamily; }
-            set { fontfamily = value; }
-        }
-        [XmlIgnore()]
-        public FontFamily FontFamily
-        {
-            get { return new FontFamily(fontfamily); }
-            set { fontfamily = value.ToString(); }
-        }
-        private double fontsize = FeedwinManager.thisinst.FontSize;
-        [XmlAttribute("FontSize")]
-        public double FontSize
-        {
-            get { return fontsize; }
-            set { fontsize = value; }
-        }
-        private string fontstyle = FontConversions.FontStyleToString(FeedwinManager.thisinst.FontStyle);
-        [XmlAttribute("FontStyle")]
-        public string FontStyleString
-        {
-            get { return fontstyle; }
-            set { fontstyle = value; }
-        }
-        [XmlIgnore()]
-        public FontStyle FontStyle
-        {
-            get { return FontConversions.FontStyleFromString(fontstyle); }
-            set { fontstyle = FontConversions.FontStyleToString(value); }
-        }
-
-        private string fontweight = FontConversions.FontWeightToString(FeedwinManager.thisinst.FontWeight);
-        [XmlAttribute("FontWeight")]
-        public string FontWeightString
-        {
-            get { return fontweight; }
-            set { fontweight = value; }
-        }
-        [XmlIgnore()]
-        public FontWeight FontWeight
-        {
-            get { return FontConversions.FontWeightFromString(fontweight); }
-            set { fontweight = FontConversions.FontWeightToString(value); }
-        }
-
-        private string titlefontfamily = FeedwinManager.thisinst.FontFamily.ToString();
-        [XmlAttribute("TitleFontFamily")]
-        public string TitleFontFamilyString
-        {
-            get { return titlefontfamily; }
-            set { titlefontfamily = value; }
-        }
-        [XmlIgnore()]
-        public FontFamily TitleFontFamily
-        {
-            get { return new FontFamily(titlefontfamily); }
-            set { titlefontfamily = value.ToString(); }
-        }
-        private double titlefontsize = FeedwinManager.thisinst.FontSize;
-        [XmlAttribute("TitleFontSize")]
-        public double TitleFontSize
-        {
-            get { return titlefontsize; }
-            set { titlefontsize = value; }
-        }
-        private string titlefontstyle = FontConversions.FontStyleToString(FeedwinManager.thisinst.FontStyle);
-        [XmlAttribute("TitleFontStyle")]
-        public string TitleFontStyleString
-        {
-            get { return titlefontstyle; }
-            set { titlefontstyle = value; }
-        }
-        [XmlIgnore()]
-        public FontStyle TitleFontStyle
-        {
-            get { return FontConversions.FontStyleFromString(titlefontstyle); }
-            set { titlefontstyle = FontConversions.FontStyleToString(value); }
-        }
-        private string titlefontweight = FontConversions.FontWeightToString(FeedwinManager.thisinst.FontWeight);
-        [XmlAttribute("TitleFontWeight")]
-        public string TitleFontWeightString
-        {
-            get { return titlefontweight; }
-            set { titlefontweight = value; }
-        }
-        [XmlIgnore()]
-        public FontWeight TitleFontWeight
-        {
-            get { return FontConversions.FontWeightFromString(titlefontweight); }
-            set { titlefontweight = FontConversions.FontWeightToString(value); }
-        }
-        private int updateinterval = 10;
-        [XmlAttribute("UpdateInterval")]
-        public int UpdateInterval
-        {
-            get { return updateinterval; }
-            set { updateinterval = value; }
-        }
-        private FeedAuthTypes authtype = FeedAuthTypes.None;
-        [XmlAttribute("AuthType")]
-        public FeedAuthTypes AuthType
-        {
-            get { return authtype; }
-            set { authtype = value; }
-        }
-        private string username;
-        [XmlAttribute("Username")]
-        public string Username
-        {
-            get { return username; }
-            set { username = value; }
-        }
-
-        private string password;
-        [XmlAttribute("Password")]
-        public string Password
-        {
-            get { return password; }
-            set { password = value; }
-        }
-        private double width = 300;
-        [XmlAttribute("Width")]
-        public double Width
-        {
-            get { return width; }
-            set { width = value; }
-        }
-
-        private ProxyType proxytype;
-        [XmlAttribute("Proxytype")]
-        public ProxyType Proxytype
-        {
-            get { return proxytype; }
-            set { proxytype = value; }
-        }
-        private string proxyhost;
-        [XmlAttribute("Proxyhost")]
-        public string Proxyhost
-        {
-            get { return proxyhost; }
-            set { proxyhost = value; }
-        }
-        private int proxyport;
-        [XmlAttribute("Proxyport")]
-        public int Proxyport
-        {
-            get { return proxyport; }
-            set { proxyport = value; }
-        }
-        private bool proxyauth;
-        [XmlAttribute("Proxyauth")]
-        public bool Proxyauth
-        {
-            get { return proxyauth; }
-            set { proxyauth = value; }
-        }
-        private string proxyuser;
-        [XmlAttribute("Proxyuser")]
-        public string Proxyuser
-        {
-            get { return proxyuser; }
-            set { proxyuser = value; }
-        }
-        private string proxypass;
-        [XmlAttribute("Proxypass")]
-        public string Proxypass
-        {
-            get { return proxypass; }
-            set { proxypass = value; }
-        }
-
-        public IWebProxy Proxy
-        {
-            get
-            {
-                IWebProxy proxy = null;
-                switch (Proxytype)
-                {
-                    case ProxyType.Custom:
-                        proxy = new WebProxy(Proxyhost, Proxyport);
-                        if (Proxyauth)
-                        {
-                            string user, domain = null;
-                            if (proxyuser.Contains("\\"))
-                            {
-                                string[] bits = proxyuser.Split("\\".ToCharArray(), 2);
-                                user = bits[1];
-                                domain = bits[0];
-                            }
-                            else
-                            {
-                                user = proxyuser;
-                            }
-                            proxy.Credentials = new NetworkCredential(user, Proxypass, domain);
-                        }
-                        break;
-                    case ProxyType.System:
-                        proxy = WebRequest.GetSystemWebProxy();
-                        break;
-                    case ProxyType.None:
-                    case ProxyType.Global:
-                        proxy = null;
-                        break;
-                }
-                return proxy;
-            }
-        }
-
-        public override string ToString()
-        {
-            return url;
-        }
-    }
+   
     public enum ProxyType
     {
         Global,
@@ -1150,132 +768,5 @@ namespace Feedling
         System,
         Custom
     }
-    public static class FontConversions
-    {
-        /// <summary>
-        /// Convert FontStyle to string for serialization
-        /// </summary>
-        public static string FontStyleToString(FontStyle value)
-        {
-            string result;
-
-            try
-            {
-                result = (string)(new FontStyleConverter().ConvertToString(value));
-            }
-            catch (NotSupportedException)
-            {
-                result = "";
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert string to FontStyle for serialization
-        /// </summary>
-        public static FontStyle FontStyleFromString(string value)
-        {
-            FontStyle result;
-
-            try
-            {
-                result = (FontStyle)new FontStyleConverter().ConvertFromString((value));
-            }
-            catch (NotSupportedException)
-            {
-                result = FontStyles.Normal;
-            }
-            catch (FormatException)
-            {
-                result = FontStyles.Normal;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert FontWeight to string for serialization
-        /// </summary>
-        public static string FontWeightToString(FontWeight value)
-        {
-            string result;
-
-            try
-            {
-                result = (string)(new FontWeightConverter().ConvertToString(value));
-            }
-            catch (NotSupportedException)
-            {
-                result = "";
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert string to FontWeight for serialization
-        /// </summary>
-        public static FontWeight FontWeightFromString(string value)
-        {
-            FontWeight result;
-
-            try
-            {
-                result = (FontWeight)new FontWeightConverter().ConvertFromString((value));
-            }
-            catch (NotSupportedException)
-            {
-                result = FontWeights.Normal;
-            }
-            catch (FormatException)
-            {
-                result = FontWeights.Normal;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert FontStretch to string for serialization
-        /// </summary>
-        public static string FontStretchToString(FontStretch value)
-        {
-            string result;
-
-            try
-            {
-                result = (string)(new FontStretchConverter().ConvertToString(value));
-            }
-            catch (NotSupportedException)
-            {
-                result = "";
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert string to FontStretch for serialization
-        /// </summary>
-        public static FontStretch FontStretchFromString(string value)
-        {
-            FontStretch result;
-
-            try
-            {
-                result = (FontStretch)new FontStretchConverter().ConvertFromString((value));
-            }
-            catch (NotSupportedException)
-            {
-                result = FontStretches.Normal;
-            }
-            catch (FormatException)
-            {
-                result = FontStretches.Normal;
-            }
-
-            return result;
-        }
-    }
+    
 }

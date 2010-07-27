@@ -12,6 +12,13 @@ namespace RDFFeed
     public class Feed : IFeed
     {
         #region Properties
+        private bool loaded = false;
+
+        public bool Loaded
+        {
+            get { return loaded; }
+            set { loaded = value; }
+        }
         private bool haserror = false;
 
         public bool HasError
@@ -264,6 +271,7 @@ namespace RDFFeed
                 haserror = true;
                 errormessage = retexception.Message;
             }
+            loaded = true;
             FireUpdated();
         }
 

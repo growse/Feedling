@@ -12,8 +12,16 @@ namespace AtomFeed
     public class Feed : IFeed
     {
         #region Properties
-        private bool haserror = false;
 
+        private bool loaded = false;
+
+        public bool Loaded {
+            get { return loaded; }
+            set { loaded = value; }
+        }
+    
+        private bool haserror = false;
+        
         public bool HasError
         {
             get { return haserror; }
@@ -263,6 +271,7 @@ namespace AtomFeed
                 haserror = true;
                 errormessage = retexception.Message;
             }
+            loaded = true;
             FireUpdated();
         }
 

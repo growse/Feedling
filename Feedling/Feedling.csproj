@@ -130,6 +130,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\FeedConfigItem.cs" />
+    <Compile Include="Classes\FeedConfigItemList.cs" />
+    <Compile Include="Classes\FontConversions.cs" />
     <Compile Include="FeedwinManager.xaml.cs">
       <DependentUpon>FeedwinManager.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -150,11 +153,12 @@
     <Compile Include="FontDialog\NameDictionaryHelper.cs" />
     <Compile Include="FontDialog\TypefaceListItem.cs" />
     <Compile Include="FontDialog\TypographicFeatureListItem.cs" />
-    <Compile Include="HttpUtility.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Classes\HttpUtility.cs" />
+    <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="NewFeed.xaml.cs">
       <DependentUpon>NewFeed.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\NumberTextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

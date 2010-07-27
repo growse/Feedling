@@ -12,6 +12,13 @@ namespace RSSFeed
     public class Feed : IFeed
     {
         #region Properties
+        private bool loaded = false;
+
+        public bool Loaded
+        {
+            get { return loaded; }
+            set { loaded = value; }
+        }
         private bool haserror = false;
 
         public bool HasError
@@ -247,6 +254,7 @@ namespace RSSFeed
                 haserror = true;
                 errormessage = retexception.Message;
             }
+            loaded = true;
             FireUpdated();
         }
 

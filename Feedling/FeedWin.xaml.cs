@@ -28,6 +28,7 @@ namespace Feedling
         private bool pinned;
         private string errormsg = "Fetching...";
 
+        SolidColorBrush textbrush = new SolidColorBrush();
         private ColorAnimation fadein, fadeout;
 
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -40,7 +41,6 @@ namespace Feedling
         {
             Log.DebugFormat("Constructing feedwin for [{0}]", feeditem.Url);
 
-
             InitializeComponent();
 
             fci = feeditem;
@@ -50,6 +50,26 @@ namespace Feedling
             fadein = new ColorAnimation() { AutoReverse = false, From = fci.DefaultColor, To = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
             fadeout = new ColorAnimation() { AutoReverse = false, To = fci.DefaultColor, From = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
 
+            textbrush = new SolidColorBrush(feeditem.DefaultColor);
+
+            for (int ii = 0; ii < fci.DisplayedItems; ii++)
+            {
+                maingrid.RowDefinitions.Add(new RowDefinition());
+                TextBlock textblock = new TextBlock();
+                textblock.Style = (Style)FindResource("linkTextStyle");
+                textblock.Name = string.Format("TextBlock{0}", ii + 1);
+                this.RegisterName(textblock.Name, textblock);
+                textblock.TextTrimming = TextTrimming.CharacterEllipsis;
+                textblock.Foreground = textbrush.Clone();
+                textblock.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
+                textblock.FontFamily = fci.FontFamily;
+                textblock.FontSize = fci.FontSize;
+                textblock.FontStyle = fci.FontStyle;
+                textblock.FontWeight = fci.FontWeight;
+                textblock.Visibility = Visibility.Collapsed;
+                maingrid.Children.Add(textblock);
+                Grid.SetRow(textblock, ii + 1);
+            }
         }
         public void Select()
         {
@@ -72,7 +92,7 @@ namespace Feedling
             }
             else
             {
-                SolidColorBrush textbrush = new SolidColorBrush();
+
                 if (selected)
                 {
                     this.Background = new SolidColorBrush(Colors.White);
@@ -98,103 +118,69 @@ namespace Feedling
                 {
                     textbrush = new SolidColorBrush(Colors.Aqua);
                 }
-                double heightcounter = 0;
-                if (rssfeed != null && rssfeed.FeedItems.Count > 0)
-                {
-                    titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
-                    titleTextBlock.Margin = new Thickness(0, 0, 0, 0);
-                    titleTextBlock.Foreground = textbrush.Clone();
-                    titleTextBlock.Tag = rssfeed.FeedUri;
-                    titleTextBlock.FontFamily = fci.TitleFontFamily;
-                    titleTextBlock.FontSize = fci.TitleFontSize;
-                    titleTextBlock.FontStyle = fci.TitleFontStyle;
-                    titleTextBlock.FontWeight = fci.TitleFontWeight;
-                    heightcounter += titleTextBlock.ActualHeight;
 
-                    for (int n = 1; n <= 10; n++)
-                    {
-                        TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
-                        if (textblock != null)
-                        {
-                            if (rssfeed.FeedItems.Count >= n)
-                            {
-                                textblock.TextTrimming = TextTrimming.CharacterEllipsis;
-                                textblock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.FeedItems[n - 1].Title);
-                                textblock.Tag = rssfeed.FeedItems[n - 1].Link;
-                                textblock.Margin = new Thickness(0, heightcounter, 0, 0);
-                                textblock.Foreground = textbrush.Clone();
-                                textblock.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
-                                textblock.FontFamily = fci.FontFamily;
-                                textblock.FontSize = fci.FontSize;
-                                textblock.FontStyle = fci.FontStyle;
-                                textblock.FontWeight = fci.FontWeight;
-                                heightcounter += textblock.ActualHeight;
-                            }
-                            else
-                            {
-                                textblock.Text = "";
-                            }
-                        }
-                    }
-
-                }
-                else
+                if (rssfeed != null && rssfeed.Loaded)
                 {
-                    if (rssfeed != null)
+                    if (rssfeed.HasError)
                     {
-                        if (rssfeed.HasError)
-                        {
-                            titleTextBlock.Text = "Error";
-                        }
-                        else
-                        {
-                            titleTextBlock.Text = fci.Url;
-                        }
+                        //Error has been discovered loading this feed.
+                        titleTextBlock.Text = "Error";
+                        //TextBlock1.Text = errormsg;
                     }
                     else
                     {
-                        titleTextBlock.Text = "Fetching...";
+                        //No error, get one with putting the headlines out.
+                        titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
+                        titleTextBlock.Foreground = textbrush.Clone();
+                        titleTextBlock.Tag = rssfeed.FeedUri;
+                        titleTextBlock.FontFamily = fci.TitleFontFamily;
+                        titleTextBlock.FontSize = fci.TitleFontSize;
+                        titleTextBlock.FontStyle = fci.TitleFontStyle;
+                        titleTextBlock.FontWeight = fci.TitleFontWeight;
+                        for (int n = 1; n <= fci.DisplayedItems; n++)
+                        {
+                            TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                            if (textblock != null)
+                            {
+                                if (rssfeed.FeedItems.Count >= n)
+                                {
+                                    textblock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.FeedItems[n - 1].Title);
+                                    textblock.Tag = rssfeed.FeedItems[n - 1].Link;
+                                    textblock.Visibility = Visibility.Visible;
+                                }
+                                else
+                                {
+                                    textblock.Text = "";
+                                    textblock.Tag = null;
+                                    textblock.Visibility = Visibility.Collapsed;
+                                }
+                            }
+                        }
                     }
-                    titleTextBlock.Margin = new Thickness(0, 0, 0, 0);
-                    titleTextBlock.Foreground = textbrush.Clone();
-                    if (rssfeed != null) { titleTextBlock.Tag = rssfeed.FeedUri; }
-                    titleTextBlock.FontFamily = fci.TitleFontFamily;
-                    titleTextBlock.FontSize = fci.TitleFontSize;
-                    titleTextBlock.FontStyle = fci.TitleFontStyle;
-                    titleTextBlock.FontWeight = fci.TitleFontWeight;
-                    heightcounter += titleTextBlock.ActualHeight;
-                    if (rssfeed!=null && !string.IsNullOrEmpty(rssfeed.ErrorMessage))
-                    {
-                        errormsg = rssfeed.ErrorMessage;
-                    }
-                    TextBlock1.Text = errormsg;
-                    TextBlock1.TextTrimming = TextTrimming.CharacterEllipsis;
-                    TextBlock1.Margin = new Thickness(0, heightcounter, 0, 0);
-                    TextBlock1.Foreground = textbrush.Clone();
-                    TextBlock1.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
-                    TextBlock1.FontFamily = fci.FontFamily;
-                    TextBlock1.FontSize = fci.FontSize;
-                    TextBlock1.FontStyle = fci.FontStyle;
-                    TextBlock1.FontWeight = fci.FontWeight;
-                    heightcounter += TextBlock1.ActualHeight;
+                }
+                else if (rssfeed != null && !rssfeed.Loaded)
+                {
+                    //Still fetching the feed. Let the user know.
+                    titleTextBlock.Text = "Fetching...";
+                    //TextBlock1.Text = fci.Url;
+                    //TextBlock1.Visibility = Visibility.Visible;
 
                 }
-                this.Height = heightcounter;
                 this.InvalidateVisual();
             }
         }
-        
+
         private void GetFeedType(object state)
         {
             try
             {
                 FeedConfigItem fci = (FeedConfigItem)state;
-                log4net.ThreadContext.Properties["myContext"] = string.Format("{0} GetFeedType",fci.Url);
+                log4net.ThreadContext.Properties["myContext"] = string.Format("{0} GetFeedType", fci.Url);
                 Log.Debug("Getting the Feed Type");
                 XmlDocument document = (XmlDocument)FeedwinManager.Fetch(fci);
                 foreach (IFeed feedplugin in FeedwinManager.thisinst.Plugins)
                 {
-                    Log.DebugFormat("Testing {0} to see if it can handle feed",feedplugin.PluginName);
+                    Log.DebugFormat("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (feedplugin.CanHandle(document))
                     {
                         Log.DebugFormat("It can! Yay!");
@@ -215,9 +201,9 @@ namespace Feedling
                     }
                 }
             }
-            catch (XmlException ex) { errormsg = "Invalid XML Document"; Log.Error("XMLException thrown in parsing the feed",ex); }
-            catch (UriFormatException ex) { errormsg = "Invalid URI";  Log.Error("URIException thrown in fetching the feed",ex);}
-            catch (WebException ex) { errormsg = ex.Message;Log.Error("WebException thrown in fetching the feed",ex); }
+            catch (XmlException ex) { errormsg = "Invalid XML Document"; Log.Error("XMLException thrown in parsing the feed", ex); }
+            catch (UriFormatException ex) { errormsg = "Invalid URI"; Log.Error("URIException thrown in fetching the feed", ex); }
+            catch (WebException ex) { errormsg = ex.Message; Log.Error("WebException thrown in fetching the feed", ex); }
             if (rssfeed == null)
             {
                 Log.Debug("Didn't find a plugin to handle this feed");
@@ -245,7 +231,7 @@ namespace Feedling
                 wr.UserAgent = "Mozilla/5.0";
                 wr.Timeout = 10000;
                 wresp = wr.GetResponse();
-                
+
                 feedimage = System.Drawing.Image.FromStream(wresp.GetResponseStream());
                 RedrawWin();
             }
@@ -325,7 +311,7 @@ namespace Feedling
             this.Topmost = false;
             NativeMethods.SendWpfWindowBack(this);
             this.Cursor = Cursors.Arrow;
-            
+
         }
         private void UnpinFromDesktop()
         {
@@ -425,7 +411,7 @@ namespace Feedling
         {
             if (!pinned)
             {
-                NativeMethods.MakeWindowMovable(this);                
+                NativeMethods.MakeWindowMovable(this);
             }
         }
 
