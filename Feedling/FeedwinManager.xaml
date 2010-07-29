@@ -90,7 +90,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Label Margin="0" Name="label5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Grtid size (px):</Label>
+                        <Label Margin="0" Name="label5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Grid size (px):</Label>
                         <Label HorizontalContentAlignment="Center" Name="label6" VerticalContentAlignment="Center" Grid.Row="2">Feed background opacity</Label>
                         <Slider Grid.Column="1" Grid.Row="2" Name="opacitytrack" VerticalAlignment="Center" HorizontalAlignment="Stretch" ValueChanged="opacitytrack_ValueChanged" />
                         <CheckBox Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Name="feedbackgroundimagescheck" VerticalAlignment="Center" HorizontalAlignment="Center">Display  feed background images</CheckBox>

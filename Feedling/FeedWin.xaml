@@ -34,7 +34,7 @@
             <EventSetter Event="MouseLeftButtonDown" Handler="TextBlock_MouseLeftButtonDown" />
         </Style>
     </Window.Resources>
-    <Border Background="Chartreuse">
+
         <Grid Name="maingrid" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave" IsHitTestVisible="True" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -52,5 +52,5 @@
 
             <TextBlock Style="{DynamicResource titleTextStyle}" Grid.Row="0" Name="titleTextBlock" />
         </Grid>
-    </Border>
+    
 </Window>
