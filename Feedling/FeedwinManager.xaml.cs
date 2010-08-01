@@ -51,6 +51,9 @@ namespace Feedling
     /// </summary>
     public partial class FeedwinManager : Window
     {
+
+        #region Vars and Consts
+
         private System.Windows.Forms.NotifyIcon notifyicon;
         private System.Windows.Forms.ContextMenuStrip contextmenustrip;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -71,11 +74,23 @@ namespace Feedling
         {
             get { return plugins; }
         }
+        public bool MoveMode
+        {
+            get
+            {
+                return moveModeToolStripMenuItem.Selected;
+            }
+        }
         private string previousselectedurl;
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        #region Methods
+        #endregion
+
+        /// <summary>
+        /// Constructor. Where the magic lovin' happens.
+        /// </summary>
         public FeedwinManager()
         {
+
             log4net.ThreadContext.Properties["myContext"] = "Main Manager Thread";
             Log.Info("Starting up");
             try
@@ -83,6 +98,7 @@ namespace Feedling
                 Log.Debug("Building Manager window");
                 InitializeComponent();
 
+                //We're going to use the notifyicon and context menu from Winforms, because the WPF versions are a bit shit at the moment.
                 #region ContextMenu
 
                 this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,6 +168,7 @@ namespace Feedling
 
 
                 ServicePointManager.Expect100Continue = false;
+                //Update those settings.
                 Log.Debug("Loading Settings");
                 if (Properties.Settings.Default.CallUpgrade)
                 {
@@ -161,12 +178,13 @@ namespace Feedling
                 Properties.Settings.Default.Save();
                 thisinst = this;
                 Log.Debug("Removing SSL cert validation");
+                //We currently don't care if your RSS feed is being MITM'd.
                 ServicePointManager.ServerCertificateValidationCallback = delegate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
                 {
                     bool validationResult = true;
                     return validationResult;
                 };
-                //Load our Plugins
+                //Load our Plugins. Find everything that's a Dll, figure out if it's a plugin and load it.
                 Log.Debug("Loading Plugins");
                 string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
                 plugins = new List<IFeed>();
@@ -194,6 +212,8 @@ namespace Feedling
                 {
                     pluginlistbox.Items.Add(feedplugin.PluginName);
                 }
+
+                //We serialize the configuration to the app.config. To let us do this, we need a serlializer.
                 Log.Debug("Creating XML serializer for the saved FeedConfigItems");
                 serializer = new XmlSerializer(FeedConfigItems.GetType());
                 ReloadFeedConfigItems();
@@ -201,6 +221,8 @@ namespace Feedling
                 feedbackgroundimagescheck.IsChecked = Properties.Settings.Default.DisplayBackgroundImages;
                 opacitytrack.Value = Properties.Settings.Default.BackgroundImageOpacity;
                 opacitytrack.IsEnabled = (feedbackgroundimagescheck.IsChecked == true);
+
+                //
                 Log.Debug("Loading proxy");
                 ProxyType proxytype;
                 if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
@@ -238,12 +260,8 @@ namespace Feedling
             }
         }
 
-        void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            About aboutfrm = new About();
-            aboutfrm.ShowDialog();
+        #region Methods
 
-        }
         public static IXPathNavigable Fetch(FeedConfigItem fci)
         {
             Log.Debug("Fetching feed from intarweb");
@@ -455,7 +473,20 @@ namespace Feedling
 
         #endregion
 
-        #region events
+        #region Events
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            OKBtn_Click(this, new RoutedEventArgs());
+        }
+
+        void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About aboutfrm = new About();
+            aboutfrm.ShowDialog();
+
+        }
 
         private void pluginaboutbtn_Click(object sender, EventArgs e)
         {
@@ -765,28 +796,8 @@ namespace Feedling
             if (RedrawAll != null) { RedrawAll(this, new EventArgs()); }
         }
         #endregion
-
-        public bool MoveMode
-        {
-            get
-            {
-                return moveModeToolStripMenuItem.Selected;
-            }
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            OKBtn_Click(this, new RoutedEventArgs());
-        }
-
-
-
-
     }
-    
 
-   
     public enum ProxyType
     {
         Global,
@@ -794,5 +805,5 @@ namespace Feedling
         System,
         Custom
     }
-    
+
 }

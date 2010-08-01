@@ -43,9 +43,8 @@ namespace Feedling
     /// </summary>
     public partial class FeedWin : Window
     {
+        #region Vars and Consts
         private FeedConfigItem fci;
-        private System.Drawing.Image feedimage;
-        private Uri oldimageurl;
         private bool selected = false;
         private Color updatedcolor;
         private Hashtable hotrects = new Hashtable();
@@ -63,21 +62,29 @@ namespace Feedling
             get { return fci; }
             set { fci = value; RedrawWin(); }
         }
+        #endregion
+
+        /// <summary>
+        /// Constructor! Hurrah!
+        /// </summary>
+        /// <param name="feeditem"></param>
         public FeedWin(FeedConfigItem feeditem)
         {
             Log.DebugFormat("Constructing feedwin for [{0}]", feeditem.Url);
-
             InitializeComponent();
 
             fci = feeditem;
             updatedcolor = fci.DefaultColor;
+            //Kick of thread to figure out what sort of plugin to load for this sort of feed.
             ThreadPool.QueueUserWorkItem(new WaitCallback(GetFeedType), fci);
 
+            //Set up the animations for the mouseovers
             fadein = new ColorAnimation() { AutoReverse = false, From = fci.DefaultColor, To = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
             fadeout = new ColorAnimation() { AutoReverse = false, To = fci.DefaultColor, From = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
 
             textbrush = new SolidColorBrush(feeditem.DefaultColor);
 
+            //Add the right number of textblocks to the form, depending on what the user asked for.
             for (int ii = 0; ii < fci.DisplayedItems; ii++)
             {
                 maingrid.RowDefinitions.Add(new RowDefinition());
@@ -97,18 +104,32 @@ namespace Feedling
                 Grid.SetRow(textblock, ii + 1);
             }
         }
+
+        #region Methods
+
+        /// <summary>
+        /// Called by FeedWinManager when the feed is selected. Forces a redraw that paints the background a solid colour.
+        /// </summary>
         public void Select()
         {
             selected = true;
             RedrawWin();
         }
 
+        /// <summary>
+        /// Called by FeedWinManager when the feed is selected.Forces a redraw that removes the background a solid colour.
+        /// </summary>
         public void Deselect()
         {
             selected = false;
             RedrawWin();
         }
+
         private delegate void RedrawWinCallback();
+        /// <summary>
+        /// Thread-safe window drawing method. Decides basically what colour everything should be, depending on the state of the window (selected, pinned etc.)
+        /// Also sets the text of the textblocks to either the feed items, some sort of error, or random mumblings from Hamlet.
+        /// </summary>
         private void RedrawWin()
         {
             if (this.Dispatcher.Thread != Thread.CurrentThread)
@@ -151,7 +172,12 @@ namespace Feedling
                     {
                         //Error has been discovered loading this feed.
                         titleTextBlock.Text = "Error";
-                        //TextBlock1.Text = errormsg;
+                        TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
+                        if (textblock != null)
+                        {
+                            textblock.Text = errormsg;
+                            textblock.Visibility = Visibility.Visible;
+                        }
                     }
                     else
                     {
@@ -188,14 +214,21 @@ namespace Feedling
                 {
                     //Still fetching the feed. Let the user know.
                     titleTextBlock.Text = "Fetching...";
-                    //TextBlock1.Text = fci.Url;
-                    //TextBlock1.Visibility = Visibility.Visible;
-
+                    TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
+                    if (textblock != null)
+                    {
+                        textblock.Text = fci.Url;
+                        textblock.Visibility = Visibility.Visible;
+                    }
                 }
                 this.InvalidateVisual();
             }
         }
 
+        /// <summary>
+        /// Takes a given FeedConfiItem and iterates through all the available plugins to see if any of them can handle it.
+        /// </summary>
+        /// <param name="state"></param>
         private void GetFeedType(object state)
         {
             try
@@ -246,34 +279,11 @@ namespace Feedling
             }
             RedrawWin();
         }
-        private void FetchImage(object state)
-        {
-            log4net.ThreadContext.Properties["myContext"] = string.Format("{0} Fetch Image", fci.Url);
-            Log.Debug("Going to try and fetch an image for feed");
-            WebResponse wresp;
-            try
-            {
-                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(oldimageurl);
-                wr.UserAgent = "Mozilla/5.0";
-                wr.Timeout = 10000;
-                wresp = wr.GetResponse();
 
-                feedimage = System.Drawing.Image.FromStream(wresp.GetResponseStream());
-                RedrawWin();
-            }
-            catch (Exception ex) { Log.Error("Exception thrown when fetching image for feed", ex); }
-        }
-        void rssfeed_Updated(object sender, EventArgs e)
-        {
-            updating = false;
-            if (rssfeed.ImageUrl != null && rssfeed.ImageUrl != oldimageurl)
-            {
-                oldimageurl = rssfeed.ImageUrl;
-                ThreadPool.QueueUserWorkItem(new WaitCallback(FetchImage));
-            }
-            updatedcolor = fci.HoverColor;
-            RedrawWin();
-        }
+        /// <summary>
+        /// Called to request the feed to update itself.
+        /// </summary>
+        /// <param name="state">Unused. Useless. Pointless.</param>
         public void UpdateNow(object state)
         {
             Log.Debug("Received request to update feed");
@@ -288,6 +298,11 @@ namespace Feedling
                 rssfeed.Update();
             }
         }
+
+        /// <summary>
+        /// Called to load the browser and pass it the given url.
+        /// </summary>
+        /// <param name="url">URL string to load</param>
         private void StartProcess(object url)
         {
             if (url.ToString().StartsWith("http://") || url.ToString().StartsWith("https://"))
@@ -302,6 +317,50 @@ namespace Feedling
                 }
             }
         }
+
+        /// <summary>
+        /// Takes a given coordinate and turns it into the nearest grid X position
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static int NearestX(double input)
+        {
+            return Convert.ToInt32(Math.Round((double)input / Properties.Settings.Default.GridWidth) * Properties.Settings.Default.GridWidth);
+        }
+
+        /// <summary>
+        /// Sends window to the bottom.
+        /// </summary>
+        private void PinToDesktop()
+        {
+            pinned = true;
+            RedrawWin();
+
+            this.Topmost = false;
+            NativeMethods.SendWpfWindowBack(this);
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// Brings window back to the top.
+        /// </summary>
+        private void UnpinFromDesktop()
+        {
+            pinned = false;
+            RedrawWin();
+            this.Topmost = true;
+            this.Cursor = Cursors.SizeAll;
+        }
+        #endregion
+
+        #region Events
+        void rssfeed_Updated(object sender, EventArgs e)
+        {
+            updating = false;
+            updatedcolor = fci.HoverColor;
+            RedrawWin();
+        }
+
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
@@ -322,30 +381,7 @@ namespace Feedling
                 fci.Width = this.Width;
             }
         }
-        private void PinToDesktop()
-        {
-            PinToDesktop(false);
-        }
-        private void PinToDesktop(bool setpos)
-        {
-            pinned = true;
-            RedrawWin();
-            if (setpos)
-            {
-                //Formmoved
-            }
-            this.Topmost = false;
-            NativeMethods.SendWpfWindowBack(this);
-            this.Cursor = Cursors.Arrow;
 
-        }
-        private void UnpinFromDesktop()
-        {
-            pinned = false;
-            RedrawWin();
-            this.Topmost = true;
-            this.Cursor = Cursors.SizeAll;
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Log.Debug("Feedwin has been loaded");
@@ -371,7 +407,7 @@ namespace Feedling
             if (!obj)
             {
                 Log.Debug("Move mode toggled - pinning to desktop");
-                PinToDesktop(true);
+                PinToDesktop();
             }
             else
             {
@@ -400,10 +436,7 @@ namespace Feedling
                 fci.Position = new Point(this.Left, this.Top);
             }
         }
-        private static int NearestX(double input)
-        {
-            return Convert.ToInt32(Math.Round((double)input / Properties.Settings.Default.GridWidth) * Properties.Settings.Default.GridWidth);
-        }
+
 
         private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -449,5 +482,7 @@ namespace Feedling
                 this.Cursor = Cursors.SizeWE;
             }
         }
+        #endregion
+
     }
 }

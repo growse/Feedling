@@ -66,7 +66,6 @@ namespace Feedling
                 urlbox.Text = fci.Url;
                 defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)fci.DefaultColorR, (byte)fci.DefaultColorG, (byte)fci.DefaultColorB));
                 hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)fci.HoverColorR, (byte)fci.HoverColorG, (byte)fci.HoverColorB));
-
                 titlefontlabel.FontFamily = fci.TitleFontFamily;
                 titlefontlabel.FontSize = fci.TitleFontSize;
                 titlefontlabel.FontWeight = fci.TitleFontWeight;
