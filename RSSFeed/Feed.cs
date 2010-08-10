@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
@@ -33,7 +34,7 @@ using System.Xml;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
-namespace RSSFeed
+namespace RssFeed
 {
     public class Feed : IFeed
     {
@@ -78,8 +79,8 @@ namespace RSSFeed
             get { return feeduri; }
             set { feeduri = value; }
         }
-        protected List<FeedItem> feeditems = new List<FeedItem>();
-        public List<FeedItem> FeedItems
+        protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
+        public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
@@ -245,7 +246,7 @@ namespace RSSFeed
                         }
                         else
                         {
-                            item.Title = System.Web.HttpUtility.HtmlDecode(subnav.SelectSingleNode("title").ToString()).Trim();
+                            item.Title = subnav.SelectSingleNode("title").ToString().Trim();
                         }
                         if (subnav.SelectSingleNode("link") != null)
                         {

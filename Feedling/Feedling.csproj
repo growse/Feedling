@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,6 +58,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FontDialog">
+      <HintPath>..\FontDialog.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net.dll</HintPath>
@@ -114,12 +118,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="FontDialog\FontChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="NewFeed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -145,14 +143,6 @@
     <Compile Include="FeedWin.xaml.cs">
       <DependentUpon>FeedWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FontDialog\FontChooser.xaml.cs">
-      <DependentUpon>FontChooser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FontDialog\FontFamilyListItem.cs" />
-    <Compile Include="FontDialog\FontSizeListItem.cs" />
-    <Compile Include="FontDialog\NameDictionaryHelper.cs" />
-    <Compile Include="FontDialog\TypefaceListItem.cs" />
-    <Compile Include="FontDialog\TypographicFeatureListItem.cs" />
     <Compile Include="Classes\HttpUtility.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="NewFeed.xaml.cs">

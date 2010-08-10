@@ -646,28 +646,29 @@ namespace System.Web
             if (count < 0 || offset > len - count)
                 throw new ArgumentOutOfRangeException("count");
 
-            MemoryStream result = new MemoryStream();
-            int end = offset + count;
-            for (int i = offset; i < end; i++)
+            using (MemoryStream result = new MemoryStream())
             {
-                char c = (char)bytes[i];
-                if (c == '+')
+                int end = offset + count;
+                for (int i = offset; i < end; i++)
                 {
-                    c = ' ';
-                }
-                else if (c == '%' && i < end - 2)
-                {
-                    int xchar = GetChar(bytes, i + 1, 2);
-                    if (xchar != -1)
+                    char c = (char)bytes[i];
+                    if (c == '+')
                     {
-                        c = (char)xchar;
-                        i += 2;
+                        c = ' ';
                     }
+                    else if (c == '%' && i < end - 2)
+                    {
+                        int xchar = GetChar(bytes, i + 1, 2);
+                        if (xchar != -1)
+                        {
+                            c = (char)xchar;
+                            i += 2;
+                        }
+                    }
+                    result.WriteByte((byte)c);
                 }
-                result.WriteByte((byte)c);
+return result.ToArray();
             }
-
-            return result.ToArray();
         }
 
         public static string UrlEncode(string str)
@@ -836,12 +837,14 @@ namespace System.Web
             if (count < 0 || count > len - offset)
                 throw new ArgumentOutOfRangeException("count");
 
-            MemoryStream result = new MemoryStream(count);
-            int end = offset + count;
-            for (int i = offset; i < end; i++)
-                UrlEncodeChar((char)bytes[i], result, false);
+            using (MemoryStream result = new MemoryStream(count))
+            {
+                int end = offset + count;
+                for (int i = offset; i < end; i++)
+                    UrlEncodeChar((char)bytes[i], result, false);
 
-            return result.ToArray();
+                return result.ToArray();
+            }
         }
 
         public static string UrlEncodeUnicode(string str)
@@ -860,12 +863,14 @@ namespace System.Web
             if (str == "")
                 return new byte[0];
 
-            MemoryStream result = new MemoryStream(str.Length);
-            foreach (char c in str)
+            using (MemoryStream result = new MemoryStream(str.Length))
             {
-                UrlEncodeChar(c, result, true);
+                foreach (char c in str)
+                {
+                    UrlEncodeChar(c, result, true);
+                }
+                return result.ToArray();
             }
-            return result.ToArray();
         }
 
         /// <summary>
@@ -1100,13 +1105,15 @@ namespace System.Web
             if (s == null || s.Length == 0)
                 return s;
 
-            MemoryStream result = new MemoryStream();
-            int length = s.Length;
-            for (int i = 0; i < length; i++)
+            using (MemoryStream result = new MemoryStream())
             {
-                UrlPathEncodeChar(s[i], result);
+                int length = s.Length;
+                for (int i = 0; i < length; i++)
+                {
+                    UrlPathEncodeChar(s[i], result);
+                }
+                return Encoding.ASCII.GetString(result.ToArray());
             }
-            return Encoding.ASCII.GetString(result.ToArray());
         }
 
         static void UrlPathEncodeChar(char c, Stream result)

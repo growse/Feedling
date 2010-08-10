@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RDFFeed")]
+[assembly: AssemblyTitle("RdfFeed")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Andrew Rowson")]
-[assembly: AssemblyProduct("RDFFeed")]
+[assembly: AssemblyProduct("RdfFeed")]
 [assembly: AssemblyCopyright("Copyright © Andrew Rowson 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -26,14 +26,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading;
-using System.Xml;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
-namespace RDFFeed
+namespace RdfFeed
 {
     public class Feed : IFeed
     {
@@ -78,8 +79,8 @@ namespace RDFFeed
             get { return feeduri; }
             set { feeduri = value; }
         }
-        protected List<FeedItem> feeditems = new List<FeedItem>();
-        public List<FeedItem> FeedItems
+        protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
+        public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }

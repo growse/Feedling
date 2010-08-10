@@ -25,11 +25,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
+using System.Collections.ObjectModel;
 using System.Net;
-using System.Collections.Generic;
-using System.Xml.XPath;
 using System.Windows.Forms;
+using System.Xml.XPath;
 
+[assembly: CLSCompliant(false)]
 namespace FeedHanderPluginInterface
 {
     public interface IFeed
@@ -42,7 +43,7 @@ namespace FeedHanderPluginInterface
         /// <summary>
         /// A list of the FeedItems that currently exist in the feed
         /// </summary>
-        List<FeedItem> FeedItems { get; }
+        Collection<FeedItem> FeedItems { get; }
         /// <summary>
         /// The Uri that is regularly fetched by the feed
         /// </summary>
@@ -117,7 +118,7 @@ namespace FeedHanderPluginInterface
         /// <param name="username">The authentication username</param>
         /// <param name="password">The authentication password</param>
         /// <returns>An IFeed which will regularly update and fetch feed items</returns>
-        IFeed Factory(Uri uri, FeedAuthTypes authtype, string username, string password, IWebProxy proxy);
+        IFeed Factory(Uri uri, FeedAuthTypes authType, string userName, string password, IWebProxy proxy);
         /// <summary>
         /// The Configuration Form.
         /// </summary>

@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Windows;
 
+[assembly: CLSCompliant(false)]
 namespace Feedling
 {
     /// <summary>

@@ -5,9 +5,9 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Feedling_Installer", "Feedl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedHanderPluginInterface", "FeedHanderPluginInterface\FeedHanderPluginInterface.csproj", "{7DDEB766-D7C1-43B0-A966-8CF5488DA037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSFeed", "RSSFeed\RSSFeed.csproj", "{7798F19D-8C5C-438B-9200-4FE471A16773}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RssFeed", "RSSFeed\RssFeed.csproj", "{7798F19D-8C5C-438B-9200-4FE471A16773}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFFeed", "RDFFeed\RDFFeed.csproj", "{2F8F5813-B182-4CAC-9EEC-C9307D0AF23E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RdfFeed", "RDFFeed\RdfFeed.csproj", "{2F8F5813-B182-4CAC-9EEC-C9307D0AF23E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomFeed", "AtomFeed\AtomFeed.csproj", "{9C4C62FD-A798-4153-B39E-73423797F183}"
 EndProject
