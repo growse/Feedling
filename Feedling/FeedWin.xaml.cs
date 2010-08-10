@@ -70,7 +70,8 @@ namespace Feedling
         /// <param name="feeditem"></param>
         public FeedWin(FeedConfigItem feeditem)
         {
-            Log.DebugFormat("Constructing feedwin for [{0}]", feeditem.Url);
+            log4net.ThreadContext.Properties["myContext"] = string.Format("{0}", feeditem.Url);
+            Log.Debug("Constructing feedwin");
             InitializeComponent();
 
             fci = feeditem;
@@ -175,7 +176,7 @@ namespace Feedling
                         TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
                         if (textblock != null)
                         {
-                            textblock.Text = errormsg;
+                            textblock.Text = rssfeed.ErrorMessage;
                             textblock.Visibility = Visibility.Visible;
                         }
                     }
@@ -208,6 +209,12 @@ namespace Feedling
                                 }
                             }
                         }
+                        //TextBlock timeblock = ((TextBlock)FindName("TextBlock1"));
+                        //if (timeblock != null)
+                        //{
+                        //    timeblock.Text = rssfeed.LastUpdate.ToString();
+                        //}
+
                     }
                 }
                 else if (rssfeed != null && !rssfeed.Loaded)
@@ -286,6 +293,7 @@ namespace Feedling
         /// <param name="state">Unused. Useless. Pointless.</param>
         public void UpdateNow(object state)
         {
+            log4net.ThreadContext.Properties["myContext"] = string.Format("{0} Updatenow", fci.Url);
             Log.Debug("Received request to update feed");
             if (rssfeed == null)
             {
@@ -356,6 +364,8 @@ namespace Feedling
         #region Events
         void rssfeed_Updated(object sender, EventArgs e)
         {
+            log4net.ThreadContext.Properties["myContext"] = string.Format("{0} Feed Updated", fci.Url);
+            Log.Debug("Updated event fired");
             updating = false;
             updatedcolor = fci.HoverColor;
             RedrawWin();

@@ -231,9 +231,9 @@ namespace Feedling
                 }
                 else
                 {
-                    proxytype = ProxyType.None;
+                    proxytype = ProxyType.System;
                 }
-                if (proxytype == ProxyType.Global) { proxytype = ProxyType.None; }
+                if (proxytype == ProxyType.Global) { proxytype = ProxyType.System; }
                 switch (proxytype)
                 {
                     case ProxyType.None:
@@ -252,6 +252,8 @@ namespace Feedling
                 proxypassbox.Password = Properties.Settings.Default.ProxyPass;
                 proxyuserbox.Text = Properties.Settings.Default.ProxyUser;
                 proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
+                this.Visibility = System.Windows.Visibility.Collapsed;
+                this.Hide();
             }
             catch (Exception ex)
             {
@@ -744,7 +746,7 @@ namespace Feedling
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            //this.Hide();
         }
         private void feedimportbtn_Click(object sender, RoutedEventArgs e)
         {

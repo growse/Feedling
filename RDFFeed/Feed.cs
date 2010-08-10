@@ -123,6 +123,23 @@ namespace RDFFeed
                 return "RDFFeed";
             }
         }
+        private DateTime lastupdate;
+        public DateTime LastUpdate
+        {
+            get
+            {
+                return lastupdate;
+            }
+        }
+        public string PluginVersion
+        {
+            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        public string PluginCopyright
+        {
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+        }
         private IWebProxy feedproxy;
         private FeedAuthTypes feedauthtype;
         private string feedusername;
@@ -151,7 +168,7 @@ namespace RDFFeed
                 xnm.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
                 xnm.AddNamespace("rss", "http://purl.org/rss/1.0/");
                 xnm.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
-                if (nav.SelectSingleNode("/rdf:RDF",xnm) != null)
+                if (nav.SelectSingleNode("/rdf:RDF", xnm) != null)
                 {
                     return true;
                 }
@@ -171,26 +188,21 @@ namespace RDFFeed
         }
         private XmlDocument Fetch(Uri feeduri)
         {
-            try
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
+            req.UserAgent = "Mozilla/5.0";
+            req.Proxy = feedproxy;
+            if (feedauthtype == FeedAuthTypes.Basic)
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
-                req.UserAgent = "Mozilla/5.0";
-                req.Proxy = feedproxy;
-                if (feedauthtype == FeedAuthTypes.Basic)
-                {
-                    req.Credentials = new NetworkCredential(feedusername, feedpassword);
-                }
-                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-                
-                XmlDocument tempdoc  = new XmlDocument();
-                tempdoc.Load(resp.GetResponseStream());
-                resp.Close();
-                return tempdoc;
+                req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            catch
-            {
-                return null;
-            }
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+
+            XmlDocument tempdoc = new XmlDocument();
+            tempdoc.Load(resp.GetResponseStream());
+            resp.Close();
+            return tempdoc;
+
         }
 
         public void Update()
@@ -235,7 +247,7 @@ namespace RDFFeed
                 if (nav.SelectSingleNode("/rdf:RDF/rss:image/rss:url/text()", xnm) != null)
                 {
                     this.imageurl = new Uri(nav.SelectSingleNode("/rdf:RDF/rss:image/rss:url/text()", xnm).ToString());
-                }                
+                }
                 feeditems.Clear();
                 while (nodeiterator.MoveNext())
                 {
@@ -243,7 +255,7 @@ namespace RDFFeed
                     {
                         FeedItem item = new FeedItem();
                         subnav = nodeiterator.Current.CreateNavigator();
-                        if (subnav.SelectSingleNode("rss:title",xnm) != null)
+                        if (subnav.SelectSingleNode("rss:title", xnm) != null)
                         {
                             item.Title = subnav.SelectSingleNode("rss:title", xnm).ToString().Trim();
                         }
@@ -281,21 +293,33 @@ namespace RDFFeed
                     }
 
                 }
-                
+
+            }
+            catch (WebException ex)
+            {
+                retexception = ex;
+                throw;
             }
             catch (XmlException ex)
             {
                 retexception = ex;
+                throw;
             }
             catch (NullReferenceException ex)
             {
                 retexception = ex;
+                throw;
             }
 
             if (retexception != null)
             {
                 haserror = true;
                 errormessage = retexception.Message;
+            }
+            else
+            {
+                haserror = false;
+                errormessage = null;
             }
             loaded = true;
             FireUpdated();
@@ -314,6 +338,7 @@ namespace RDFFeed
 
         protected void FireUpdated()
         {
+            lastupdate = DateTime.Now;
             Updated(null, new EventArgs());
         }
         #endregion
@@ -322,14 +347,6 @@ namespace RDFFeed
         public virtual event EventHandler Updated;
         #endregion
 
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
 
-        public string PluginCopyright
-        {
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
-        }
     }
 }

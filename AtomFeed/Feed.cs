@@ -41,13 +41,14 @@ namespace AtomFeed
 
         private bool loaded = false;
 
-        public bool Loaded {
+        public bool Loaded
+        {
             get { return loaded; }
             set { loaded = value; }
         }
-    
+
         private bool haserror = false;
-        
+
         public bool HasError
         {
             get { return haserror; }
@@ -123,6 +124,26 @@ namespace AtomFeed
                 return "AtomFeed";
             }
         }
+
+        public string PluginVersion
+        {
+            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        public string PluginCopyright
+        {
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+        }
+
+        private DateTime lastupdate;
+        public DateTime LastUpdate
+        {
+            get
+            {
+                return lastupdate;
+            }
+        }
+
         private IWebProxy feedproxy;
         private FeedAuthTypes feedauthtype;
         private string feedusername;
@@ -133,7 +154,7 @@ namespace AtomFeed
         public Feed()
         {
         }
-        public Feed(Uri url,FeedAuthTypes authtype,string username,string password,IWebProxy proxy)
+        public Feed(Uri url, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
         {
             feedproxy = proxy;
             feeduri = url;
@@ -148,7 +169,7 @@ namespace AtomFeed
                 XPathNavigator nav = document.CreateNavigator();
                 XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
                 xnm.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-                if (nav.SelectSingleNode("/atom:feed",xnm) != null)
+                if (nav.SelectSingleNode("/atom:feed", xnm) != null)
                 {
                     return true;
                 }
@@ -172,25 +193,18 @@ namespace AtomFeed
         }
         private XmlDocument Fetch(Uri feeduri)
         {
-            try
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
+            req.UserAgent = "Mozilla/5.0";
+            req.Proxy = feedproxy;
+            if (feedauthtype == FeedAuthTypes.Basic)
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
-                req.UserAgent = "Mozilla/5.0";
-                req.Proxy = feedproxy;
-                if (feedauthtype == FeedAuthTypes.Basic)
-                {
-                    req.Credentials = new NetworkCredential(feedusername, feedpassword);
-                }
-                WebResponse resp = req.GetResponse();
-                XmlDocument tempdoc = new XmlDocument();
-                tempdoc.Load(resp.GetResponseStream());
-                resp.Close();
-                return tempdoc;
+                req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            catch
-            {
-                return null;
-            }
+            WebResponse resp = req.GetResponse();
+            XmlDocument tempdoc = new XmlDocument();
+            tempdoc.Load(resp.GetResponseStream());
+            resp.Close();
+            return tempdoc;
         }
 
         public void Update()
@@ -271,6 +285,7 @@ namespace AtomFeed
                             }
                             catch (FormatException)
                             {
+
                             }
                         }
                         if (!oldfeeditems.Contains(item))
@@ -281,11 +296,16 @@ namespace AtomFeed
                     }
 
                 }
-                
+
+            }
+            catch (WebException ex)
+            {
+                retexception = ex;
             }
             catch (XmlException ex)
             {
                 retexception = ex;
+                throw;
             }
             catch (NullReferenceException ex)
             {
@@ -296,6 +316,11 @@ namespace AtomFeed
             {
                 haserror = true;
                 errormessage = retexception.Message;
+            }
+            else
+            {
+                haserror = false;
+                errormessage = null;
             }
             loaded = true;
             FireUpdated();
@@ -314,6 +339,7 @@ namespace AtomFeed
 
         protected void FireUpdated()
         {
+            lastupdate = DateTime.Now;
             Updated(null, new EventArgs());
         }
         #endregion
@@ -322,14 +348,5 @@ namespace AtomFeed
         public virtual event EventHandler Updated;
         #endregion
 
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-
-        public string PluginCopyright
-        {
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
-        }
     }
 }

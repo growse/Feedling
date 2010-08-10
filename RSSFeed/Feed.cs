@@ -66,7 +66,7 @@ namespace RSSFeed
             get { return feedxml; }
             set { feedxml = value; }
         }
-        private int updateinterval=10;
+        private int updateinterval = 10;
         public int UpdateInterval
         {
             get { return updateinterval; }
@@ -121,6 +121,24 @@ namespace RSSFeed
                 return "RSSFeed";
             }
         }
+        public string PluginVersion
+        {
+            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        public string PluginCopyright
+        {
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+        }
+        private DateTime lastupdate;
+        public DateTime LastUpdate
+        {
+            get
+            {
+                return lastupdate;
+            }
+        }
+
         private IWebProxy feedproxy;
         private FeedAuthTypes feedauthtype;
         private string feedusername;
@@ -132,7 +150,7 @@ namespace RSSFeed
         {
         }
 
-        public Feed(Uri url,FeedAuthTypes authtype,string username,string password, IWebProxy proxy)
+        public Feed(Uri url, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
         {
             feedproxy = proxy;
             feeduri = url;
@@ -164,25 +182,18 @@ namespace RSSFeed
         }
         private XmlDocument Fetch(Uri feeduri)
         {
-            try
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
+            req.UserAgent = "Mozilla/5.0";
+            req.Proxy = feedproxy;
+            if (feedauthtype == FeedAuthTypes.Basic)
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
-                req.UserAgent = "Mozilla/5.0";
-                req.Proxy = feedproxy;
-                if (feedauthtype == FeedAuthTypes.Basic)
-                {
-                    req.Credentials = new NetworkCredential(feedusername, feedpassword);
-                }
-                WebResponse resp = req.GetResponse();
-                XmlDocument tempdoc = new XmlDocument();
-                tempdoc.Load(resp.GetResponseStream());
-                resp.Close();
-                return tempdoc;
+                req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            catch
-            {
-                return null;
-            }
+            WebResponse resp = req.GetResponse();
+            XmlDocument tempdoc = new XmlDocument();
+            tempdoc.Load(resp.GetResponseStream());
+            resp.Close();
+            return tempdoc;
         }
 
         public void Update()
@@ -267,9 +278,14 @@ namespace RSSFeed
 
                 }
             }
+            catch (WebException ex)
+            {
+                retexception = ex;
+            }
             catch (XmlException ex)
             {
                 retexception = ex;
+                throw;
             }
             catch (NullReferenceException ex)
             {
@@ -279,6 +295,11 @@ namespace RSSFeed
             {
                 haserror = true;
                 errormessage = retexception.Message;
+            }
+            else
+            {
+                haserror = false;
+                errormessage = null;
             }
             loaded = true;
             FireUpdated();
@@ -297,6 +318,7 @@ namespace RSSFeed
 
         protected void FireUpdated()
         {
+            lastupdate = DateTime.Now;
             Updated(null, new EventArgs());
         }
         #endregion
@@ -304,15 +326,5 @@ namespace RSSFeed
         #region Events
         public virtual event EventHandler Updated;
         #endregion
-
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-
-        public string PluginCopyright
-        {
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
-        }
     }
 }

@@ -96,6 +96,10 @@ namespace FeedHanderPluginInterface
         /// </summary>
         int UpdateInterval { get; set; }
         /// <summary>
+        /// When was the Feed last successfully updated?
+        /// </summary>
+        DateTime LastUpdate { get; }
+        /// <summary>
         /// The URL specified by the feed. This URL will be started when the user clicks a feed item
         /// </summary>
         Uri Url { get; set; }
