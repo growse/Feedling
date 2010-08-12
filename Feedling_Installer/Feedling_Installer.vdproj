@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0328B100AA2FA7FE10E3A523B01E62A8"
-        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -51,44 +45,44 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
-        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
-        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
-        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_9965A66DEF6E4E1C858439F5509D8B92"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
         "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B27BA205BE7816689C23413972272654"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
+        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -113,6 +107,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_0328B100AA2FA7FE10E3A523B01E62A8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -179,10 +185,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
                     {
-                    "Name" = "8:.NET Framework 2.0 (x86)"
-                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -251,14 +257,34 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_93A0A3A668B0D07305D59D5566E118EE"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9965A66DEF6E4E1C858439F5509D8B92"
+            {
+            "SourcePath" = "8:..\\Feedling\\Resources\\Feedling.ico"
+            "TargetName" = "8:Feedling.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AF11835866A305E17EC76A7B3859F26F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_93A0A3A668B0D07305D59D5566E118EE"
+                    "_AF11835866A305E17EC76A7B3859F26F"
                     {
                     "Name" = "8:FeedHanderPluginInterface.dll"
                     "Attributes" = "3:512"
@@ -282,10 +308,21 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9965A66DEF6E4E1C858439F5509D8B92"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B27BA205BE7816689C23413972272654"
             {
-            "SourcePath" = "8:..\\Feedling\\Resources\\Feedling.ico"
-            "TargetName" = "8:Feedling.ico"
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FontDialog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_B27BA205BE7816689C23413972272654"
+                    {
+                    "Name" = "8:FontDialog.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FontDialog.dll"
+            "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
             "Condition" = "8:"
@@ -299,7 +336,7 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -370,7 +407,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
         "ProductCode" = "8:{74077065-0DB0-4966-A6A2-7CE9B413ED85}"
-        "PackageCode" = "8:{9B068B62-22A7-4BD0-A15B-58D849413481}"
+        "PackageCode" = "8:{165722CF-D037-47FD-8720-749D6C2E3515}"
         "UpgradeCode" = "8:{E0E9745E-6A34-4D31-84C3-59B0982C1C16}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -905,7 +942,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4969685637D642D782D5B0C0902BE404"
             {
-            "SourcePath" = "8:..\\Feedling\\obj\\Debug\\Feedling.exe"
+            "SourcePath" = "8:..\\Feedling\\obj\\Release\\Feedling.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -933,7 +970,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4A7B8D73863340878E13AEC7C9203668"
             {
-            "SourcePath" = "8:..\\RSSFeed\\obj\\Debug\\RSSFeed.dll"
+            "SourcePath" = "8:..\\RSSFeed\\obj\\Release\\RssFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -961,7 +998,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4F4918D3B6C24E51B2B2EA817FBE6189"
             {
-            "SourcePath" = "8:..\\AtomFeed\\obj\\Debug\\AtomFeed.dll"
+            "SourcePath" = "8:..\\AtomFeed\\obj\\Release\\AtomFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -989,7 +1026,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6EDBDBFAD8924553BB46F86FC6D3B546"
             {
-            "SourcePath" = "8:..\\RDFFeed\\obj\\Debug\\RDFFeed.dll"
+            "SourcePath" = "8:..\\RDFFeed\\obj\\Release\\RdfFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
