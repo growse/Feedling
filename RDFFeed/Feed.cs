@@ -299,17 +299,23 @@ namespace RdfFeed
             catch (WebException ex)
             {
                 retexception = ex;
+#if DEBUG
                 throw;
+#endif
             }
             catch (XmlException ex)
             {
                 retexception = ex;
+#if DEBUG
                 throw;
+#endif
             }
             catch (NullReferenceException ex)
             {
                 retexception = ex;
+#if DEBUG
                 throw;
+#endif
             }
 
             if (retexception != null)
