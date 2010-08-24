@@ -251,7 +251,7 @@ namespace Feedling
                     {
                         Log.DebugFormat("It can! Yay!");
                         IWebProxy reqproxy;
-                        if (fci.Proxytype != ProxyType.Global) { reqproxy = fci.Proxy; }
+                        if (fci.ProxyType != ProxyType.Global) { reqproxy = fci.Proxy; }
                         else { reqproxy = FeedwinManager.GetGlobalProxy(); }
                         if (reqproxy != null)
                         {
@@ -261,7 +261,7 @@ namespace Feedling
                         {
                             Log.Debug("Set Proxy for feed to nothing, nothing at all");
                         }
-                        rssfeed = feedplugin.Factory(new Uri(fci.Url), fci.AuthType, fci.Username, fci.Password, reqproxy);
+                        rssfeed = feedplugin.Factory(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
                         rssfeed.UpdateInterval = fci.UpdateInterval;
                         break;
                     }

@@ -273,12 +273,12 @@ namespace Feedling
                 Uri requri = new Uri(fci.Url);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requri);
                 req.UserAgent = "Mozilla/5.0";
-                if (fci.Proxytype != ProxyType.Global) { req.Proxy = fci.Proxy; }
+                if (fci.ProxyType != ProxyType.Global) { req.Proxy = fci.Proxy; }
                 else { req.Proxy = GetGlobalProxy(); }
                 switch (fci.AuthType)
                 {
                     case FeedAuthTypes.Basic:
-                        req.Credentials = new NetworkCredential(fci.Username, fci.Password);
+                        req.Credentials = new NetworkCredential(fci.UserName, fci.Password);
                         resp = (HttpWebResponse)req.GetResponse();
                         break;
                     case FeedAuthTypes.Other:

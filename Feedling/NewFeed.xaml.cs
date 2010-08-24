@@ -80,7 +80,7 @@ namespace Feedling
                 updateintervalbox.Text = fci.UpdateInterval.ToString();
                 displayeditemsbox.Text = fci.DisplayedItems.ToString();
 
-                usernamebox.Text = fci.Username;
+                usernamebox.Text = fci.UserName;
                 passwordbox.Password = fci.Password;
                 switch (fci.AuthType)
                 {
@@ -97,7 +97,7 @@ namespace Feedling
                 usernamebox.IsEnabled = (noauthradio.IsChecked == false);
                 passwordbox.IsEnabled = (noauthradio.IsChecked == false);
                 //Proxy
-                switch (fci.Proxytype)
+                switch (fci.ProxyType)
                 {
                     case ProxyType.Global:
                         globalproxybtn.IsChecked = true;
@@ -113,11 +113,11 @@ namespace Feedling
                         proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = true;
                         break;
                 }
-                proxyhostbox.Text = fci.Proxyhost;
-                proxyportbox.Text = fci.Proxyport.ToString();
-                proxyauthcheck.IsChecked = fci.Proxyauth;
-                proxyuserbox.Text = fci.Proxyuser;
-                proxypassbox.Password = fci.Proxypass;
+                proxyhostbox.Text = fci.ProxyHost;
+                proxyportbox.Text = fci.ProxyPort.ToString();
+                proxyauthcheck.IsChecked = fci.ProxyAuth;
+                proxyuserbox.Text = fci.ProxyUser;
+                proxypassbox.Password = fci.ProxyPass;
                 proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace Feedling
             int port = 0;
             if (int.TryParse(proxyportbox.Text, out port) && port > 0)
             {
-                fci.Proxyport = port;
+                fci.ProxyPort = port;
                 LoadFeedConfigItem();
             }
             else
@@ -146,25 +146,25 @@ namespace Feedling
 
         private void proxypassbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            fci.Proxypass = proxypassbox.Password;
+            fci.ProxyPass = proxypassbox.Password;
             LoadFeedConfigItem();
         }
 
         private void proxyuserbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            fci.Proxyuser = proxyuserbox.Text;
+            fci.ProxyUser = proxyuserbox.Text;
             LoadFeedConfigItem();
         }
 
         private void proxyhostbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            fci.Proxyhost = proxyhostbox.Text;
+            fci.ProxyHost = proxyhostbox.Text;
             LoadFeedConfigItem();
         }
 
         private void proxyauthcheck_Checked(object sender, RoutedEventArgs e)
         {
-            fci.Proxyauth = (proxyauthcheck.IsChecked == true);
+            fci.ProxyAuth = (proxyauthcheck.IsChecked == true);
             proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
             LoadFeedConfigItem();
         }
@@ -172,18 +172,18 @@ namespace Feedling
         private void proxyradio_Checked(object sender, RoutedEventArgs e)
         {
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
-            fci.Proxytype = ProxyType.Global;
+            fci.ProxyType = ProxyType.Global;
             if (noproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.None;
+                fci.ProxyType = ProxyType.None;
             }
             if (systemproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.System;
+                fci.ProxyType = ProxyType.System;
             }
             if (customproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.Custom;
+                fci.ProxyType = ProxyType.Custom;
             }
             LoadFeedConfigItem();
         }
@@ -208,7 +208,7 @@ namespace Feedling
 
         private void usernamebox_LostFocus(object sender, RoutedEventArgs e)
         {
-            fci.Username = usernamebox.Text;
+            fci.UserName = usernamebox.Text;
             LoadFeedConfigItem();
         }
 
@@ -257,24 +257,24 @@ namespace Feedling
             fci.FontWeight = fontlabel.FontWeight;
             fci.Password = passwordbox.Password;
 
-            fci.Proxytype = ProxyType.Global;
+            fci.ProxyType = ProxyType.Global;
             if (noproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.None;
+                fci.ProxyType = ProxyType.None;
             }
             if (systemproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.System;
+                fci.ProxyType = ProxyType.System;
             }
             if (customproxybtn.IsChecked == true)
             {
-                fci.Proxytype = ProxyType.Custom;
+                fci.ProxyType = ProxyType.Custom;
             }
-            fci.Proxyauth = (proxyauthcheck.IsChecked == true);
-            fci.Proxyhost = proxyhostbox.Text;
-            fci.Proxypass = proxypassbox.Password;
-            fci.Proxyport = int.Parse(proxyportbox.Text);
-            fci.Proxyuser = proxyuserbox.Text;
+            fci.ProxyAuth = (proxyauthcheck.IsChecked == true);
+            fci.ProxyHost = proxyhostbox.Text;
+            fci.ProxyPass = proxypassbox.Password;
+            fci.ProxyPort = int.Parse(proxyportbox.Text);
+            fci.ProxyUser = proxyuserbox.Text;
             fci.TitleFontFamily = titlefontlabel.FontFamily;
             fci.TitleFontSize = titlefontlabel.FontSize;
             fci.TitleFontStyle = titlefontlabel.FontStyle;
@@ -284,7 +284,7 @@ namespace Feedling
             fci.UpdateInterval = int.Parse(updateintervalbox.Text);
             fci.DisplayedItems = int.Parse(displayeditemsbox.Text);
             fci.Url = urlbox.Text;
-            fci.Username = usernamebox.Text;
+            fci.UserName = usernamebox.Text;
 
             if (fci.Url.Trim().Length > 0)
             {

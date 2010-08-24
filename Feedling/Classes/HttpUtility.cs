@@ -40,11 +40,7 @@ using System.Text;
 
 namespace System.Web
 {
-
-#if !MONOTOUCH
-    // CAS - no InheritanceDemand here as the class is sealed
-    [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal)]
-#endif
+    [Security.SecurityCritical()]
     public sealed class HttpUtility
     {
         sealed class HttpQSCollection : NameValueCollection
@@ -355,20 +351,23 @@ namespace System.Web
 
         #region Methods
 
-        public static void HtmlAttributeEncode(string s, TextWriter output)
+        public static void HtmlAttributeEncode(string value, TextWriter output)
         {
-            output.Write(HtmlAttributeEncode(s));
+            if (output != null)
+            {
+                output.Write(HtmlAttributeEncode(value));
+            }
         }
 
-        public static string HtmlAttributeEncode(string s)
+        public static string HtmlAttributeEncode(string value)
         {
-            if (null == s)
+            if (null == value)
                 return null;
 
             bool needEncode = false;
-            for (int i = 0; i < s.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                if (s[i] == '&' || s[i] == '"' || s[i] == '<')
+                if (value[i] == '&' || value[i] == '"' || value[i] == '<')
                 {
                     needEncode = true;
                     break;
@@ -376,12 +375,12 @@ namespace System.Web
             }
 
             if (!needEncode)
-                return s;
+                return value;
 
             StringBuilder output = new StringBuilder();
-            int len = s.Length;
+            int len = value.Length;
             for (int i = 0; i < len; i++)
-                switch (s[i])
+                switch (value[i])
                 {
                     case '&':
                         output.Append("&amp;");
@@ -393,97 +392,97 @@ namespace System.Web
                         output.Append("&lt;");
                         break;
                     default:
-                        output.Append(s[i]);
+                        output.Append(value[i]);
                         break;
                 }
 
             return output.ToString();
         }
 
-        public static string UrlDecode(string str)
+        public static string UrlDecode(string value)
         {
-            return UrlDecode(str, Encoding.UTF8);
+            return UrlDecode(value, Encoding.UTF8);
         }
 
-        static char[] GetChars(MemoryStream b, Encoding e)
+        static char[] GetChars(MemoryStream stream, Encoding encoding)
         {
-            return e.GetChars(b.GetBuffer(), 0, (int)b.Length);
+            return encoding.GetChars(stream.GetBuffer(), 0, (int)stream.Length);
         }
 
-        static void WriteCharBytes(IList buf, char ch, Encoding e)
+        static void WriteCharBytes(IList buffer, char character, Encoding encoding)
         {
-            if (ch > 255)
+            if (character > 255)
             {
-                foreach (byte b in e.GetBytes(new char[] { ch }))
-                    buf.Add(b);
+                foreach (byte b in encoding.GetBytes(new char[] { character }))
+                    buffer.Add(b);
             }
             else
-                buf.Add((byte)ch);
+                buffer.Add((byte)character);
         }
 
-        public static string UrlDecode(string s, Encoding e)
+        public static string UrlDecode(string value, Encoding encoding)
         {
-            if (null == s)
+            if (null == value)
                 return null;
 
-            if (s.IndexOf('%') == -1 && s.IndexOf('+') == -1)
-                return s;
+            if (value.IndexOf('%') == -1 && value.IndexOf('+') == -1)
+                return value;
 
-            if (e == null)
-                e = Encoding.UTF8;
+            if (encoding == null)
+                encoding = Encoding.UTF8;
 
-            long len = s.Length;
+            long len = value.Length;
             var bytes = new List<byte>();
             int xchar;
             char ch;
 
             for (int i = 0; i < len; i++)
             {
-                ch = s[i];
-                if (ch == '%' && i + 2 < len && s[i + 1] != '%')
+                ch = value[i];
+                if (ch == '%' && i + 2 < len && value[i + 1] != '%')
                 {
-                    if (s[i + 1] == 'u' && i + 5 < len)
+                    if (value[i + 1] == 'u' && i + 5 < len)
                     {
                         // unicode hex sequence
-                        xchar = GetChar(s, i + 2, 4);
+                        xchar = GetChar(value, i + 2, 4);
                         if (xchar != -1)
                         {
-                            WriteCharBytes(bytes, (char)xchar, e);
+                            WriteCharBytes(bytes, (char)xchar, encoding);
                             i += 5;
                         }
                         else
-                            WriteCharBytes(bytes, '%', e);
+                            WriteCharBytes(bytes, '%', encoding);
                     }
-                    else if ((xchar = GetChar(s, i + 1, 2)) != -1)
+                    else if ((xchar = GetChar(value, i + 1, 2)) != -1)
                     {
-                        WriteCharBytes(bytes, (char)xchar, e);
+                        WriteCharBytes(bytes, (char)xchar, encoding);
                         i += 2;
                     }
                     else
                     {
-                        WriteCharBytes(bytes, '%', e);
+                        WriteCharBytes(bytes, '%', encoding);
                     }
                     continue;
                 }
 
                 if (ch == '+')
-                    WriteCharBytes(bytes, ' ', e);
+                    WriteCharBytes(bytes, ' ', encoding);
                 else
-                    WriteCharBytes(bytes, ch, e);
+                    WriteCharBytes(bytes, ch, encoding);
             }
 
             byte[] buf = bytes.ToArray();
             bytes = null;
-            return e.GetString(buf);
+            return encoding.GetString(buf);
 
         }
 
-        public static string UrlDecode(byte[] bytes, Encoding e)
+        public static string UrlDecode(byte[] value, Encoding encoding)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            return UrlDecode(bytes, 0, bytes.Length, e);
+            return UrlDecode(value, 0, value.Length, encoding);
         }
 
         static int GetInt(byte b)
@@ -501,19 +500,19 @@ namespace System.Web
             return -1;
         }
 
-        static int GetChar(byte[] bytes, int offset, int length)
+        static int GetChar(byte[] value, int offset, int length)
         {
-            int value = 0;
+            int ret = 0;
             int end = length + offset;
             for (int i = offset; i < end; i++)
             {
-                int current = GetInt(bytes[i]);
+                int current = GetInt(value[i]);
                 if (current == -1)
                     return -1;
-                value = (value << 4) + current;
+                ret = (ret << 4) + current;
             }
 
-            return value;
+            return ret;
         }
 
         static int GetChar(string str, int offset, int length)
@@ -535,111 +534,112 @@ namespace System.Web
             return val;
         }
 
-        public static string UrlDecode(byte[] bytes, int offset, int count, Encoding e)
+        public static string UrlDecode(byte[] value, int offset, int count, Encoding encoding)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
             if (count == 0)
                 return String.Empty;
 
-            if (bytes == null)
-                throw new ArgumentNullException("bytes");
+            if (value == null)
+                throw new ArgumentNullException("value");
 
-            if (offset < 0 || offset > bytes.Length)
+            if (offset < 0 || offset > value.Length)
                 throw new ArgumentOutOfRangeException("offset");
 
-            if (count < 0 || offset + count > bytes.Length)
+            if (count < 0 || offset + count > value.Length)
                 throw new ArgumentOutOfRangeException("count");
 
             StringBuilder output = new StringBuilder();
-            MemoryStream acc = new MemoryStream();
-
-            int end = count + offset;
-            int xchar;
-            for (int i = offset; i < end; i++)
+            using (MemoryStream acc = new MemoryStream())
             {
-                if (bytes[i] == '%' && i + 2 < count && bytes[i + 1] != '%')
+
+                int end = count + offset;
+                int xchar;
+                for (int i = offset; i < end; i++)
                 {
-                    if (bytes[i + 1] == (byte)'u' && i + 5 < end)
+                    if (value[i] == '%' && i + 2 < count && value[i + 1] != '%')
                     {
-                        if (acc.Length > 0)
+                        if (value[i + 1] == (byte)'u' && i + 5 < end)
                         {
-                            output.Append(GetChars(acc, e));
-                            acc.SetLength(0);
+                            if (acc.Length > 0)
+                            {
+                                output.Append(GetChars(acc, encoding));
+                                acc.SetLength(0);
+                            }
+                            xchar = GetChar(value, i + 2, 4);
+                            if (xchar != -1)
+                            {
+                                output.Append((char)xchar);
+                                i += 5;
+                                continue;
+                            }
                         }
-                        xchar = GetChar(bytes, i + 2, 4);
-                        if (xchar != -1)
+                        else if ((xchar = GetChar(value, i + 1, 2)) != -1)
                         {
-                            output.Append((char)xchar);
-                            i += 5;
+                            acc.WriteByte((byte)xchar);
+                            i += 2;
                             continue;
                         }
                     }
-                    else if ((xchar = GetChar(bytes, i + 1, 2)) != -1)
+
+                    if (acc.Length > 0)
                     {
-                        acc.WriteByte((byte)xchar);
-                        i += 2;
-                        continue;
+                        output.Append(GetChars(acc, encoding));
+                        acc.SetLength(0);
+                    }
+
+                    if (value[i] == '+')
+                    {
+                        output.Append(' ');
+                    }
+                    else
+                    {
+                        output.Append((char)value[i]);
                     }
                 }
 
                 if (acc.Length > 0)
                 {
-                    output.Append(GetChars(acc, e));
-                    acc.SetLength(0);
+                    output.Append(GetChars(acc, encoding));
                 }
 
-                if (bytes[i] == '+')
-                {
-                    output.Append(' ');
-                }
-                else
-                {
-                    output.Append((char)bytes[i]);
-                }
             }
-
-            if (acc.Length > 0)
-            {
-                output.Append(GetChars(acc, e));
-            }
-
-            acc = null;
             return output.ToString();
         }
 
-        public static byte[] UrlDecodeToBytes(byte[] bytes)
+        public static byte[] UrlDecodeToBytes(byte[] value)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            return UrlDecodeToBytes(bytes, 0, bytes.Length);
+            return UrlDecodeToBytes(value, 0, value.Length);
         }
 
-        public static byte[] UrlDecodeToBytes(string str)
+        public static byte[] UrlDecodeToBytes(string value)
         {
-            return UrlDecodeToBytes(str, Encoding.UTF8);
+            return UrlDecodeToBytes(value, Encoding.UTF8);
         }
 
-        public static byte[] UrlDecodeToBytes(string str, Encoding e)
+        public static byte[] UrlDecodeToBytes(string value, Encoding encoding)
         {
-            if (str == null)
+            if (value == null)
                 return null;
 
-            if (e == null)
+            if (encoding == null)
                 throw new ArgumentNullException("e");
 
-            return UrlDecodeToBytes(e.GetBytes(str));
+            return UrlDecodeToBytes(encoding.GetBytes(value));
         }
 
-        public static byte[] UrlDecodeToBytes(byte[] bytes, int offset, int count)
+        public static byte[] UrlDecodeToBytes(byte[] value, int offset, int count)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
             if (count == 0)
                 return new byte[0];
 
-            int len = bytes.Length;
+            int len = value.Length;
             if (offset < 0 || offset >= len)
                 throw new ArgumentOutOfRangeException("offset");
 
@@ -651,14 +651,14 @@ namespace System.Web
                 int end = offset + count;
                 for (int i = offset; i < end; i++)
                 {
-                    char c = (char)bytes[i];
+                    char c = (char)value[i];
                     if (c == '+')
                     {
                         c = ' ';
                     }
                     else if (c == '%' && i < end - 2)
                     {
-                        int xchar = GetChar(bytes, i + 1, 2);
+                        int xchar = GetChar(value, i + 1, 2);
                         if (xchar != -1)
                         {
                             c = (char)xchar;
@@ -667,28 +667,28 @@ namespace System.Web
                     }
                     result.WriteByte((byte)c);
                 }
-return result.ToArray();
+                return result.ToArray();
             }
         }
 
-        public static string UrlEncode(string str)
+        public static string UrlEncode(string value)
         {
-            return UrlEncode(str, Encoding.UTF8);
+            return UrlEncode(value, Encoding.UTF8);
         }
 
-        public static string UrlEncode(string s, Encoding Enc)
+        public static string UrlEncode(string value, Encoding encoding)
         {
-            if (s == null)
+            if (value == null)
                 return null;
 
-            if (s == "")
+            if (string.IsNullOrEmpty(value))
                 return "";
 
             bool needEncode = false;
-            int len = s.Length;
+            int len = value.Length;
             for (int i = 0; i < len; i++)
             {
-                char c = s[i];
+                char c = value[i];
                 if ((c < '0') || (c < 'A' && c > '9') || (c > 'Z' && c < 'a') || (c > 'z'))
                 {
                     if (NotEncoded(c))
@@ -700,62 +700,62 @@ return result.ToArray();
             }
 
             if (!needEncode)
-                return s;
+                return value;
 
             // avoided GetByteCount call
-            byte[] bytes = new byte[Enc.GetMaxByteCount(s.Length)];
-            int realLen = Enc.GetBytes(s, 0, s.Length, bytes, 0);
+            byte[] bytes = new byte[encoding.GetMaxByteCount(value.Length)];
+            int realLen = encoding.GetBytes(value, 0, value.Length, bytes, 0);
             return Encoding.ASCII.GetString(UrlEncodeToBytes(bytes, 0, realLen));
         }
 
-        public static string UrlEncode(byte[] bytes)
+        public static string UrlEncode(byte[] value)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            if (bytes.Length == 0)
+            if (value.Length == 0)
                 return "";
 
-            return Encoding.ASCII.GetString(UrlEncodeToBytes(bytes, 0, bytes.Length));
+            return Encoding.ASCII.GetString(UrlEncodeToBytes(value, 0, value.Length));
         }
 
-        public static string UrlEncode(byte[] bytes, int offset, int count)
+        public static string UrlEncode(byte[] value, int offset, int count)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            if (bytes.Length == 0)
+            if (value.Length == 0)
                 return "";
 
-            return Encoding.ASCII.GetString(UrlEncodeToBytes(bytes, offset, count));
+            return Encoding.ASCII.GetString(UrlEncodeToBytes(value, offset, count));
         }
 
-        public static byte[] UrlEncodeToBytes(string str)
+        public static byte[] UrlEncodeToBytes(string value)
         {
-            return UrlEncodeToBytes(str, Encoding.UTF8);
+            return UrlEncodeToBytes(value, Encoding.UTF8);
         }
 
-        public static byte[] UrlEncodeToBytes(string str, Encoding e)
+        public static byte[] UrlEncodeToBytes(string value, Encoding encoding)
         {
-            if (str == null)
+            if (value == null)
                 return null;
 
-            if (str == "")
+            if (string.IsNullOrEmpty(value))
                 return new byte[0];
 
-            byte[] bytes = e.GetBytes(str);
+            byte[] bytes = encoding.GetBytes(value);
             return UrlEncodeToBytes(bytes, 0, bytes.Length);
         }
 
-        public static byte[] UrlEncodeToBytes(byte[] bytes)
+        public static byte[] UrlEncodeToBytes(byte[] value)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            if (bytes.Length == 0)
+            if (value.Length == 0)
                 return new byte[0];
 
-            return UrlEncodeToBytes(bytes, 0, bytes.Length);
+            return UrlEncodeToBytes(value, 0, value.Length);
         }
 
         static char[] hexChars = "0123456789abcdef".ToCharArray();
@@ -822,12 +822,12 @@ return result.ToArray();
                 result.WriteByte((byte)c);
         }
 
-        public static byte[] UrlEncodeToBytes(byte[] bytes, int offset, int count)
+        public static byte[] UrlEncodeToBytes(byte[] value, int offset, int count)
         {
-            if (bytes == null)
+            if (value == null)
                 return null;
 
-            int len = bytes.Length;
+            int len = value.Length;
             if (len == 0)
                 return new byte[0];
 
@@ -841,31 +841,31 @@ return result.ToArray();
             {
                 int end = offset + count;
                 for (int i = offset; i < end; i++)
-                    UrlEncodeChar((char)bytes[i], result, false);
+                    UrlEncodeChar((char)value[i], result, false);
 
                 return result.ToArray();
             }
         }
 
-        public static string UrlEncodeUnicode(string str)
+        public static string UrlEncodeUnicode(string value)
         {
-            if (str == null)
+            if (value == null)
                 return null;
 
-            return Encoding.ASCII.GetString(UrlEncodeUnicodeToBytes(str));
+            return Encoding.ASCII.GetString(UrlEncodeUnicodeToBytes(value));
         }
 
-        public static byte[] UrlEncodeUnicodeToBytes(string str)
+        public static byte[] UrlEncodeUnicodeToBytes(string value)
         {
-            if (str == null)
+            if (value == null)
                 return null;
 
-            if (str == "")
+            if (String.IsNullOrEmpty(value))
                 return new byte[0];
 
-            using (MemoryStream result = new MemoryStream(str.Length))
+            using (MemoryStream result = new MemoryStream(value.Length))
             {
-                foreach (char c in str)
+                foreach (char c in value)
                 {
                     UrlEncodeChar(c, result, true);
                 }
@@ -876,19 +876,19 @@ return result.ToArray();
         /// <summary>
         /// Decodes an HTML-encoded string and returns the decoded string.
         /// </summary>
-        /// <param name="s">The HTML string to decode. </param>
+        /// <param name="value">The HTML string to decode. </param>
         /// <returns>The decoded text.</returns>
-        public static string HtmlDecode(string s)
+        public static string HtmlDecode(string value)
         {
-            if (s == null)
-                throw new ArgumentNullException("s");
+            if (value == null)
+                throw new ArgumentNullException("value");
 
-            if (s.IndexOf('&') == -1)
-                return s;
+            if (value.IndexOf('&') == -1)
+                return value;
 
             StringBuilder entity = new StringBuilder();
             StringBuilder output = new StringBuilder();
-            int len = s.Length;
+            int len = value.Length;
             // 0 -> nothing,
             // 1 -> right after '&'
             // 2 -> between '&' and ';' but no '#'
@@ -899,7 +899,7 @@ return result.ToArray();
 
             for (int i = 0; i < len; i++)
             {
-                char c = s[i];
+                char c = value[i];
                 if (state == 0)
                 {
                     if (c == '&')
@@ -1016,28 +1016,30 @@ return result.ToArray();
         /// <summary>
         /// Decodes an HTML-encoded string and sends the resulting output to a TextWriter output stream.
         /// </summary>
-        /// <param name="s">The HTML string to decode</param>
+        /// <param name="value">The HTML string to decode</param>
         /// <param name="output">The TextWriter output stream containing the decoded string. </param>
-        public static void HtmlDecode(string s, TextWriter output)
+        public static void HtmlDecode(string value, TextWriter output)
         {
-            if (s != null)
-                output.Write(HtmlDecode(s));
+            if (value != null && output != null)
+            {
+                output.Write(HtmlDecode(value));
+            }
         }
 
         /// <summary>
         /// HTML-encodes a string and returns the encoded string.
         /// </summary>
-        /// <param name="s">The text string to encode. </param>
+        /// <param name="value">The text string to encode. </param>
         /// <returns>The HTML-encoded text.</returns>
-        public static string HtmlEncode(string s)
+        public static string HtmlEncode(string value)
         {
-            if (s == null)
+            if (value == null)
                 return null;
 
             bool needEncode = false;
-            for (int i = 0; i < s.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                char c = s[i];
+                char c = value[i];
                 if (c == '&' || c == '"' || c == '<' || c == '>' || c > 159)
                 {
                     needEncode = true;
@@ -1046,13 +1048,13 @@ return result.ToArray();
             }
 
             if (!needEncode)
-                return s;
+                return value;
 
             StringBuilder output = new StringBuilder();
 
-            int len = s.Length;
+            int len = value.Length;
             for (int i = 0; i < len; i++)
-                switch (s[i])
+                switch (value[i])
                 {
                     case '&':
                         output.Append("&amp;");
@@ -1073,16 +1075,16 @@ return result.ToArray();
 #if TARGET_JVM
 					if (s [i] > 159 && s [i] < 256) {
 #else
-                        if (s[i] > 159)
+                        if (value[i] > 159)
                         {
 #endif
                             output.Append("&#");
-                            output.Append(((int)s[i]).ToString(CultureInfo.InvariantCulture));
+                            output.Append(((int)value[i]).ToString(CultureInfo.InvariantCulture));
                             output.Append(";");
                         }
                         else
                         {
-                            output.Append(s[i]);
+                            output.Append(value[i]);
                         }
                         break;
                 }
@@ -1092,35 +1094,37 @@ return result.ToArray();
         /// <summary>
         /// HTML-encodes a string and sends the resulting output to a TextWriter output stream.
         /// </summary>
-        /// <param name="s">The string to encode. </param>
+        /// <param name="value">The string to encode. </param>
         /// <param name="output">The TextWriter output stream containing the encoded string. </param>
-        public static void HtmlEncode(string s, TextWriter output)
+        public static void HtmlEncode(string value, TextWriter output)
         {
-            if (s != null)
-                output.Write(HtmlEncode(s));
+            if (value != null && output != null)
+            {
+                output.Write(HtmlEncode(value));
+            }
         }
 
-        public static string UrlPathEncode(string s)
+        public static string UrlPathEncode(string value)
         {
-            if (s == null || s.Length == 0)
-                return s;
+            if (value == null || value.Length == 0)
+                return value;
 
             using (MemoryStream result = new MemoryStream())
             {
-                int length = s.Length;
+                int length = value.Length;
                 for (int i = 0; i < length; i++)
                 {
-                    UrlPathEncodeChar(s[i], result);
+                    UrlPathEncodeChar(value[i], result);
                 }
                 return Encoding.ASCII.GetString(result.ToArray());
             }
         }
 
-        static void UrlPathEncodeChar(char c, Stream result)
+        static void UrlPathEncodeChar(char value, Stream result)
         {
-            if (c < 33 || c > 126)
+            if (value < 33 || value > 126)
             {
-                byte[] bIn = Encoding.UTF8.GetBytes(c.ToString());
+                byte[] bIn = Encoding.UTF8.GetBytes(value.ToString());
                 for (int i = 0; i < bIn.Length; i++)
                 {
                     result.WriteByte((byte)'%');
@@ -1130,14 +1134,14 @@ return result.ToArray();
                     result.WriteByte((byte)hexChars[idx]);
                 }
             }
-            else if (c == ' ')
+            else if (value == ' ')
             {
                 result.WriteByte((byte)'%');
                 result.WriteByte((byte)'2');
                 result.WriteByte((byte)'0');
             }
             else
-                result.WriteByte((byte)c);
+                result.WriteByte((byte)value);
         }
 
         public static NameValueCollection ParseQueryString(string query)

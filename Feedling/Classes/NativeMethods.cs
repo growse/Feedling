@@ -36,8 +36,10 @@ namespace Feedling
 {
     class NativeMethods
     {
+        private NativeMethods() { }
+
         [DllImportAttribute("user32.dll")]
-        static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
         [DllImport("user32.dll", SetLastError = true)]
@@ -58,8 +60,8 @@ namespace Feedling
         const UInt32 SWP_NOMOVE = 0x0002;
         const UInt32 WS_EX_TOOLWINDOW = 0x00000080;
         const Int32 GWL_EXSTYLE = (-20);
-        const int WM_NCLBUTTONDOWN = 0xA1;
-        const int HT_CAPTION = 0x2;
+        const Int32 WM_NCLBUTTONDOWN = 0xA1;
+        static readonly IntPtr HT_CAPTION = new IntPtr(0x2);
         static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
 
         public static void SendWpfWindowBack(Window window)
@@ -80,7 +82,7 @@ namespace Feedling
         {
             WindowInteropHelper wh = new WindowInteropHelper(window);
             NativeMethods.ReleaseCapture();
-            NativeMethods.SendMessage(wh.Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, 0);
+            NativeMethods.SendMessage(wh.Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, IntPtr.Zero);
         }
     }
 }

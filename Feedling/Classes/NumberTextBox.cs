@@ -34,17 +34,23 @@ namespace Feedling
     {
         protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
-            e.Handled = !AreAllValidNumericChars(e.Text);
+            if (e != null)
+            {
+                e.Handled = !AreAllValidNumericChars(e.Text);
+            }
             base.OnPreviewTextInput(e);
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            e.Handled = (e.Key == Key.Space);
+            if (e != null)
+            {
+                e.Handled = (e.Key == Key.Space);
+            }
             base.OnPreviewKeyDown(e);
         }
 
-        bool AreAllValidNumericChars(string str)
+        static bool AreAllValidNumericChars(string str)
         {
             bool ret = true;
             if (str == System.Globalization.NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator |

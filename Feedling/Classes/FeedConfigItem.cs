@@ -55,14 +55,14 @@ namespace Feedling
             fci.TitleFontStyle = this.TitleFontStyle;
             fci.TitleFontWeight = this.TitleFontWeight;
             fci.AuthType = this.AuthType;
-            fci.Username = this.Username;
+            fci.UserName = this.UserName;
             fci.Password = this.Password;
-            fci.Proxyauth = this.Proxyauth;
-            fci.Proxyhost = this.Proxyhost;
-            fci.Proxytype = this.Proxytype;
-            fci.Proxyuser = this.Proxyuser;
-            fci.Proxypass = this.Proxypass;
-            fci.Proxyport = this.Proxyport;
+            fci.ProxyAuth = this.ProxyAuth;
+            fci.ProxyHost = this.ProxyHost;
+            fci.ProxyType = this.ProxyType;
+            fci.ProxyUser = this.ProxyUser;
+            fci.ProxyPass = this.ProxyPass;
+            fci.ProxyPort = this.ProxyPort;
             fci.UpdateInterval = this.UpdateInterval;
             fci.DisplayedItems = this.DisplayedItems;
             return fci;
@@ -177,7 +177,7 @@ namespace Feedling
         public FontFamily FontFamily
         {
             get { return new FontFamily(fontfamily); }
-            set { fontfamily = value.ToString(); }
+            set { if (value != null) { fontfamily = value.ToString(); } }
         }
         private double fontsize = FeedwinManager.thisinst.FontSize;
         [XmlAttribute("FontSize")]
@@ -225,7 +225,7 @@ namespace Feedling
         public FontFamily TitleFontFamily
         {
             get { return new FontFamily(titlefontfamily); }
-            set { titlefontfamily = value.ToString(); }
+            set { if (value != null) { titlefontfamily = value.ToString(); } }
         }
         private double titlefontsize = FeedwinManager.thisinst.FontSize;
         [XmlAttribute("TitleFontSize")]
@@ -285,7 +285,7 @@ namespace Feedling
         }
         private string username;
         [XmlAttribute("Username")]
-        public string Username
+        public string UserName
         {
             get { return username; }
             set { username = value; }
@@ -308,42 +308,42 @@ namespace Feedling
 
         private ProxyType proxytype;
         [XmlAttribute("Proxytype")]
-        public ProxyType Proxytype
+        public ProxyType ProxyType
         {
             get { return proxytype; }
             set { proxytype = value; }
         }
         private string proxyhost;
         [XmlAttribute("Proxyhost")]
-        public string Proxyhost
+        public string ProxyHost
         {
             get { return proxyhost; }
             set { proxyhost = value; }
         }
         private int proxyport;
         [XmlAttribute("Proxyport")]
-        public int Proxyport
+        public int ProxyPort
         {
             get { return proxyport; }
             set { proxyport = value; }
         }
         private bool proxyauth;
         [XmlAttribute("Proxyauth")]
-        public bool Proxyauth
+        public bool ProxyAuth
         {
             get { return proxyauth; }
             set { proxyauth = value; }
         }
         private string proxyuser;
         [XmlAttribute("Proxyuser")]
-        public string Proxyuser
+        public string ProxyUser
         {
             get { return proxyuser; }
             set { proxyuser = value; }
         }
         private string proxypass;
         [XmlAttribute("Proxypass")]
-        public string Proxypass
+        public string ProxyPass
         {
             get { return proxypass; }
             set { proxypass = value; }
@@ -354,11 +354,11 @@ namespace Feedling
             get
             {
                 IWebProxy proxy = null;
-                switch (Proxytype)
+                switch (ProxyType)
                 {
                     case ProxyType.Custom:
-                        proxy = new WebProxy(Proxyhost, Proxyport);
-                        if (Proxyauth)
+                        proxy = new WebProxy(ProxyHost, ProxyPort);
+                        if (ProxyAuth)
                         {
                             string user, domain = null;
                             if (proxyuser.Contains("\\"))
@@ -371,7 +371,7 @@ namespace Feedling
                             {
                                 user = proxyuser;
                             }
-                            proxy.Credentials = new NetworkCredential(user, Proxypass, domain);
+                            proxy.Credentials = new NetworkCredential(user, ProxyPass, domain);
                         }
                         break;
                     case ProxyType.System:
