@@ -48,18 +48,7 @@ namespace FeedHanderPluginInterface
         /// The Uri that is regularly fetched by the feed
         /// </summary>
         Uri FeedUri { get; set; }
-        /// <summary>
-        /// The plugin name
-        /// </summary>
-        string PluginName { get; }
-        /// <summary>
-        /// The version of the plugin assembly
-        /// </summary>
-        string PluginVersion { get; }
-        /// <summary>
-        /// Copyright information about the plugin.
-        /// </summary>
-        string PluginCopyright { get; }
+        
         /// <summary>
         /// A text description of the feed
         /// </summary>
@@ -68,10 +57,6 @@ namespace FeedHanderPluginInterface
         /// A text title of the feed
         /// </summary>
         string Title { get; set; }
-        /// <summary>
-        /// The URL of a background image that the feed may specify
-        /// </summary>
-        Uri ImageUrl { get; set; }
         /// <summary>
         /// Flag indicating whether the feed has been fetched, parsed and loaded.
         /// </summary>
@@ -104,24 +89,5 @@ namespace FeedHanderPluginInterface
         /// The URL specified by the feed. This URL will be started when the user clicks a feed item
         /// </summary>
         Uri Url { get; set; }
-        /// <summary>
-        /// Checks if this feed is capable of handling the supplied xml document.
-        /// </summary>
-        /// <param name="xml">The XML returned by the FeedURI</param>
-        /// <returns>True if this plugin should handle this type of feed</returns>
-        bool CanHandle(IXPathNavigable xml);
-        /// <summary>
-        /// Supplies a new instance of the plugin when requested by the host
-        /// </summary>
-        /// <param name="uri">The URI of the feed</param>
-        /// <param name="authtype">The authentication type used by the feed as specified in FeedAuthTypes</param>
-        /// <param name="username">The authentication username</param>
-        /// <param name="password">The authentication password</param>
-        /// <returns>An IFeed which will regularly update and fetch feed items</returns>
-        IFeed Factory(Uri uri, FeedAuthTypes authType, string userName, string password, IWebProxy proxy);
-        /// <summary>
-        /// The Configuration Form.
-        /// </summary>
-        Form ConfigForm { get; }
     }
 }

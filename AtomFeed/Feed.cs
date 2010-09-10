@@ -28,9 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
-using System.Security;
 using System.Threading;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
@@ -88,13 +86,7 @@ namespace AtomFeed
         {
             get { return feeditems; }
         }
-        private Uri imageurl;
 
-        public Uri ImageUrl
-        {
-            get { return imageurl; }
-            set { imageurl = value; }
-        }
         private string title;
         public string Title
         {
@@ -114,30 +106,6 @@ namespace AtomFeed
         {
             get { return description; }
             set { description = value; }
-        }
-        public Form ConfigForm
-        {
-            get { return null; }
-        }
-        public string PluginName
-        {
-            get
-            {
-                return "AtomFeed";
-            }
-        }
-
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
-        public string PluginCopyright
-        {
-            [SecurityCriticalAttribute]
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
 
         private DateTime lastupdate;
@@ -167,36 +135,9 @@ namespace AtomFeed
             feedusername = userName;
             feedpassword = password;
         }
-        public bool CanHandle(IXPathNavigable xml)
-        {
-            if (xml != null)
-            {
-                XPathNavigator nav = xml.CreateNavigator();
-                XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
-                xnm.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-                if (nav.SelectSingleNode("/atom:feed", xnm) != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-            } return false;
-        }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public IFeed Factory(Uri uri, IWebProxy proxy)
-        {
-            return new Feed(uri, FeedAuthTypes.None, "", "", proxy);
-        }
-        public IFeed Factory(Uri uri, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
-        {
-            return new Feed(uri, authtype, username, password, proxy);
-        }
         private XmlDocument Fetch(Uri uri)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
@@ -250,10 +191,6 @@ namespace AtomFeed
                 if (nav.SelectSingleNode("/atom:feed/atom:subtitle", xnm) != null)
                 {
                     this.Description = nav.SelectSingleNode("/atom:feed/atom:subtitle", xnm).ToString().Trim();
-                }
-                if (nav.SelectSingleNode("/atom:feed/atom:logo", xnm) != null)
-                {
-                    this.imageurl = new Uri(nav.SelectSingleNode("/atom:feed/atom:logo", xnm).ToString());
                 }
                 feeditems.Clear();
                 while (nodeiterator.MoveNext())

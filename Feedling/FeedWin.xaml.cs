@@ -244,7 +244,7 @@ namespace Feedling
                 log4net.ThreadContext.Properties["myContext"] = string.Format("{0} GetFeedType", fci.Url);
                 Log.Debug("Getting the Feed Type");
                 XmlDocument document = (XmlDocument)FeedwinManager.Fetch(fci);
-                foreach (IFeed feedplugin in FeedwinManager.thisinst.Plugins)
+                foreach (IPlugin feedplugin in FeedwinManager.thisinst.Plugins)
                 {
                     Log.DebugFormat("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (feedplugin.CanHandle(document))
@@ -261,7 +261,7 @@ namespace Feedling
                         {
                             Log.Debug("Set Proxy for feed to nothing, nothing at all");
                         }
-                        rssfeed = feedplugin.Factory(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
+                        rssfeed = feedplugin.AddFeed(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
                         rssfeed.UpdateInterval = fci.UpdateInterval;
                         break;
                     }

@@ -85,14 +85,6 @@ namespace RdfFeed
             get { return feeditems; }
         }
 
-        private Uri imageurl;
-
-        public Uri ImageUrl
-        {
-            get { return imageurl; }
-            set { imageurl = value; }
-        }
-
         private string title;
         public string Title
         {
@@ -113,17 +105,10 @@ namespace RdfFeed
             get { return description; }
             set { description = value; }
         }
-        public Form ConfigForm
-        {
-            get { return null; }
-        }
-        public string PluginName
-        {
-            get
-            {
-                return "RDFFeed";
-            }
-        }
+        private IWebProxy feedproxy;
+        private FeedAuthTypes feedauthtype;
+        private string feedusername;
+        private string feedpassword;
         private DateTime lastupdate;
         public DateTime LastUpdate
         {
@@ -132,19 +117,6 @@ namespace RdfFeed
                 return lastupdate;
             }
         }
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-
-        public string PluginCopyright
-        {
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
-        }
-        private IWebProxy feedproxy;
-        private FeedAuthTypes feedauthtype;
-        private string feedusername;
-        private string feedpassword;
         #endregion
 
         #region Methods
@@ -160,33 +132,8 @@ namespace RdfFeed
             feedusername = username;
             feedpassword = password;
         }
-        public bool CanHandle(IXPathNavigable document)
-        {
-            if (document != null)
-            {
-                XPathNavigator nav = document.CreateNavigator();
-                XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
-                xnm.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                xnm.AddNamespace("rss", "http://purl.org/rss/1.0/");
-                xnm.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
-                if (nav.SelectSingleNode("/rdf:RDF", xnm) != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-            } return false;
-        }
 
-        public IFeed Factory(Uri givenuri, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
-        {
-            return new Feed(givenuri, authtype, username, password, proxy);
-        }
+
         private XmlDocument Fetch(Uri feeduri)
         {
 
@@ -244,10 +191,6 @@ namespace RdfFeed
                 if (nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xnm) != null)
                 {
                     this.Description = nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xnm).ToString().Trim();
-                }
-                if (nav.SelectSingleNode("/rdf:RDF/rss:image/rss:url/text()", xnm) != null)
-                {
-                    this.imageurl = new Uri(nav.SelectSingleNode("/rdf:RDF/rss:image/rss:url/text()", xnm).ToString());
                 }
                 feeditems.Clear();
                 while (nodeiterator.MoveNext())
@@ -344,7 +287,5 @@ namespace RdfFeed
         #region Events
         public virtual event EventHandler Updated;
         #endregion
-
-
     }
 }

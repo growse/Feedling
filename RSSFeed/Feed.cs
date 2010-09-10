@@ -84,13 +84,6 @@ namespace RssFeed
         {
             get { return feeditems; }
         }
-        private Uri imageurl;
-
-        public Uri ImageUrl
-        {
-            get { return imageurl; }
-            set { imageurl = value; }
-        }
         private string title;
         public string Title
         {
@@ -159,28 +152,7 @@ namespace RssFeed
             feedusername = username;
             feedpassword = password;
         }
-        public bool CanHandle(IXPathNavigable document)
-        {
-            if (document != null)
-            {
-                XPathNavigator nav = document.CreateNavigator();
-                if (nav.SelectSingleNode("/rss") != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-            } return false;
-        }
-        public IFeed Factory(Uri givenuri, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
-        {
-            return new Feed(givenuri, authtype, username, password, proxy);
-        }
+
         private XmlDocument Fetch(Uri feeduri)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
@@ -228,10 +200,6 @@ namespace RssFeed
                 if (nav.SelectSingleNode("/rss/channel/description") != null)
                 {
                     this.Description = nav.SelectSingleNode("/rss/channel/description").ToString().Trim();
-                }
-                if (nav.SelectSingleNode("/rss/channel/image/url") != null)
-                {
-                    this.imageurl = new Uri(nav.SelectSingleNode("/rss/channel/image/url").ToString());
                 }
                 feeditems.Clear();
                 while (nodeiterator.MoveNext())

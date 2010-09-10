@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="FeedItem.cs" />
     <Compile Include="IFeed.cs" />
+    <Compile Include="IPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

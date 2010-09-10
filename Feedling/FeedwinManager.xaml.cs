@@ -61,7 +61,7 @@ namespace Feedling
         private System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quititem;
-        private List<IFeed> plugins;
+        private List<IPlugin> plugins;
         private OpenFileDialog importfeeddlg = new OpenFileDialog();
         private SaveFileDialog exportfeeddlg = new SaveFileDialog();
         public event EventHandler RedrawAll;
@@ -70,7 +70,7 @@ namespace Feedling
         private FeedConfigItemList FeedConfigItems = new FeedConfigItemList();
         public event Action<bool> ToggleMoveMode;
         private XmlSerializer serializer;
-        public ICollection<IFeed> Plugins
+        public ICollection<IPlugin> Plugins
         {
             get { return plugins; }
         }
@@ -184,31 +184,29 @@ namespace Feedling
                     bool validationResult = true;
                     return validationResult;
                 };
+
                 //Load our Plugins. Find everything that's a Dll, figure out if it's a plugin and load it.
                 Log.Debug("Loading Plugins");
                 string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-                plugins = new List<IFeed>();
+                plugins = new List<IPlugin>();
                 Log.DebugFormat("{0} plugin candidates found", pluginfiles.Length);
                 for (int ii = 0; ii < pluginfiles.Length; ii++)
                 {
-                    Type type = null;
                     string args = pluginfiles[ii].Substring(pluginfiles[ii].LastIndexOf("\\") + 1, pluginfiles[ii].IndexOf(".dll") - pluginfiles[ii].LastIndexOf("\\") - 1);
                     Assembly ass = Assembly.Load(args);
-                    try
+
+                    Type[] types = ass.GetTypes();
+                    foreach (Type t in types)
                     {
-                        type = ass.GetType(args + ".Feed");
+                        if (typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
+                        {
+                            Log.DebugFormat("Found valid plugin: {0}", t);
+                            plugins.Add((IPlugin)Activator.CreateInstance(t));
+                        }
                     }
-                    catch (TypeLoadException)
-                    {
-                        type = null;
-                    }
-                    if (type != null)
-                    {
-                        Log.DebugFormat("Found valid plugin: {0}", type);
-                        plugins.Add((IFeed)Activator.CreateInstance(type));
-                    }
+                    //type = ass.GetTypes(args + ".Feed");
                 }
-                foreach (IFeed feedplugin in plugins)
+                foreach (IPlugin feedplugin in plugins)
                 {
                     pluginlistbox.Items.Add(feedplugin.PluginName);
                 }
@@ -494,7 +492,7 @@ namespace Feedling
         {
             if (pluginlistbox.SelectedItems.Count == 1)
             {
-                foreach (IFeed feedplugin in plugins)
+                foreach (IPlugin feedplugin in plugins)
                 {
                     if (feedplugin.PluginName == pluginlistbox.SelectedItem.ToString())
                     {
