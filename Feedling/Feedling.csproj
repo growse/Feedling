@@ -128,6 +128,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\ApplicationUpdates.cs" />
     <Compile Include="Classes\FeedConfigItem.cs" />
     <Compile Include="Classes\FeedConfigItemList.cs" />
     <Compile Include="Classes\FontConversions.cs" />

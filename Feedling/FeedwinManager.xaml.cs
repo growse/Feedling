@@ -57,6 +57,7 @@ namespace Feedling
         private System.Windows.Forms.NotifyIcon notifyicon;
         private System.Windows.Forms.ContextMenuStrip contextmenustrip;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkforUpdatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
@@ -103,6 +104,7 @@ namespace Feedling
 
                 this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
                 this.updateAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                this.checkforUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
                 this.moveModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
                 this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
                 this.quititem = new System.Windows.Forms.ToolStripMenuItem();
@@ -114,6 +116,13 @@ namespace Feedling
                 this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
                 this.aboutToolStripMenuItem.Text = "About...";
                 this.aboutToolStripMenuItem.Click += new EventHandler(aboutToolStripMenuItem_Click);
+                // 
+                // checkforUpdatesToolStripMenuItem
+                // 
+                this.checkforUpdatesToolStripMenuItem.Name = "checkforUpdatesToolStripMenuItem";
+                this.checkforUpdatesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                this.checkforUpdatesToolStripMenuItem.Text = "Check for updates...";
+                this.checkforUpdatesToolStripMenuItem.Click += new EventHandler(checkforUpdatesToolStripMenuItem_Click);
                 // 
                 // updateAllToolStripMenuItem
                 // 
@@ -147,6 +156,7 @@ namespace Feedling
 
                 this.contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem,
+            this.checkforUpdatesToolStripMenuItem,
             this.updateAllToolStripMenuItem,
             this.moveModeToolStripMenuItem,
             this.configurationToolStripMenuItem,
@@ -259,6 +269,8 @@ namespace Feedling
                 throw ex;
             }
         }
+
+
 
         #region Methods
 
@@ -474,7 +486,10 @@ namespace Feedling
         #endregion
 
         #region Events
-
+        void checkforUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ApplicationUpdates.CheckForUpdates();
+        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;

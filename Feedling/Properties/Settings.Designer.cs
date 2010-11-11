@@ -154,5 +154,14 @@ namespace Feedling.Properties {
                 this["ProxyPass"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://feedling.net/UpdateVersion.html")]
+        public string ApplicationUpdateUrl {
+            get {
+                return ((string)(this["ApplicationUpdateUrl"]));
+            }
+        }
     }
 }
