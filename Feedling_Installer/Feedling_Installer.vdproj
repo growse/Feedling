@@ -88,6 +88,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -113,12 +119,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -407,7 +407,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
         "ProductCode" = "8:{74077065-0DB0-4966-A6A2-7CE9B413ED85}"
-        "PackageCode" = "8:{165722CF-D037-47FD-8720-749D6C2E3515}"
+        "PackageCode" = "8:{DE9A46C5-01DD-40AE-8498-DD5894BE83AE}"
         "UpgradeCode" = "8:{E0E9745E-6A34-4D31-84C3-59B0982C1C16}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -430,7 +430,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:cscript.exe \"$(ProjectDir)EnableLaunchApplication.js\" \"$(BuiltOuputPath)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"

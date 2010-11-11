@@ -176,7 +176,6 @@ namespace Feedling
 
                 #endregion
 
-
                 ServicePointManager.Expect100Continue = false;
                 //Update those settings.
                 Log.Debug("Loading Settings");
@@ -262,6 +261,8 @@ namespace Feedling
                 proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
                 this.Visibility = System.Windows.Visibility.Collapsed;
                 this.Hide();
+                Log.Debug("Checking for udpates on startup");
+                ApplicationUpdates.CheckForUpdates(true);
             }
             catch (Exception ex)
             {
