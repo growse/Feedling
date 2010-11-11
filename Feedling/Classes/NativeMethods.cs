@@ -58,6 +58,7 @@ namespace Feedling
 
         const UInt32 SWP_NOSIZE = 0x0001;
         const UInt32 SWP_NOMOVE = 0x0002;
+        const UInt32 SWP_NOACTIVATE = 0x0010;
         const UInt32 WS_EX_TOOLWINDOW = 0x00000080;
         const Int32 GWL_EXSTYLE = (-20);
         const Int32 WM_NCLBUTTONDOWN = 0xA1;
@@ -67,7 +68,7 @@ namespace Feedling
         public static void SendWpfWindowBack(Window window)
         {
             var hWnd = new WindowInteropHelper(window).Handle;
-            SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+            SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
         }
 
         public static void SetWindowLongToolWindow(Window window)
