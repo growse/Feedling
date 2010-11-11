@@ -184,9 +184,28 @@ namespace AtomFeed
                 {
                     this.Title = nav.SelectSingleNode("/atom:feed/atom:title/text()", xnm).ToString().Trim();
                 }
-                if (nav.SelectSingleNode("/atom:feed/atom:link", xnm) != null && nav.SelectSingleNode("/atom:feed/atom:link", xnm).GetAttribute("href", "") != null)
+                // Create link from the first link element in feed with rel = 'alternative'
+                XPathNodeIterator linkiterator = nav.Select("atom:feed/atom:link", xnm);
+                while (linkiterator.MoveNext() && this.Url == null)
                 {
-                    this.Url = new Uri(nav.SelectSingleNode("/atom:feed/atom:link", xnm).GetAttribute("href", "").ToString());
+                    XPathNavigator linknav = linkiterator.Current;
+                    if (linknav.HasAttributes && linknav.GetAttribute("rel", "") != null && linknav.GetAttribute("href", "") != null)
+                    {
+                        string rel = linknav.GetAttribute("rel", "");
+                        if (rel.Equals("alternate"))
+                        {
+                            this.Url = new Uri(linknav.GetAttribute("href", ""));
+                        }
+                    }
+                }
+                // If no link with rel = 'alternate' in the feed, just pick the first link
+                if (this.Url == null)
+                {
+                    if (nav.SelectSingleNode("/atom:feed/atom:link", xnm) != null && nav.SelectSingleNode("/atom:feed/atom:link", xnm).GetAttribute("href", "") != null)
+                    {
+                        this.Url = new Uri(nav.SelectSingleNode("/atom:feed/atom:link", xnm).GetAttribute("href", "").ToString());
+                    }
+
                 }
                 if (nav.SelectSingleNode("/atom:feed/atom:subtitle", xnm) != null)
                 {
@@ -207,9 +226,26 @@ namespace AtomFeed
                         {
                             item.Title = System.Web.HttpUtility.HtmlDecode(subnav.SelectSingleNode("atom:title/text()", xnm).ToString()).Trim();
                         }
-                        if (subnav.SelectSingleNode("atom:link", xnm) != null && subnav.SelectSingleNode("atom:link", xnm).GetAttribute("href", "") != null)
+                        linkiterator = subnav.Select("atom:link", xnm);
+                        while (linkiterator.MoveNext() && item.Link == null)
                         {
-                            item.Link = new Uri(subnav.SelectSingleNode("atom:link", xnm).GetAttribute("href", "").ToString());
+                            XPathNavigator linknav = linkiterator.Current;
+                            if (linknav.HasAttributes && linknav.GetAttribute("rel", "") != null && linknav.GetAttribute("href", "") != null)
+                            {
+                                string rel = linknav.GetAttribute("rel", "");
+                                if (rel.Equals("alternate"))
+                                {
+                                    item.Link = new Uri(linknav.GetAttribute("href", ""));
+                                }
+                            }
+                        }
+                        // If no link with rel = 'alternate' in the entry, just pick the first link
+                        if (item.Link == null)
+                        {
+                            if (subnav.SelectSingleNode("atom:link", xnm) != null && subnav.SelectSingleNode("atom:link", xnm).GetAttribute("href", "") != null)
+                            {
+                                item.Link = new Uri(subnav.SelectSingleNode("atom:link", xnm).GetAttribute("href", ""));
+                            }
                         }
                         if (subnav.SelectSingleNode("atom:updated/text()", xnm) != null)
                         {
