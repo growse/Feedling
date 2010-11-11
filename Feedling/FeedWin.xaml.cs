@@ -171,6 +171,7 @@ namespace Feedling
                 {
                     if (rssfeed.HasError)
                     {
+                        Log.DebugFormat("Feed has error, so setting title error: {0}", rssfeed.ErrorMessage);
                         //Error has been discovered loading this feed.
                         titleTextBlock.Text = "Error";
                         TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
@@ -179,9 +180,20 @@ namespace Feedling
                             textblock.Text = rssfeed.ErrorMessage;
                             textblock.Visibility = Visibility.Visible;
                         }
+                        for (int n = 2; n <= fci.DisplayedItems; n++)
+                        {
+                            TextBlock textblockl = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                            if (textblock != null)
+                            {
+                                textblock.Text = "";
+                                textblock.Tag = null;
+                                textblock.Visibility = Visibility.Collapsed;
+                            }
+                        }
                     }
                     else
                     {
+                        Log.DebugFormat("No error, get on with the headlines for: {0}", rssfeed.Title);
                         //No error, get one with putting the headlines out.
                         titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
                         titleTextBlock.Foreground = textbrush.Clone();
@@ -209,12 +221,6 @@ namespace Feedling
                                 }
                             }
                         }
-                        //TextBlock timeblock = ((TextBlock)FindName("TextBlock1"));
-                        //if (timeblock != null)
-                        //{
-                        //    timeblock.Text = rssfeed.LastUpdate.ToString();
-                        //}
-
                     }
                 }
                 else if (rssfeed != null && !rssfeed.Loaded)
