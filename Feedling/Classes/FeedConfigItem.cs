@@ -264,7 +264,7 @@ namespace Feedling
         [XmlAttribute("UpdateInterval")]
         public int UpdateInterval
         {
-            get { return updateinterval; }
+            get { if (updateinterval > 0) { return updateinterval; } else { return 10; } }
             set { updateinterval = value; }
         }
 
@@ -272,7 +272,7 @@ namespace Feedling
         [XmlAttribute("DisplayedItems")]
         public int DisplayedItems
         {
-            get { return displayeditems; }
+            get { if (displayeditems > 0) { return displayeditems; } else { return 10; } }
             set { displayeditems = value; }
         }
 
@@ -324,7 +324,7 @@ namespace Feedling
         [XmlAttribute("Proxyport")]
         public int ProxyPort
         {
-            get { return proxyport; }
+            get { if (proxyport > 0 && proxyport < 63536) { return proxyport; } else { return 80; } }
             set { proxyport = value; }
         }
         private bool proxyauth;

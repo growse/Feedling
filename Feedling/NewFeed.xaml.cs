@@ -129,87 +129,14 @@ namespace Feedling
 
         #region Events
 
-        private void proxyportbox_LostFocus(object sender, RoutedEventArgs e)
+       private void proxyauthcheck_Checked(object sender, RoutedEventArgs e)
         {
-            int port = 0;
-            if (int.TryParse(proxyportbox.Text, out port) && port > 0)
-            {
-                fci.ProxyPort = port;
-                LoadFeedConfigItem();
-            }
-            else
-            {
-                MessageBox.Show("Please enter a valid port number", "Invalid Port Number", MessageBoxButton.OK, MessageBoxImage.Error);
-                proxyportbox.Focus();
-            }
-        }
-
-        private void proxypassbox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            fci.ProxyPass = proxypassbox.Password;
-            LoadFeedConfigItem();
-        }
-
-        private void proxyuserbox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            fci.ProxyUser = proxyuserbox.Text;
-            LoadFeedConfigItem();
-        }
-
-        private void proxyhostbox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            fci.ProxyHost = proxyhostbox.Text;
-            LoadFeedConfigItem();
-        }
-
-        private void proxyauthcheck_Checked(object sender, RoutedEventArgs e)
-        {
-            fci.ProxyAuth = (proxyauthcheck.IsChecked == true);
             proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
-            LoadFeedConfigItem();
         }
 
         private void proxyradio_Checked(object sender, RoutedEventArgs e)
         {
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
-            fci.ProxyType = ProxyType.Global;
-            if (noproxybtn.IsChecked == true)
-            {
-                fci.ProxyType = ProxyType.None;
-            }
-            if (systemproxybtn.IsChecked == true)
-            {
-                fci.ProxyType = ProxyType.System;
-            }
-            if (customproxybtn.IsChecked == true)
-            {
-                fci.ProxyType = ProxyType.Custom;
-            }
-            LoadFeedConfigItem();
-        }
-
-        private void updateintervalbox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //fci.UpdateInterval = int.Parse(updateintervalbox.Text);
-            //LoadFeedConfigItem();
-        }
-
-        private void displayeditemsbox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //fci.DisplayedItems = int.Parse(displayeditemsbox.Text);
-            //LoadFeedConfigItem();
-        }
-
-        private void passwordbox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            fci.Password = passwordbox.Password;
-            LoadFeedConfigItem();
-        }
-
-        private void usernamebox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            fci.UserName = usernamebox.Text;
-            LoadFeedConfigItem();
         }
 
         private void authradio_Checked(object sender, RoutedEventArgs e)
@@ -277,7 +204,12 @@ namespace Feedling
             fci.ProxyAuth = (proxyauthcheck.IsChecked == true);
             fci.ProxyHost = proxyhostbox.Text;
             fci.ProxyPass = proxypassbox.Password;
-            fci.ProxyPort = int.Parse(proxyportbox.Text);
+            int proxyport = fci.ProxyPort;
+            if (!string.IsNullOrEmpty(proxyportbox.Text) && int.TryParse(proxyportbox.Text, out proxyport) && proxyport > 0 && proxyport < 63536)
+            {
+                fci.ProxyPort = proxyport;
+            }
+            
             fci.ProxyUser = proxyuserbox.Text;
             fci.TitleFontFamily = titlefontlabel.FontFamily;
             fci.TitleFontSize = titlefontlabel.FontSize;
@@ -285,8 +217,18 @@ namespace Feedling
             fci.TitleFontWeight = titlefontlabel.FontWeight;
             fci.DefaultColor = ((SolidColorBrush)defaultcolourbox.Fill).Color;
             fci.HoverColor = ((SolidColorBrush)hovercolourbox.Fill).Color;
-            fci.UpdateInterval = int.Parse(updateintervalbox.Text);
-            fci.DisplayedItems = int.Parse(displayeditemsbox.Text);
+            int updateinterval = fci.UpdateInterval;
+            if (!string.IsNullOrEmpty(updateintervalbox.Text) && int.TryParse(updateintervalbox.Text, out updateinterval) && updateinterval > 0)
+            {
+                fci.UpdateInterval = updateinterval;
+            }
+
+            int displayeditems = fci.DisplayedItems;
+            if (!string.IsNullOrEmpty(displayeditemsbox.Text) && int.TryParse(displayeditemsbox.Text, out displayeditems) && displayeditems > 0)
+            {
+                fci.DisplayedItems = displayeditems;
+            }
+
             fci.Url = urlbox.Text;
             fci.UserName = usernamebox.Text;
 
