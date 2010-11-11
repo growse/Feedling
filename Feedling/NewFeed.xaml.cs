@@ -223,6 +223,10 @@ namespace Feedling
             {
                 fci.AuthType = FeedAuthTypes.Other;
             }
+            if (usernamebox != null && passwordbox != null)
+            {
+                usernamebox.IsEnabled = passwordbox.IsEnabled = (fci.AuthType != FeedAuthTypes.None);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
