@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections;
+using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -179,12 +180,39 @@ namespace Feedling
                 ServicePointManager.Expect100Continue = false;
                 //Update those settings.
                 Log.Debug("Loading Settings");
-                if (Properties.Settings.Default.CallUpgrade)
+                try
                 {
-                    Properties.Settings.Default.Upgrade();
-                    Properties.Settings.Default.CallUpgrade = false;
+                    if (Properties.Settings.Default.CallUpgrade)
+                    {
+                        Properties.Settings.Default.Upgrade();
+                        Properties.Settings.Default.CallUpgrade = false;
+                    }
+                    Properties.Settings.Default.Save();
                 }
-                Properties.Settings.Default.Save();
+                catch (ConfigurationErrorsException ex)
+                {
+                    Log.Error("Exception thrown trying to initialize the configuration.");
+                    string filename = "";
+
+                    if (!String.IsNullOrEmpty(ex.Filename))
+                    {
+                        filename = ex.Filename;
+                    }
+                    else
+                    {
+                        if (ex.InnerException is ConfigurationErrorsException)
+                        {
+                            filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
+                        }
+                    }
+                    Log.ErrorFormat("Filename is {0}. Deleting it and reinitializing", filename);
+                    if (!String.IsNullOrEmpty(filename))
+                    {
+                        File.Delete(filename);
+                    }
+                    System.Windows.Forms.Application.Restart();
+                    System.Windows.Forms.Application.Exit();
+                }
                 thisinst = this;
                 Log.Debug("Removing SSL cert validation");
                 //We currently don't care if your RSS feed is being MITM'd.
