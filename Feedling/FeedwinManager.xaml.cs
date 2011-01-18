@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2010, Andrew Rowson
+Copyright © 2008-2011, Andrew Rowson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ namespace Feedling
                 return moveModeToolStripMenuItem.Selected;
             }
         }
-        private string previousselectedurl;
+        private Guid previousselectedguid;
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -166,12 +166,12 @@ namespace Feedling
                 this.contextmenustrip.Size = new System.Drawing.Size(158, 114);
 
                 this.notifyicon = new System.Windows.Forms.NotifyIcon();
-                this.notifyicon.BalloonTipText = "Feedling! Yes!";
+                this.notifyicon.BalloonTipText = Properties.Resources.FirstTimeStartBalloonText;
                 this.notifyicon.Text = "Feedling";
                 this.notifyicon.Icon = Properties.Resources.FeedlingIcon;
                 this.notifyicon.Visible = true;
                 this.notifyicon.ContextMenuStrip = contextmenustrip;
-                this.notifyicon.ShowBalloonTip(1000);
+
 
                 importfeeddlg.Filter = exportfeeddlg.Filter = "Feeling Config Files (*.xml)|*.xml";
 
@@ -252,12 +252,18 @@ namespace Feedling
                 Log.Debug("Creating XML serializer for the saved FeedConfigItems");
                 serializer = new XmlSerializer(FeedConfigItems.GetType());
                 ReloadFeedConfigItems();
+
+                //If we don't have any feeds loaded, prompt the user to add some.
+                if (FeedConfigItems.Items.Count == 0)
+                {
+                    this.notifyicon.ShowBalloonTip(1000);
+                }
+
                 gridwidthbox.Text = Properties.Settings.Default.GridWidth.ToString();
                 feedbackgroundimagescheck.IsChecked = Properties.Settings.Default.DisplayBackgroundImages;
                 opacitytrack.Value = Properties.Settings.Default.BackgroundImageOpacity;
                 opacitytrack.IsEnabled = (feedbackgroundimagescheck.IsChecked == true);
 
-                //
                 Log.Debug("Loading proxy");
                 ProxyType proxytype;
                 if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
@@ -289,6 +295,7 @@ namespace Feedling
                 proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
                 this.Visibility = System.Windows.Visibility.Collapsed;
                 this.Hide();
+
                 Log.Debug("Checking for udpates on startup");
                 ApplicationUpdates.CheckForUpdates(true);
             }
@@ -388,13 +395,12 @@ namespace Feedling
                     }
                     foreach (FeedConfigItem fci in FeedConfigItems.Items)
                     {
-                        if (!windowlist.ContainsKey(fci.Url))
+                        if (!windowlist.ContainsKey(fci.Guid))
                         {
                             FeedWin fw = new FeedWin(fci);
                             fw.LocationChanged += new EventHandler(fw_LocationChanged);
                             fw.Show();
-                            windowlist.Add(fw.FeedConfig.Url, fw);
-
+                            windowlist.Add(fw.FeedConfig.Guid, fw);
                         }
                     }
                 }
@@ -583,9 +589,9 @@ namespace Feedling
             Log.Debug("FeedwinManager closing - saving settings");
             try
             {
-                if (previousselectedurl != null && windowlist.Contains(previousselectedurl))
+                if (previousselectedguid != null && windowlist.Contains(previousselectedguid))
                 {
-                    ((FeedWin)windowlist[previousselectedurl]).Deselect();
+                    ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
                 Properties.Settings.Default.GridWidth = Convert.ToInt32(gridwidthbox.Text);
                 Properties.Settings.Default.DisplayBackgroundImages = Convert.ToBoolean(feedbackgroundimagescheck.IsChecked);
@@ -645,9 +651,7 @@ namespace Feedling
                 throw ex;
             }
         }
-
-
-
+        
         private void updateAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (FeedWin fw in windowlist.Values)
@@ -684,6 +688,7 @@ namespace Feedling
                 proxyportbox.Focus();
             }
         }
+
         private void feedlistbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             feededitbtn.IsEnabled = (feedlistbox.SelectedItems.Count == 1);
@@ -693,13 +698,13 @@ namespace Feedling
             FeedConfigItem fci = (FeedConfigItem)feedlistbox.SelectedItem;
             if (fci != null)
             {
-                if (previousselectedurl != null && windowlist.Contains(previousselectedurl))
+                if (previousselectedguid != null && windowlist.Contains(previousselectedguid))
                 {
-                    ((FeedWin)windowlist[previousselectedurl]).Deselect();
+                    ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
-                previousselectedurl = fci.Url;
+                previousselectedguid = fci.Guid;
 
-                ((FeedWin)windowlist[previousselectedurl]).Select();
+                ((FeedWin)windowlist[previousselectedguid]).Select();
             }
         }
 
@@ -709,18 +714,18 @@ namespace Feedling
             {
                 FeedConfigItem fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
                 NewFeed nf = new NewFeed(fci);
-                Nullable<bool> dr = nf.ShowDialog();
+                bool? dr = nf.ShowDialog();
                 if (dr == true && nf.FeedConfig.Url.Trim().Length > 0)
                 {
                     FeedConfigItems.Remove(((FeedConfigItem)feedlistbox.SelectedItem));
                     FeedConfigItems.Add(nf.FeedConfig);
                     SaveFeedSettings();
 
-                    ((FeedWin)windowlist[nf.FeedConfig.Url]).Close();
-                    windowlist.Remove(nf.FeedConfig.Url);
+                    ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
+                    windowlist.Remove(nf.FeedConfig.Guid);
 
                     FeedWin nfw = new FeedWin(nf.FeedConfig);
-                    windowlist.Add(nf.FeedConfig.Url, nfw);
+                    windowlist.Add(nf.FeedConfig.Guid, nfw);
                     nfw.Show();
 
                     feedlistbox.Items.Clear();
@@ -728,7 +733,6 @@ namespace Feedling
                     {
                         feedlistbox.Items.Add(fcil);
                     }
-
                 }
             }
         }
@@ -760,10 +764,10 @@ namespace Feedling
                     foreach (FeedConfigItem fci in feedlistbox.SelectedItems)
                     {
                         FeedConfigItems.Remove(fci);
-                        if (windowlist.ContainsKey(fci.Url))
+                        if (windowlist.ContainsKey(fci.Guid))
                         {
-                            ((FeedWin)windowlist[fci.Url]).Close();
-                            windowlist.Remove(fci.Url);
+                            ((FeedWin)windowlist[fci.Guid]).Close();
+                            windowlist.Remove(fci.Guid);
                         }
                         toberemoved.Add(fci);
                     }

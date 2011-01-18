@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2010, Andrew Rowson
+Copyright © 2008-2011, Andrew Rowson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ namespace Feedling
         public FeedWin(FeedConfigItem feeditem)
         {
             log4net.ThreadContext.Properties["myContext"] = string.Format("{0}", feeditem.Url);
-            Log.Debug("Constructing feedwin");
+            Log.DebugFormat("Constructing feedwin. GUID:{0} URL: {1}", feeditem.Guid, feeditem.Url);
             InitializeComponent();
 
             fci = feeditem;
@@ -140,7 +140,6 @@ namespace Feedling
             }
             else
             {
-
                 if (selected)
                 {
                     this.Background = new SolidColorBrush(Colors.White);
@@ -162,11 +161,27 @@ namespace Feedling
                     textbrush = new SolidColorBrush(Colors.White);
                     this.Background = new SolidColorBrush(Colors.Black);
                 }
+
+                //TODO: Remove this
                 if (updating)
                 {
                     textbrush = new SolidColorBrush(Colors.Aqua);
                 }
 
+                //Set textblock styling
+                titleTextBlock.Foreground = textbrush.Clone();
+                titleTextBlock.FontFamily = fci.TitleFontFamily;
+                titleTextBlock.FontSize = fci.TitleFontSize;
+                titleTextBlock.FontStyle = fci.TitleFontStyle;
+                titleTextBlock.FontWeight = fci.TitleFontWeight;
+                for (int n = 1; n <= fci.DisplayedItems; n++)
+                {
+                    TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                    if (textblock != null)
+                    { textblock.Foreground = textbrush.Clone(); }
+                }
+
+                //Figure out what to display
                 if (rssfeed != null && rssfeed.Loaded)
                 {
                     if (rssfeed.HasError)
@@ -174,15 +189,22 @@ namespace Feedling
                         Log.DebugFormat("Feed has error, so setting title error: {0}", rssfeed.ErrorMessage);
                         //Error has been discovered loading this feed.
                         titleTextBlock.Text = "Error";
-                        TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
-                        if (textblock != null)
+                        TextBlock leadingtextblock = ((TextBlock)FindName("TextBlock1"));
+                        if (leadingtextblock != null)
                         {
-                            textblock.Text = rssfeed.ErrorMessage;
-                            textblock.Visibility = Visibility.Visible;
+                            if (string.IsNullOrEmpty(rssfeed.ErrorMessage))
+                            {
+                                leadingtextblock.Text = "No error message was given";
+                            }
+                            else
+                            {
+                                leadingtextblock.Text = rssfeed.ErrorMessage;
+                            }
+                            leadingtextblock.Visibility = Visibility.Visible;
                         }
                         for (int n = 2; n <= fci.DisplayedItems; n++)
                         {
-                            TextBlock textblockl = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                            TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
                             if (textblock != null)
                             {
                                 textblock.Text = "";
@@ -196,12 +218,7 @@ namespace Feedling
                         Log.DebugFormat("No error, get on with the headlines for: {0}", rssfeed.Title);
                         //No error, get one with putting the headlines out.
                         titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
-                        titleTextBlock.Foreground = textbrush.Clone();
                         titleTextBlock.Tag = rssfeed.FeedUri;
-                        titleTextBlock.FontFamily = fci.TitleFontFamily;
-                        titleTextBlock.FontSize = fci.TitleFontSize;
-                        titleTextBlock.FontStyle = fci.TitleFontStyle;
-                        titleTextBlock.FontWeight = fci.TitleFontWeight;
                         for (int n = 1; n <= fci.DisplayedItems; n++)
                         {
                             TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
@@ -227,6 +244,16 @@ namespace Feedling
                 {
                     //Still fetching the feed. Let the user know.
                     titleTextBlock.Text = "Fetching...";
+                    TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
+                    if (textblock != null)
+                    {
+                        textblock.Text = fci.Url;
+                        textblock.Visibility = Visibility.Visible;
+                    }
+                }
+                else if (rssfeed == null)
+                {
+                    titleTextBlock.Text = errormsg;
                     TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
                     if (textblock != null)
                     {
@@ -290,6 +317,7 @@ namespace Feedling
                 Log.Debug("Kicking off the watcher thread");
                 ThreadPool.QueueUserWorkItem(new WaitCallback(rssfeed.Watch));
             }
+            updating = false;
             RedrawWin();
         }
 

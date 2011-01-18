@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2010, Andrew Rowson
+Copyright © 2008-2011, Andrew Rowson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -205,7 +205,6 @@ namespace AtomFeed
                     {
                         this.Url = new Uri(nav.SelectSingleNode("/atom:feed/atom:link", xnm).GetAttribute("href", "").ToString());
                     }
-
                 }
                 if (nav.SelectSingleNode("/atom:feed/atom:subtitle", xnm) != null)
                 {
@@ -273,9 +272,7 @@ namespace AtomFeed
                         }
                         feeditems.Add(item);
                     }
-
                 }
-
             }
             catch (WebException ex)
             {

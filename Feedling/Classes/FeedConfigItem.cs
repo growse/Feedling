@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2010, Andrew Rowson
+Copyright © 2008-2011, Andrew Rowson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@ namespace Feedling
             fci.ProxyPort = this.ProxyPort;
             fci.UpdateInterval = this.UpdateInterval;
             fci.DisplayedItems = this.DisplayedItems;
+            fci.guid = this.guid;
             return fci;
         }
         internal Point Position
@@ -347,6 +348,12 @@ namespace Feedling
         {
             get { return proxypass; }
             set { proxypass = value; }
+        }
+
+        private Guid guid = Guid.NewGuid();
+        public Guid Guid {
+            get { return guid; }
+            set { guid = value; }
         }
 
         public IWebProxy Proxy

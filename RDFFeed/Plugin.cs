@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2010, Andrew Rowson
+Copyright © 2008-2011, Andrew Rowson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

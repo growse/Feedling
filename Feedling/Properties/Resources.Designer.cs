@@ -93,6 +93,15 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feedling is now running down here. Come and add some feeds and other cool stuff..
+        /// </summary>
+        internal static string FirstTimeStartBalloonText {
+            get {
+                return ResourceManager.GetString("FirstTimeStartBalloonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Config File.
         /// </summary>
         internal static string InvalidConfigError {
