@@ -24,7 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Feedling
 {
@@ -41,6 +44,30 @@ namespace Feedling
         private void okbtn_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
+        }
+
+        public FontFamily SelectedFontFamily
+        {
+            get { return samplebox.FontFamily; }
+            set { }
+        }
+
+        public double SelectedFontSize
+        {
+            get { return samplebox.FontSize; }
+            set { }
+        }
+
+        public FontWeight SelectedFontWeight
+        {
+            get { return samplebox.FontWeight; }
+            set { }
+        }
+
+        public FontStyle SelectedFontStyle
+        {
+            get { return samplebox.FontStyle; }
+            set { }
         }
     }
 }

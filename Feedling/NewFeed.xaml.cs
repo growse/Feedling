@@ -239,19 +239,19 @@ namespace Feedling
         private void fontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
             FontChooser fc = new FontChooser();
-            /*fc.SelectedFontFamily = fontlabel.FontFamily;
+            fc.SelectedFontFamily = fontlabel.FontFamily;
             fc.SelectedFontSize = fontlabel.FontSize;
             fc.SelectedFontStyle = fontlabel.FontStyle;
-            fc.SelectedFontWeight = fontlabel.FontWeight;*/
+            fc.SelectedFontWeight = fontlabel.FontWeight;
 
             Nullable<bool> dr = fc.ShowDialog();
             if (dr == true)
             {
-                /*fontlabel.FontFamily = fc.SelectedFontFamily;
+                fontlabel.FontFamily = fc.SelectedFontFamily;
                 fontlabel.FontSize = fc.SelectedFontSize;
                 fontlabel.FontStyle = fc.SelectedFontStyle;
                 fontlabel.FontWeight = fc.SelectedFontWeight;
-                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);*/
+                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
             }
         }
 
@@ -270,18 +270,18 @@ namespace Feedling
         private void titlefontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
             FontChooser fc = new FontChooser();
-            /*fc.SelectedFontFamily = titlefontlabel.FontFamily;
+            fc.SelectedFontFamily = titlefontlabel.FontFamily;
             fc.SelectedFontSize = titlefontlabel.FontSize;
             fc.SelectedFontStyle = titlefontlabel.FontStyle;
-            fc.SelectedFontWeight = titlefontlabel.FontWeight;*/
+            fc.SelectedFontWeight = titlefontlabel.FontWeight;
             Nullable<bool> dr = fc.ShowDialog();
             if (dr == true)
             {
-                /*titlefontlabel.FontFamily = fc.SelectedFontFamily;
+                titlefontlabel.FontFamily = fc.SelectedFontFamily;
                 titlefontlabel.FontSize = fc.SelectedFontSize;
                 titlefontlabel.FontStyle = fc.SelectedFontStyle;
                 titlefontlabel.FontWeight = fc.SelectedFontWeight;
-                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);*/
+                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
             }
         }
 

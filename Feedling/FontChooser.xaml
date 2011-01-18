@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Feedling.FontChooser"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="FontChooser" Height="451" Width="690">
+        Title="Choose a font" Height="451" Width="690">
     <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sysCollection="clr-namespace:System.Collections;assembly=mscorlib">
         <Grid.Resources>
             <DataTemplate x:Key="fontFamilyData">
@@ -48,7 +48,7 @@
            FontWeight="{Binding ElementName=familyTypefacesList,Path=SelectedItem.Weight}" 
            FontStretch="{Binding ElementName=familyTypefacesList,Path=SelectedItem.Stretch}" 
            FontStyle="{Binding ElementName=familyTypefacesList,Path=SelectedItem.Style}" 
-           TextAlignment="Center" TextWrapping="Wrap">
+           TextAlignment="Center" TextWrapping="Wrap" Name="samplebox">
                     The quick brown fox jumps over the lazy dog
                 </TextBox>
                 <DockPanel Opacity="0.9">
