@@ -58,6 +58,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FontDialog">
+      <HintPath>..\FontDialog.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net.dll</HintPath>
@@ -116,10 +119,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="FontChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="NewFeed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,9 +147,6 @@
     </Compile>
     <Compile Include="Classes\HttpUtility.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
-    <Compile Include="FontChooser.xaml.cs">
-      <DependentUpon>FontChooser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="NewFeed.xaml.cs">
       <DependentUpon>NewFeed.xaml</DependentUpon>
     </Compile>
