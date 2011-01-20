@@ -627,7 +627,7 @@ namespace System.Web
                 return null;
 
             if (encoding == null)
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException("encoding");
 
             return UrlDecodeToBytes(encoding.GetBytes(value));
         }

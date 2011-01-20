@@ -77,7 +77,6 @@ namespace Feedling
             uint exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
             exStyle |= WS_EX_TOOLWINDOW;
             SetWindowLong(wh.Handle, GWL_EXSTYLE, (int)exStyle);
-
         }
         public static void MakeWindowMovable(Window window)
         {

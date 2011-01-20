@@ -94,7 +94,7 @@ namespace Feedling
 
 
         private string url = "";
-        [XmlAttribute("Url")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings"), XmlAttribute("Url")]
         public string Url
         {
             get { return url; }

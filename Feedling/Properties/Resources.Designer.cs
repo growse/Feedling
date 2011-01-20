@@ -109,5 +109,59 @@ namespace Feedling.Properties {
                 return ResourceManager.GetString("InvalidConfigError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No updates available.
+        /// </summary>
+        internal static string NoUpdatesAvailableCaption {
+            get {
+                return ResourceManager.GetString("NoUpdatesAvailableCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No updates available.
+        /// </summary>
+        internal static string NoUpdatesAvailableText {
+            get {
+                return ResourceManager.GetString("NoUpdatesAvailableText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates available.
+        /// </summary>
+        internal static string UpdatesAvailableCaption {
+            get {
+                return ResourceManager.GetString("UpdatesAvailableCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates are available for Feedling. Do you wish to install them?.
+        /// </summary>
+        internal static string UpdatesAvailableText {
+            get {
+                return ResourceManager.GetString("UpdatesAvailableText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string UpdatesErrorCaption {
+            get {
+                return ResourceManager.GetString("UpdatesErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error checking for updates. Please try again later..
+        /// </summary>
+        internal static string UpdatesErrorText {
+            get {
+                return ResourceManager.GetString("UpdatesErrorText", resourceCulture);
+            }
+        }
     }
 }

@@ -37,6 +37,11 @@ namespace Feedling
 {
     class ApplicationUpdates
     {
+        private ApplicationUpdates()
+        {
+
+        }
+
         #region Application Updates
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         internal static void CheckForUpdates(bool failsilently = false)
@@ -60,7 +65,7 @@ namespace Feedling
                         if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
                         {
                             Log.DebugFormat("New version available: {0}", availableversion);
-                            DialogResult dr = MessageBox.Show("Updates are available for Feedling. Do you wish to install them?", "Updates available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            DialogResult dr = MessageBox.Show(Properties.Resources.UpdatesAvailableText, Properties.Resources.UpdatesAvailableCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (dr == DialogResult.Yes)
                             {
                                 Log.Debug("User requests upgrade to new version");
@@ -106,7 +111,7 @@ namespace Feedling
                         {
                             if (!failsilently)
                             {
-                                MessageBox.Show("No updates available", "No updates available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(Properties.Resources.NoUpdatesAvailableText, Properties.Resources.NoUpdatesAvailableCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                         }
                     }
@@ -117,11 +122,12 @@ namespace Feedling
                     Log.Error("There was an error fetching the update definition version. Content Length appeared to be 0");
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex);
                 if (!failsilently)
                 {
-                    MessageBox.Show("There was an error checking for updates. Please try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Properties.Resources.UpdatesErrorText, Properties.Resources.UpdatesErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

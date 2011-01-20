@@ -33,25 +33,25 @@ namespace Feedling
     [XmlRoot("FeedConfigItemList")]
     public class FeedConfigItemList
     {
-        private Collection<FeedConfigItem> feedconfiglist;
+        private Collection<FeedConfigItem> feedConfigList;
         public FeedConfigItemList()
         {
-            feedconfiglist = new Collection<FeedConfigItem>();
+            feedConfigList = new Collection<FeedConfigItem>();
         }
-        public void Add(FeedConfigItem feedconfigitem)
+        public void Add(FeedConfigItem feedConfigItem)
         {
-            feedconfiglist.Add(feedconfigitem);
+            feedConfigList.Add(feedConfigItem);
         }
-        public void Remove(FeedConfigItem feedconfigitem)
+        public void Remove(FeedConfigItem feedConfigItem)
         {
-            feedconfiglist.Remove(feedconfigitem);
+            feedConfigList.Remove(feedConfigItem);
         }
         [XmlElement("item")]
         public Collection<FeedConfigItem> Items
         {
             get
             {
-                return feedconfiglist;
+                return feedConfigList;
             }
             
         }

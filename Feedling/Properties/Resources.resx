@@ -136,4 +136,22 @@
   <data name="InvalidConfigError" xml:space="preserve">
     <value>Invalid Config File</value>
   </data>
+  <data name="NoUpdatesAvailableCaption" xml:space="preserve">
+    <value>No updates available</value>
+  </data>
+  <data name="NoUpdatesAvailableText" xml:space="preserve">
+    <value>No updates available</value>
+  </data>
+  <data name="UpdatesAvailableCaption" xml:space="preserve">
+    <value>Updates available</value>
+  </data>
+  <data name="UpdatesAvailableText" xml:space="preserve">
+    <value>Updates are available for Feedling. Do you wish to install them?</value>
+  </data>
+  <data name="UpdatesErrorCaption" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="UpdatesErrorText" xml:space="preserve">
+    <value>There was an error checking for updates. Please try again later.</value>
+  </data>
 </root>
