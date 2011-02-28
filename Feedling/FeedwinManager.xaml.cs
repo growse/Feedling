@@ -26,8 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections;
-using System.Configuration;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Security;
@@ -44,6 +44,7 @@ using System.Xml.Serialization;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
 using Microsoft.Win32;
+using NLog;
 
 namespace Feedling
 {
@@ -72,6 +73,7 @@ namespace Feedling
         private FeedConfigItemList FeedConfigItems = new FeedConfigItemList();
         public event Action<bool> ToggleMoveMode;
         private XmlSerializer serializer;
+        private static Logger Log = LogManager.GetCurrentClassLogger();
         public ICollection<IPlugin> Plugins
         {
             get { return plugins; }
@@ -84,7 +86,6 @@ namespace Feedling
             }
         }
         private Guid previousselectedguid;
-        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace Feedling
         public FeedwinManager()
         {
 
-            log4net.ThreadContext.Properties["myContext"] = "Main Manager Thread";
+            
             Log.Info("Starting up");
             try
             {
@@ -205,7 +206,7 @@ namespace Feedling
                             filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
                         }
                     }
-                    Log.ErrorFormat("Filename is {0}. Deleting it and reinitializing", filename);
+                    Log.Error("Filename is {0}. Deleting it and reinitializing", filename);
                     if (!String.IsNullOrEmpty(filename))
                     {
                         File.Delete(filename);
@@ -226,7 +227,7 @@ namespace Feedling
                 Log.Debug("Loading Plugins");
                 string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
                 plugins = new List<IPlugin>();
-                Log.DebugFormat("{0} plugin candidates found", pluginfiles.Length);
+                Log.Debug("{0} plugin candidates found", pluginfiles.Length);
                 for (int ii = 0; ii < pluginfiles.Length; ii++)
                 {
                     string args = pluginfiles[ii].Substring(pluginfiles[ii].LastIndexOf("\\") + 1, pluginfiles[ii].IndexOf(".dll") - pluginfiles[ii].LastIndexOf("\\") - 1);
@@ -237,7 +238,7 @@ namespace Feedling
                     {
                         if (typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
                         {
-                            Log.DebugFormat("Found valid plugin: {0}", t);
+                            Log.Debug("Found valid plugin: {0}", t);
                             plugins.Add((IPlugin)Activator.CreateInstance(t));
                         }
                     }
@@ -799,7 +800,7 @@ namespace Feedling
             Nullable<bool> dr = importfeeddlg.ShowDialog();
             if (dr == true)
             {
-                Log.DebugFormat("Importing feed list from {0}", importfeeddlg.FileName);
+                Log.Debug("Importing feed list from {0}", importfeeddlg.FileName);
                 StreamReader sr = new StreamReader(importfeeddlg.FileName);
                 try
                 {
@@ -822,7 +823,7 @@ namespace Feedling
             Nullable<bool> dr = exportfeeddlg.ShowDialog();
             if (dr == true)
             {
-                Log.DebugFormat("Exporting feed list to {0}", exportfeeddlg.FileName);
+                Log.Debug("Exporting feed list to {0}", exportfeeddlg.FileName);
                 SaveFeedSettings();
                 try
                 {

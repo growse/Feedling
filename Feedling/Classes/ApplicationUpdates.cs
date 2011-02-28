@@ -32,6 +32,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Reflection;
 using System.Windows.Forms;
+using NLog;
 
 namespace Feedling
 {
@@ -43,7 +44,7 @@ namespace Feedling
         }
 
         #region Application Updates
-        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static Logger Log = LogManager.GetCurrentClassLogger();
         internal static void CheckForUpdates(bool failsilently = false)
         {
             try
@@ -64,7 +65,7 @@ namespace Feedling
                         Version availableversion = new Version(parts[0]);
                         if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
                         {
-                            Log.DebugFormat("New version available: {0}", availableversion);
+                            Log.Debug("New version available: {0}", availableversion);
                             DialogResult dr = MessageBox.Show(Properties.Resources.UpdatesAvailableText, Properties.Resources.UpdatesAvailableCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (dr == DialogResult.Yes)
                             {
@@ -75,11 +76,11 @@ namespace Feedling
                                 HttpRequestCachePolicy nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
                                 WebRequest msirequest = WebRequest.Create(msipath);
                                 msirequest.CachePolicy = nocachepolicy;
-                                Log.DebugFormat("Downloading new MSI: {0}", msipath);
+                                Log.Debug("Downloading new MSI: {0}", msipath);
                                 WebResponse msiresponse = msirequest.GetResponse();
                                 using (Stream responsestream = msiresponse.GetResponseStream())
                                 {
-                                    Log.InfoFormat("Saving MSI in {0}", savefile);
+                                    Log.Info("Saving MSI in {0}", savefile);
                                     using (FileStream fs = new FileStream(savefile, FileMode.Create))
                                     {
                                         using (BinaryReader br = new BinaryReader(responsestream))

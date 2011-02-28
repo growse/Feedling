@@ -29,6 +29,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using FeedHanderPluginInterface;
+using NLog;
 
 namespace Feedling
 {
@@ -37,7 +38,7 @@ namespace Feedling
     /// </summary>
     public partial class NewFeed : Window
     {
-        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private Logger Log = LogManager.GetCurrentClassLogger();
         public NewFeed()
         {
             Log.Debug("Loading NewFeed Window");
@@ -47,7 +48,7 @@ namespace Feedling
         public NewFeed(FeedConfigItem givenfci)
         {
             fci = givenfci;
-            Log.DebugFormat("Loading NewFeed Window with given feed {0}", fci.Url);
+            Log.Debug("Loading NewFeed Window with given feed {0}", fci.Url);
             InitializeComponent();
             this.Title = string.Format("Edit {0}", givenfci.Url);
         }

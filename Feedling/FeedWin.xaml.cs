@@ -35,6 +35,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml;
 using FeedHanderPluginInterface;
+using NLog;
 
 namespace Feedling
 {
@@ -52,11 +53,10 @@ namespace Feedling
         private bool updating = true;
         private bool pinned;
         private string errormsg = "Fetching...";
-
         SolidColorBrush textbrush = new SolidColorBrush();
+        SolidColorBrush titletextbrush = new SolidColorBrush();
         private ColorAnimation fadein, fadeout;
-
-        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private Logger Log = LogManager.GetCurrentClassLogger();
         public FeedConfigItem FeedConfig
         {
             get { return fci; }
@@ -70,8 +70,7 @@ namespace Feedling
         /// <param name="feeditem"></param>
         public FeedWin(FeedConfigItem feeditem)
         {
-            log4net.ThreadContext.Properties["myContext"] = string.Format("{0}", feeditem.Url);
-            Log.DebugFormat("Constructing feedwin. GUID:{0} URL: {1}", feeditem.Guid, feeditem.Url);
+            Log.Debug("Constructing feedwin. GUID:{0} URL: {1}", feeditem.Guid, feeditem.Url);
             InitializeComponent();
 
             fci = feeditem;
@@ -90,6 +89,7 @@ namespace Feedling
             {
                 maingrid.RowDefinitions.Add(new RowDefinition());
                 TextBlock textblock = new TextBlock();
+
                 textblock.Style = (Style)FindResource("linkTextStyle");
                 textblock.Name = string.Format("TextBlock{0}", ii + 1);
                 this.RegisterName(textblock.Name, textblock);
@@ -101,9 +101,13 @@ namespace Feedling
                 textblock.FontStyle = fci.FontStyle;
                 textblock.FontWeight = fci.FontWeight;
                 textblock.Visibility = Visibility.Collapsed;
+                textblock.SetValue(Grid.ColumnSpanProperty, 2);
                 maingrid.Children.Add(textblock);
                 Grid.SetRow(textblock, ii + 1);
             }
+
+            titletextbrush = new SolidColorBrush();
+            titletextbrush.Color = fci.DefaultColor;
         }
 
         #region Methods
@@ -162,14 +166,7 @@ namespace Feedling
                     this.Background = new SolidColorBrush(Colors.Black);
                 }
 
-                //TODO: Remove this
-                if (updating)
-                {
-                    textbrush = new SolidColorBrush(Colors.Aqua);
-                }
-
                 //Set textblock styling
-                titleTextBlock.Foreground = textbrush.Clone();
                 titleTextBlock.FontFamily = fci.TitleFontFamily;
                 titleTextBlock.FontSize = fci.TitleFontSize;
                 titleTextBlock.FontStyle = fci.TitleFontStyle;
@@ -186,7 +183,7 @@ namespace Feedling
                 {
                     if (rssfeed.HasError)
                     {
-                        Log.DebugFormat("Feed has error, so setting title error: {0}", rssfeed.ErrorMessage);
+                        Log.Debug("Feed has error, so setting title error: {0}", rssfeed.ErrorMessage);
                         //Error has been discovered loading this feed.
                         titleTextBlock.Text = "Error";
                         TextBlock leadingtextblock = ((TextBlock)FindName("TextBlock1"));
@@ -215,7 +212,7 @@ namespace Feedling
                     }
                     else
                     {
-                        Log.DebugFormat("No error, get on with the headlines for: {0}", rssfeed.Title);
+                        Log.Debug("No error, get on with the headlines for: {0}", rssfeed.Title);
                         //No error, get one with putting the headlines out.
                         titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
                         titleTextBlock.Tag = rssfeed.FeedUri;
@@ -274,21 +271,20 @@ namespace Feedling
             try
             {
                 FeedConfigItem fci = (FeedConfigItem)state;
-                log4net.ThreadContext.Properties["myContext"] = string.Format("{0} GetFeedType", fci.Url);
                 Log.Debug("Getting the Feed Type");
                 XmlDocument document = (XmlDocument)FeedwinManager.Fetch(fci);
                 foreach (IPlugin feedplugin in FeedwinManager.thisinst.Plugins)
                 {
-                    Log.DebugFormat("Testing {0} to see if it can handle feed", feedplugin.PluginName);
+                    Log.Debug("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (feedplugin.CanHandle(document))
                     {
-                        Log.DebugFormat("It can! Yay!");
+                        Log.Debug("It can! Yay!");
                         IWebProxy reqproxy;
                         if (fci.ProxyType != ProxyType.Global) { reqproxy = fci.Proxy; }
                         else { reqproxy = FeedwinManager.GetGlobalProxy(); }
                         if (reqproxy != null)
                         {
-                            Log.DebugFormat("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
+                            Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
                         }
                         else
                         {
@@ -327,7 +323,6 @@ namespace Feedling
         /// <param name="state">Unused. Useless. Pointless.</param>
         public void UpdateNow(object state)
         {
-            log4net.ThreadContext.Properties["myContext"] = string.Format("{0} Updatenow", fci.Url);
             Log.Debug("Received request to update feed");
             if (rssfeed == null)
             {
@@ -398,7 +393,6 @@ namespace Feedling
         #region Events
         void rssfeed_Updated(object sender, EventArgs e)
         {
-            log4net.ThreadContext.Properties["myContext"] = string.Format("{0} Feed Updated", fci.Url);
             Log.Debug("Updated event fired");
             updating = false;
             updatedcolor = fci.HoverColor;
@@ -504,7 +498,7 @@ namespace Feedling
             {
                 if (((TextBlock)sender).Tag != null)
                 {
-                    Log.DebugFormat("Starting browser with url [{0}]", ((TextBlock)sender).Tag.ToString());
+                    Log.Debug("Starting browser with url [{0}]", ((TextBlock)sender).Tag.ToString());
                     ThreadPool.QueueUserWorkItem(new WaitCallback(StartProcess), ((TextBlock)sender).Tag.ToString());
                 }
             }
