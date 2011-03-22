@@ -298,7 +298,8 @@ namespace Feedling
                 this.Hide();
 
                 Log.Debug("Checking for udpates on startup");
-                ApplicationUpdates.CheckForUpdates(true);
+                AutoUpdate updater = new AutoUpdate();
+                updater.CheckForUpdates(true);
             }
             catch (Exception ex)
             {
@@ -524,7 +525,8 @@ namespace Feedling
         #region Events
         void checkforUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ApplicationUpdates.CheckForUpdates();
+            AutoUpdate updater = new AutoUpdate();
+            updater.CheckForUpdates();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

@@ -129,29 +129,11 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updates available.
-        /// </summary>
-        internal static string UpdatesAvailableCaption {
-            get {
-                return ResourceManager.GetString("UpdatesAvailableCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updates are available for Feedling. Do you wish to install them?.
+        ///   Looks up a localized string similar to Updates are available!. Specicially, version {0}. {1}.
         /// </summary>
         internal static string UpdatesAvailableText {
             get {
                 return ResourceManager.GetString("UpdatesAvailableText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        internal static string UpdatesErrorCaption {
-            get {
-                return ResourceManager.GetString("UpdatesErrorCaption", resourceCulture);
             }
         }
         

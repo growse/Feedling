@@ -157,7 +157,7 @@ namespace Feedling.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://feedling.net/UpdateVersion.html")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://feedling.net/UpdateVersion.txt")]
         public string ApplicationUpdateUrl {
             get {
                 return ((string)(this["ApplicationUpdateUrl"]));

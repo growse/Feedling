@@ -1,0 +1,13 @@
+﻿<Window x:Class="Feedling.AutoUpdate"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Feedling: Check for Updates" Height="275" Width="408" ShowInTaskbar="False" Icon="/Feedling;component/Feedling.ico" Topmost="True" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" Visibility="Collapsed" ResizeMode="NoResize">
+    <Grid>
+        <Button Content="Close" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="CloseBtn" VerticalAlignment="Bottom" Width="75" IsCancel="True" Click="CloseBtn_Click" />
+        <ProgressBar Height="23" HorizontalAlignment="Stretch" Margin="13,0,188,12" Name="progressBar" VerticalAlignment="Bottom" />
+        <Button Content="Apply update" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="ApplyBtn" VerticalAlignment="Bottom" Width="89" IsEnabled="False" Click="ApplyBtn_Click" />
+        <ScrollViewer Height="183" HorizontalAlignment="Left" Margin="13,12,0,0" Name="scrollViewer1" VerticalAlignment="Top" Width="361" BorderThickness="2" BorderBrush="Black">
+            <TextBlock Name="UpdateDescription" Text="Checking for updates..." />
+        </ScrollViewer>
+    </Grid>
+</Window>

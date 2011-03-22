@@ -36,7 +36,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ApplicationUpdateUrl" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://feedling.net/UpdateVersion.html</Value>
+      <Value Profile="(Default)">http://feedling.net/UpdateVersion.txt</Value>
     </Setting>
   </Settings>
 </SettingsFile>
