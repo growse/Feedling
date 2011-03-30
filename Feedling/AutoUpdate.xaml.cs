@@ -20,7 +20,7 @@ namespace Feedling
         }
         private Logger Log = LogManager.GetCurrentClassLogger();
         private Uri applicationupdateuri = new Uri(Properties.Settings.Default.ApplicationUpdateUrl);
-        private string msipath;
+        private string remoteMsiPath;
         internal void CheckForUpdates(bool silent = false)
         {
             if (!silent)
@@ -42,7 +42,7 @@ namespace Feedling
                     {
                         Log.Info("Received valid version definition");
                         string[] parts = upgrademeta.Split("|".ToCharArray(), 3);
-                        msipath = Properties.Settings.Default.ApplicationUpdateUrl.Replace(applicationupdateuri.Segments[applicationupdateuri.Segments.Length - 1].ToString(), parts[1]).Trim();
+                        remoteMsiPath = Properties.Settings.Default.ApplicationUpdateUrl.Replace(applicationupdateuri.Segments[applicationupdateuri.Segments.Length - 1].ToString(), parts[1]).Trim();
                         Version availableversion = new Version(parts[0]);
                         if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
                         {
@@ -67,7 +67,7 @@ namespace Feedling
                 Log.Error(ex);
                 if (!silent)
                 {
-                    UpdateDescription.Text = string.Format(Properties.Resources.UpdatesErrorText, ex.Message);
+                    UpdateDescription.Text = string.Format(Properties.Resources.UpdatesErrorCheckText, ex.Message);
                 }
             }
             if (silent && this.Visibility == Visibility.Collapsed)
@@ -75,45 +75,58 @@ namespace Feedling
                 this.Close();
             }
         }
-
+        private string localMsiFilePath;
         private void ApplyBtn_Click(object sender, RoutedEventArgs e)
         {
-            Log.Debug("User requests upgrade to new version");
-            string savefile = string.Concat(Path.GetTempPath(), Path.DirectorySeparatorChar, "Feedling.msi");
-
-            HttpRequestCachePolicy nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
-            WebRequest msirequest = WebRequest.Create(msipath);
-            msirequest.CachePolicy = nocachepolicy;
-            Log.Debug("Downloading new MSI: {0}", msipath);
-            WebResponse msiresponse = msirequest.GetResponse();
-            using (Stream responsestream = msiresponse.GetResponseStream())
+            CloseBtn.IsEnabled = false;
+            ApplyBtn.IsEnabled = false;
+            try
             {
-                Log.Info("Saving MSI in {0}", savefile);
-                using (FileStream fs = new FileStream(savefile, FileMode.Create))
-                {
-                    using (BinaryReader br = new BinaryReader(responsestream))
-                    {
-                        byte[] buff = new byte[1024];
-                        int bytesread = 0;
-                        using (BinaryWriter bw = new BinaryWriter(fs))
-                        {
-                            do
-                            {
-                                bytesread = br.Read(buff, 0, buff.Length);
-                                bw.Write(buff, 0, bytesread);
-                            } while (bytesread > 0);
-                        }
-                    }
-                }
+                Log.Debug("User requests upgrade to new version");
+                localMsiFilePath = string.Concat(Path.GetTempPath(), Path.DirectorySeparatorChar, "Feedling.msi");
+
+                HttpRequestCachePolicy nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+
+                WebClient wc = new WebClient();
+
+                wc.CachePolicy = nocachepolicy;
+                wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
+                wc.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(wc_DownloadFileCompleted);
+                wc.DownloadFileAsync(new Uri(remoteMsiPath), localMsiFilePath);
+
             }
-            Log.Debug("MSI saved.");
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.Arguments = "";
-            psi.FileName = savefile;
-            Log.Info("Starting installer");
-            Process.Start(psi);
-            Log.Info("Exiting.");
-            Application.Current.Shutdown();
+            catch (Exception ex)
+            {
+                Log.Error("Error Applying update", ex);
+                UpdateDescription.Text = string.Format(Properties.Resources.UpdatesErrorApplyText, ex.Message);
+                CloseBtn.IsEnabled = true;
+            }
+        }
+
+        void wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                Log.Debug("MSI saved.");
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.Arguments = "";
+                psi.FileName = localMsiFilePath;
+                Log.Info("Starting installer");
+                Process.Start(psi);
+                Log.Info("Exiting.");
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                Log.Error("Error Applying update", e.Error);
+                UpdateDescription.Text = string.Format(Properties.Resources.UpdatesErrorApplyText, e.Error.Message);
+            }
+            CloseBtn.IsEnabled = true;
+        }
+
+        void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
         }
 
         private void CloseBtn_Click(object sender, RoutedEventArgs e)

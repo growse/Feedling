@@ -6,7 +6,7 @@
         <Button Content="Close" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="CloseBtn" VerticalAlignment="Bottom" Width="75" IsCancel="True" Click="CloseBtn_Click" />
         <ProgressBar Height="23" HorizontalAlignment="Stretch" Margin="13,0,188,12" Name="progressBar" VerticalAlignment="Bottom" />
         <Button Content="Apply update" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="ApplyBtn" VerticalAlignment="Bottom" Width="89" IsEnabled="False" Click="ApplyBtn_Click" />
-        <ScrollViewer Height="183" HorizontalAlignment="Left" Margin="13,12,0,0" Name="scrollViewer1" VerticalAlignment="Top" Width="361" BorderThickness="2" BorderBrush="Black">
+        <ScrollViewer Height="183" HorizontalAlignment="Left" Margin="13,12,0,0" Name="scrollViewer1" VerticalAlignment="Top" Width="361" BorderThickness="2" BorderBrush="Black" HorizontalScrollBarVisibility="Auto">
             <TextBlock Name="UpdateDescription" Text="Checking for updates..." />
         </ScrollViewer>
     </Grid>

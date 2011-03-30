@@ -145,7 +145,14 @@
   <data name="UpdatesAvailableText" xml:space="preserve">
     <value>Updates are available!. Specicially, version {0}. {1}</value>
   </data>
-  <data name="UpdatesErrorText" xml:space="preserve">
-    <value>There was an error checking for updates. Please try again later.</value>
+  <data name="UpdatesErrorApplyText" xml:space="preserve">
+    <value>There was an error applying the update. Please try again later.
+
+Error was {0}</value>
+  </data>
+  <data name="UpdatesErrorCheckText" xml:space="preserve">
+    <value>There was an error checking for updates. Please try again later.
+
+Error was {0}</value>
   </data>
 </root>

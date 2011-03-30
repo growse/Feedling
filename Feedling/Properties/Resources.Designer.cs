@@ -138,11 +138,24 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error checking for updates. Please try again later..
+        ///   Looks up a localized string similar to There was an error applying the update. Please try again later.
+        ///
+        ///Error was {0}.
         /// </summary>
-        internal static string UpdatesErrorText {
+        internal static string UpdatesErrorApplyText {
             get {
-                return ResourceManager.GetString("UpdatesErrorText", resourceCulture);
+                return ResourceManager.GetString("UpdatesErrorApplyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error checking for updates. Please try again later.
+        ///
+        ///Error was {0}.
+        /// </summary>
+        internal static string UpdatesErrorCheckText {
+            get {
+                return ResourceManager.GetString("UpdatesErrorCheckText", resourceCulture);
             }
         }
     }
