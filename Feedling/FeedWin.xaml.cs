@@ -50,7 +50,6 @@ namespace Feedling
         private Color updatedcolor;
         private Hashtable hotrects = new Hashtable();
         private IFeed rssfeed;
-        private bool updating = true;
         private bool pinned;
         private string errormsg = "Fetching...";
         SolidColorBrush textbrush = new SolidColorBrush();
@@ -313,7 +312,6 @@ namespace Feedling
                 Log.Debug("Kicking off the watcher thread");
                 ThreadPool.QueueUserWorkItem(new WaitCallback(rssfeed.Watch));
             }
-            updating = false;
             RedrawWin();
         }
 
@@ -330,7 +328,6 @@ namespace Feedling
             }
             else
             {
-                updating = true;
                 RedrawWin();
                 rssfeed.Update();
             }
@@ -394,7 +391,6 @@ namespace Feedling
         void rssfeed_Updated(object sender, EventArgs e)
         {
             Log.Debug("Updated event fired");
-            updating = false;
             updatedcolor = fci.HoverColor;
             RedrawWin();
         }

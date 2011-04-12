@@ -94,12 +94,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -119,6 +113,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -432,15 +432,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
-        "ProductCode" = "8:{4024070C-EE4A-4729-9508-83178091C7D7}"
-        "PackageCode" = "8:{79FB3E5A-54CA-490C-8AE6-200C2FEB4BC0}"
+        "ProductCode" = "8:{6A312DBB-8CB8-4F75-91B0-398B7EDDD960}"
+        "PackageCode" = "8:{C3363D3F-1BAD-4ABD-8EA8-B62B6E99E14F}"
         "UpgradeCode" = "8:{E0E9745E-6A34-4D31-84C3-59B0982C1C16}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.8"
+        "ProductVersion" = "8:0.8.1"
         "Manufacturer" = "8:Andrew Rowson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://github.com/growse/feedling/"
@@ -968,7 +968,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4969685637D642D782D5B0C0902BE404"
             {
-            "SourcePath" = "8:..\\Feedling\\obj\\Release\\Feedling.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -996,7 +996,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4A7B8D73863340878E13AEC7C9203668"
             {
-            "SourcePath" = "8:..\\RSSFeed\\obj\\Release\\RssFeed.dll"
+            "SourcePath" = "8:..\\RSSFeed\\obj\\Debug\\RssFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -1024,7 +1024,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4F4918D3B6C24E51B2B2EA817FBE6189"
             {
-            "SourcePath" = "8:..\\AtomFeed\\obj\\Release\\AtomFeed.dll"
+            "SourcePath" = "8:..\\AtomFeed\\obj\\Debug\\AtomFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -1052,7 +1052,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6EDBDBFAD8924553BB46F86FC6D3B546"
             {
-            "SourcePath" = "8:..\\RDFFeed\\obj\\Release\\RdfFeed.dll"
+            "SourcePath" = "8:..\\RDFFeed\\obj\\Debug\\RdfFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"

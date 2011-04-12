@@ -39,9 +39,9 @@ namespace Feedling
         {
             InitializeComponent();
             versionlabel.Content = string.Format(
-                "Version {0}.{1}",
-                Assembly.GetExecutingAssembly().GetName().Version.Major.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                "Version {0}",
+                Assembly.GetExecutingAssembly().GetName().Version.ToString(3)
+                
             );
             copyrightlabel.Content = ((AssemblyCopyrightAttribute)(Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0])).Copyright;
         }
