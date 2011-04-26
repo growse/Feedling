@@ -155,4 +155,7 @@ Error was {0}</value>
 
 Error was {0}</value>
   </data>
+  <data name="UserAgentString" xml:space="preserve">
+    <value>Mozilla/5.0 (compatible; Feedling/{0}; http://feedling.net)</value>
+  </data>
 </root>

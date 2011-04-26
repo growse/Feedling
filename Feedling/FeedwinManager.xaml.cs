@@ -312,6 +312,10 @@ namespace Feedling
 
         #region Methods
 
+        public static string FetchUserAgentString() {
+            return string.Format(Properties.Resources.UserAgentString, Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+        }
+
         public static IXPathNavigable Fetch(FeedConfigItem fci)
         {
             Log.Debug("Fetching feed from intarweb");
@@ -320,7 +324,7 @@ namespace Feedling
             {
                 Uri requri = new Uri(fci.Url);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requri);
-                req.UserAgent = "Mozilla/5.0";
+                req.UserAgent = FetchUserAgentString();
                 if (fci.ProxyType != ProxyType.Global) { req.Proxy = fci.Proxy; }
                 else { req.Proxy = GetGlobalProxy(); }
                 switch (fci.AuthType)

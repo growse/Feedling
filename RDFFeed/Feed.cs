@@ -138,7 +138,7 @@ namespace RdfFeed
         {
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
-            req.UserAgent = "Mozilla/5.0";
+            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
