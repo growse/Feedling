@@ -8,15 +8,6 @@
     <Setting Name="CallUpgrade" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="GridWidth" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="DisplayBackgroundImages" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="BackgroundImageOpacity" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.5</Value>
-    </Setting>
     <Setting Name="ProxyType" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -37,6 +28,39 @@
     </Setting>
     <Setting Name="ApplicationUpdateUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://feedling.net/UpdateVersion.txt</Value>
+    </Setting>
+    <Setting Name="DefaultFeedColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="DefaultTitleFontFamily" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 15.75pt</Value>
+    </Setting>
+    <Setting Name="DefaultFeedHoverColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="DefaultStoryFontFamily" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
+    </Setting>
+    <Setting Name="GridWidth" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="DefaultStoryFontWeight" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DefaultTitleFontWeight" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DefaultStoryFontStyle" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DefaultTitleFontStyle" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DefaultStoryFontSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="DefaultTitleFontSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">16</Value>
     </Setting>
   </Settings>
 </SettingsFile>

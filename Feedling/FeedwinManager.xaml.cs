@@ -39,6 +39,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
@@ -93,8 +94,6 @@ namespace Feedling
         /// </summary>
         public FeedwinManager()
         {
-
-            
             Log.Info("Starting up");
             try
             {
@@ -179,41 +178,9 @@ namespace Feedling
                 #endregion
 
                 ServicePointManager.Expect100Continue = false;
-                //Update those settings.
-                Log.Debug("Loading Settings");
-                try
-                {
-                    if (Properties.Settings.Default.CallUpgrade)
-                    {
-                        Properties.Settings.Default.Upgrade();
-                        Properties.Settings.Default.CallUpgrade = false;
-                    }
-                    Properties.Settings.Default.Save();
-                }
-                catch (ConfigurationErrorsException ex)
-                {
-                    Log.Error("Exception thrown trying to initialize the configuration.");
-                    string filename = "";
 
-                    if (!String.IsNullOrEmpty(ex.Filename))
-                    {
-                        filename = ex.Filename;
-                    }
-                    else
-                    {
-                        if (ex.InnerException is ConfigurationErrorsException)
-                        {
-                            filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
-                        }
-                    }
-                    Log.Error("Filename is {0}. Deleting it and reinitializing", filename);
-                    if (!String.IsNullOrEmpty(filename))
-                    {
-                        File.Delete(filename);
-                    }
-                    System.Windows.Forms.Application.Restart();
-                    System.Windows.Forms.Application.Exit();
-                }
+                LoadSettings();
+
                 thisinst = this;
                 Log.Debug("Removing SSL cert validation");
                 //We currently don't care if your RSS feed is being MITM'd.
@@ -223,31 +190,7 @@ namespace Feedling
                     return validationResult;
                 };
 
-                //Load our Plugins. Find everything that's a Dll, figure out if it's a plugin and load it.
-                Log.Debug("Loading Plugins");
-                string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-                plugins = new List<IPlugin>();
-                Log.Debug("{0} plugin candidates found", pluginfiles.Length);
-                for (int ii = 0; ii < pluginfiles.Length; ii++)
-                {
-                    string args = pluginfiles[ii].Substring(pluginfiles[ii].LastIndexOf("\\") + 1, pluginfiles[ii].IndexOf(".dll") - pluginfiles[ii].LastIndexOf("\\") - 1);
-                    Assembly ass = Assembly.Load(args);
-
-                    Type[] types = ass.GetTypes();
-                    foreach (Type t in types)
-                    {
-                        if (typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
-                        {
-                            Log.Debug("Found valid plugin: {0}", t);
-                            plugins.Add((IPlugin)Activator.CreateInstance(t));
-                        }
-                    }
-                    //type = ass.GetTypes(args + ".Feed");
-                }
-                foreach (IPlugin feedplugin in plugins)
-                {
-                    pluginlistbox.Items.Add(feedplugin.PluginName);
-                }
+                LoadPlugins();
 
                 //We serialize the configuration to the app.config. To let us do this, we need a serlializer.
                 Log.Debug("Creating XML serializer for the saved FeedConfigItems");
@@ -260,40 +203,10 @@ namespace Feedling
                     this.notifyicon.ShowBalloonTip(1000);
                 }
 
-                gridwidthbox.Text = Properties.Settings.Default.GridWidth.ToString();
-                feedbackgroundimagescheck.IsChecked = Properties.Settings.Default.DisplayBackgroundImages;
-                opacitytrack.Value = Properties.Settings.Default.BackgroundImageOpacity;
-                opacitytrack.IsEnabled = (feedbackgroundimagescheck.IsChecked == true);
+                LoadProxy();
 
-                Log.Debug("Loading proxy");
-                ProxyType proxytype;
-                if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
-                {
-                    proxytype = (ProxyType)Enum.Parse(typeof(ProxyType), Properties.Settings.Default.ProxyType);
-                }
-                else
-                {
-                    proxytype = ProxyType.System;
-                }
-                if (proxytype == ProxyType.Global) { proxytype = ProxyType.System; }
-                switch (proxytype)
-                {
-                    case ProxyType.None:
-                        noproxybtn.IsChecked = true;
-                        break;
-                    case ProxyType.System:
-                        systemproxybtn.IsChecked = true;
-                        break;
-                    case ProxyType.Custom:
-                        customproxybtn.IsChecked = true;
-                        break;
-                }
-                proxyauthcheck.IsChecked = Properties.Settings.Default.ProxyAuth;
-                proxyhostbox.Text = Properties.Settings.Default.ProxyHost;
-                proxyportbox.Text = Properties.Settings.Default.ProxyPort.ToString();
-                proxypassbox.Password = Properties.Settings.Default.ProxyPass;
-                proxyuserbox.Text = Properties.Settings.Default.ProxyUser;
-                proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
+                SetGuiConfigValues();
+
                 this.Visibility = System.Windows.Visibility.Collapsed;
                 this.Hide();
 
@@ -308,11 +221,138 @@ namespace Feedling
             }
         }
 
-
-
         #region Methods
 
-        public static string FetchUserAgentString() {
+        private void SetGuiConfigValues()
+        {
+            defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedColor.R, Properties.Settings.Default.DefaultFeedColor.G, Properties.Settings.Default.DefaultFeedColor.B));
+            hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedHoverColor.R, Properties.Settings.Default.DefaultFeedHoverColor.G, Properties.Settings.Default.DefaultFeedHoverColor.B));
+            titlefontlabel.FontFamily = new FontFamily(Properties.Settings.Default.DefaultTitleFontFamily);
+            titlefontlabel.FontSize = Properties.Settings.Default.DefaultTitleFontSize;
+            titlefontlabel.FontWeight = FontConversions.FontWeightFromString(Properties.Settings.Default.DefaultTitleFontWeight);
+            titlefontlabel.FontStyle = FontConversions.FontStyleFromString(Properties.Settings.Default.DefaultTitleFontStyle);
+            titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}",
+                Properties.Settings.Default.DefaultTitleFontFamily,
+                Properties.Settings.Default.DefaultTitleFontSize,
+                Properties.Settings.Default.DefaultTitleFontStyle,
+                Properties.Settings.Default.DefaultTitleFontWeight
+                );
+            fontlabel.FontFamily = new FontFamily(Properties.Settings.Default.DefaultStoryFontFamily);
+            fontlabel.FontSize = Properties.Settings.Default.DefaultStoryFontSize;
+            fontlabel.FontWeight = FontConversions.FontWeightFromString(Properties.Settings.Default.DefaultStoryFontWeight);
+            fontlabel.FontStyle = FontConversions.FontStyleFromString(Properties.Settings.Default.DefaultStoryFontStyle);
+            fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}",
+                Properties.Settings.Default.DefaultStoryFontFamily,
+                Properties.Settings.Default.DefaultStoryFontSize,
+                Properties.Settings.Default.DefaultStoryFontStyle,
+                Properties.Settings.Default.DefaultStoryFontWeight
+                );
+
+            proxyauthcheck.IsChecked = Properties.Settings.Default.ProxyAuth;
+            proxyhostbox.Text = Properties.Settings.Default.ProxyHost;
+            proxyportbox.Text = Properties.Settings.Default.ProxyPort.ToString();
+            proxypassbox.Password = Properties.Settings.Default.ProxyPass;
+            proxyuserbox.Text = Properties.Settings.Default.ProxyUser;
+            proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
+        }
+
+        private void LoadProxy()
+        {
+            Log.Debug("Loading proxy");
+            ProxyType proxytype;
+            if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
+            {
+                proxytype = (ProxyType)Enum.Parse(typeof(ProxyType), Properties.Settings.Default.ProxyType);
+            }
+            else
+            {
+                proxytype = ProxyType.System;
+            }
+            if (proxytype == ProxyType.Global) { proxytype = ProxyType.System; }
+            switch (proxytype)
+            {
+                case ProxyType.None:
+                    noproxybtn.IsChecked = true;
+                    break;
+                case ProxyType.System:
+                    systemproxybtn.IsChecked = true;
+                    break;
+                case ProxyType.Custom:
+                    customproxybtn.IsChecked = true;
+                    break;
+            }
+        }
+
+        private void LoadPlugins()
+        {
+            //Load our Plugins. Find everything that's a Dll, figure out if it's a plugin and load it.
+            Log.Debug("Loading Plugins");
+            string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+            plugins = new List<IPlugin>();
+            Log.Debug("{0} plugin candidates found", pluginfiles.Length);
+            for (int ii = 0; ii < pluginfiles.Length; ii++)
+            {
+                string args = pluginfiles[ii].Substring(pluginfiles[ii].LastIndexOf("\\") + 1, pluginfiles[ii].IndexOf(".dll") - pluginfiles[ii].LastIndexOf("\\") - 1);
+                Assembly ass = Assembly.Load(args);
+
+                Type[] types = ass.GetTypes();
+                foreach (Type t in types)
+                {
+                    if (typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
+                    {
+                        Log.Debug("Found valid plugin: {0}", t);
+                        plugins.Add((IPlugin)Activator.CreateInstance(t));
+                    }
+                }
+                //type = ass.GetTypes(args + ".Feed");
+            }
+            foreach (IPlugin feedplugin in plugins)
+            {
+                pluginlistbox.Items.Add(feedplugin.PluginName);
+            }
+        }
+
+        private void LoadSettings()
+        {
+            //Update those settings.
+            Log.Debug("Loading Settings");
+            try
+            {
+                if (Properties.Settings.Default.CallUpgrade)
+                {
+                    Properties.Settings.Default.Upgrade();
+                    Properties.Settings.Default.CallUpgrade = false;
+                }
+                Properties.Settings.Default.Save();
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                Log.Error("Exception thrown trying to initialize the configuration.");
+                string filename = "";
+
+                if (!String.IsNullOrEmpty(ex.Filename))
+                {
+                    filename = ex.Filename;
+                }
+                else
+                {
+                    if (ex.InnerException is ConfigurationErrorsException)
+                    {
+                        filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
+                    }
+                }
+                Log.Error("Filename is {0}. Deleting it and reinitializing", filename);
+                if (!String.IsNullOrEmpty(filename))
+                {
+                    File.Delete(filename);
+                }
+                System.Windows.Forms.Application.Restart();
+                System.Windows.Forms.Application.Exit();
+            }
+        }
+
+        public static string FetchUserAgentString()
+        {
             return string.Format(Properties.Resources.UserAgentString, Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
         }
 
@@ -600,9 +640,6 @@ namespace Feedling
                 {
                     ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
-                Properties.Settings.Default.GridWidth = Convert.ToInt32(gridwidthbox.Text);
-                Properties.Settings.Default.DisplayBackgroundImages = Convert.ToBoolean(feedbackgroundimagescheck.IsChecked);
-                Properties.Settings.Default.BackgroundImageOpacity = Convert.ToInt16(opacitytrack.Value);
                 if (noproxybtn.IsChecked == true)
                 {
                     Properties.Settings.Default.ProxyType = ProxyType.Global.ToString();
@@ -658,7 +695,7 @@ namespace Feedling
                 throw ex;
             }
         }
-        
+
         private void updateAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (FeedWin fw in windowlist.Values)
@@ -678,11 +715,6 @@ namespace Feedling
             proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
         }
 
-        private void opacitytrack_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Properties.Settings.Default.BackgroundImageOpacity = opacitytrack.Value;
-            if (RedrawAll != null) { RedrawAll(this, new EventArgs()); }
-        }
         private void proxyportbox_LostFocus(object sender, RoutedEventArgs e)
         {
             int port = 0;
@@ -844,13 +876,12 @@ namespace Feedling
                 }
             }
         }
-        private void feedbackgroundimagescheck_Click(object sender, RoutedEventArgs e)
+        private void applytoallbtn_Click(object sender, RoutedEventArgs e)
         {
-            opacitytrack.IsEnabled = (feedbackgroundimagescheck.IsChecked == true);
-            Properties.Settings.Default.DisplayBackgroundImages = (feedbackgroundimagescheck.IsChecked == true);
-            if (RedrawAll != null) { RedrawAll(this, new EventArgs()); }
+
         }
         #endregion
+
     }
 
     public enum ProxyType

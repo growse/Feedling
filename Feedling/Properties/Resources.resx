@@ -131,7 +131,7 @@
     <value>..\Resources\Feedling.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FirstTimeStartBalloonText" xml:space="preserve">
-    <value>Feedling is now running down here. Come and add some feeds and other cool stuff.</value>
+    <value>Feedling is now running over here. Come and add some feeds and other cool stuff.</value>
   </data>
   <data name="InvalidConfigError" xml:space="preserve">
     <value>Invalid Config File</value>
