@@ -225,8 +225,8 @@ namespace Feedling
 
         private void SetGuiConfigValues()
         {
-            defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedColor.R, Properties.Settings.Default.DefaultFeedColor.G, Properties.Settings.Default.DefaultFeedColor.B));
-            hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedHoverColor.R, Properties.Settings.Default.DefaultFeedHoverColor.G, Properties.Settings.Default.DefaultFeedHoverColor.B));
+            defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedColorR, Properties.Settings.Default.DefaultFeedColorG, Properties.Settings.Default.DefaultFeedColorB));
+            hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(Properties.Settings.Default.DefaultFeedHoverColorR, Properties.Settings.Default.DefaultFeedHoverColorG, Properties.Settings.Default.DefaultFeedHoverColorB));
             titlefontlabel.FontFamily = new FontFamily(Properties.Settings.Default.DefaultTitleFontFamily);
             titlefontlabel.FontSize = Properties.Settings.Default.DefaultTitleFontSize;
             titlefontlabel.FontWeight = FontConversions.FontWeightFromString(Properties.Settings.Default.DefaultTitleFontWeight);
@@ -871,16 +871,115 @@ namespace Feedling
                 }
                 catch (IOException ex)
                 {
-                    Log.Error("IOException thrown when trying to export the feed list", ex);
-                    MessageBox.Show("There was an error writing to the file");
+                    Log.Error("IOException thrown when trying to export the feed list: {0}", ex);
+                    MessageBox.Show("There was an error writing to the file.");
                 }
             }
         }
+
         private void applytoallbtn_Click(object sender, RoutedEventArgs e)
         {
+            foreach (FeedConfigItem fci in FeedConfigItems.Items)
+            {
+                fci.DefaultColorR = Properties.Settings.Default.DefaultFeedColorR;
+                fci.DefaultColorG = Properties.Settings.Default.DefaultFeedColorG;
+                fci.DefaultColorB = Properties.Settings.Default.DefaultFeedColorB;
 
+                fci.HoverColorR = Properties.Settings.Default.DefaultFeedHoverColorR;
+                fci.HoverColorG = Properties.Settings.Default.DefaultFeedHoverColorG;
+                fci.HoverColorB = Properties.Settings.Default.DefaultFeedHoverColorB;
+
+                fci.FontFamilyString = Properties.Settings.Default.DefaultStoryFontFamily;
+                fci.FontSize = Properties.Settings.Default.DefaultStoryFontSize;
+                fci.FontStyleString = Properties.Settings.Default.DefaultStoryFontStyle;
+                fci.FontWeightString = Properties.Settings.Default.DefaultStoryFontWeight;
+
+                fci.TitleFontFamilyString = Properties.Settings.Default.DefaultTitleFontFamily;
+                fci.TitleFontSize = Properties.Settings.Default.DefaultTitleFontSize;
+                fci.TitleFontStyleString = Properties.Settings.Default.DefaultTitleFontStyle;
+                fci.TitleFontWeightString = Properties.Settings.Default.DefaultTitleFontWeight;
+                ((FeedWin)windowlist[fci.Guid]).FeedConfig = fci;
+                ((FeedWin)windowlist[fci.Guid]).RedrawWin();
+
+            }
+            SaveFeedSettings();
+        }
+
+        private void fontchooserbtn_Click(object sender, RoutedEventArgs e)
+        {
+            FontChooser fc = new FontChooser();
+            fc.SelectedFontFamily = fontlabel.FontFamily;
+            fc.SelectedFontSize = fontlabel.FontSize;
+            fc.SelectedFontStyle = fontlabel.FontStyle;
+            fc.SelectedFontWeight = fontlabel.FontWeight;
+
+            Nullable<bool> dr = fc.ShowDialog();
+            if (dr == true)
+            {
+                fontlabel.FontFamily = fc.SelectedFontFamily;
+                fontlabel.FontSize = fc.SelectedFontSize;
+                fontlabel.FontStyle = fc.SelectedFontStyle;
+                fontlabel.FontWeight = fc.SelectedFontWeight;
+                Properties.Settings.Default.DefaultStoryFontFamily = fc.SelectedFontFamily.ToString();
+                Properties.Settings.Default.DefaultStoryFontSize = fc.SelectedFontSize;
+                Properties.Settings.Default.DefaultStoryFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
+                Properties.Settings.Default.DefaultStoryFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
+                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
+            }
+        }
+        private void titlefontchooserbtn_Click(object sender, RoutedEventArgs e)
+        {
+            FontChooser fc = new FontChooser();
+            fc.SelectedFontFamily = titlefontlabel.FontFamily;
+            fc.SelectedFontSize = titlefontlabel.FontSize;
+            fc.SelectedFontStyle = titlefontlabel.FontStyle;
+            fc.SelectedFontWeight = titlefontlabel.FontWeight;
+            Nullable<bool> dr = fc.ShowDialog();
+            if (dr == true)
+            {
+                titlefontlabel.FontFamily = fc.SelectedFontFamily;
+                titlefontlabel.FontSize = fc.SelectedFontSize;
+                titlefontlabel.FontStyle = fc.SelectedFontStyle;
+                titlefontlabel.FontWeight = fc.SelectedFontWeight;
+                Properties.Settings.Default.DefaultTitleFontFamily = fc.SelectedFontFamily.ToString();
+                Properties.Settings.Default.DefaultTitleFontSize = fc.SelectedFontSize;
+                Properties.Settings.Default.DefaultTitleFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
+                Properties.Settings.Default.DefaultTitleFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
+                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
+            }
+        }
+
+        private void defaultcolorchooserbtn_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
+            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)defaultcolourbox.Fill).Color.R, ((SolidColorBrush)defaultcolourbox.Fill).Color.G, ((SolidColorBrush)defaultcolourbox.Fill).Color.B);
+            cd.Color = initialcol;
+            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
+            }
+            Properties.Settings.Default.DefaultFeedColorR = ((SolidColorBrush)defaultcolourbox.Fill).Color.R;
+            Properties.Settings.Default.DefaultFeedColorG = ((SolidColorBrush)defaultcolourbox.Fill).Color.G;
+            Properties.Settings.Default.DefaultFeedColorB = ((SolidColorBrush)defaultcolourbox.Fill).Color.B;
+        }
+
+        private void hovercolorchooserbtn_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
+            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)hovercolourbox.Fill).Color.R, ((SolidColorBrush)hovercolourbox.Fill).Color.G, ((SolidColorBrush)hovercolourbox.Fill).Color.B);
+            cd.Color = initialcol;
+            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
+            }
+            Properties.Settings.Default.DefaultFeedHoverColorR = ((SolidColorBrush)hovercolourbox.Fill).Color.R;
+            Properties.Settings.Default.DefaultFeedHoverColorG = ((SolidColorBrush)hovercolourbox.Fill).Color.G;
+            Properties.Settings.Default.DefaultFeedHoverColorB = ((SolidColorBrush)hovercolourbox.Fill).Color.B;
         }
         #endregion
+
 
     }
 

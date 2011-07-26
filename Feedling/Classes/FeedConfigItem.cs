@@ -111,23 +111,23 @@ namespace Feedling
             }
         }
 
-        private int defaultcolorr = 255;
+        private byte defaultcolorr = 255;
         [XmlAttribute("DefaultColorR")]
-        public int DefaultColorR
+        public byte DefaultColorR
         {
             get { return defaultcolorr; }
             set { defaultcolorr = value; }
         }
-        private int defaultcolorg = 255;
+        private byte defaultcolorg = 255;
         [XmlAttribute("DefaultColorG")]
-        public int DefaultColorG
+        public byte DefaultColorG
         {
             get { return defaultcolorg; }
             set { defaultcolorg = value; }
         }
-        private int defaultcolorb = 255;
+        private byte defaultcolorb = 255;
         [XmlAttribute("DefaultColorB")]
-        public int DefaultColorB
+        public byte DefaultColorB
         {
             get { return defaultcolorb; }
             set { defaultcolorb = value; }
@@ -144,23 +144,23 @@ namespace Feedling
             }
         }
 
-        private int hovercolorr = 255;
+        private byte hovercolorr = 255;
         [XmlAttribute("HoverColorR")]
-        public int HoverColorR
+        public byte HoverColorR
         {
             get { return hovercolorr; }
             set { hovercolorr = value; }
         }
-        private int hovercolorg = 255;
+        private byte hovercolorg = 255;
         [XmlAttribute("HoverColorG")]
-        public int HoverColorG
+        public byte HoverColorG
         {
             get { return hovercolorg; }
             set { hovercolorg = value; }
         }
-        private int hovercolorb = 255;
+        private byte hovercolorb = 255;
         [XmlAttribute("HoverColorB")]
-        public int HoverColorB
+        public byte HoverColorB
         {
             get { return hovercolorb; }
             set { hovercolorb = value; }
@@ -351,7 +351,8 @@ namespace Feedling
         }
 
         private Guid guid = Guid.NewGuid();
-        public Guid Guid {
+        public Guid Guid
+        {
             get { return guid; }
             set { guid = value; }
         }

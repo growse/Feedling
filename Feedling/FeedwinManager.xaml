@@ -7,7 +7,7 @@
             <RowDefinition Height="227.5*" />
             <RowDefinition Height="34.5*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="1" HorizontalAlignment="Center" Name="OKBtn" Width="Auto" Height="Auto" VerticalAlignment="Center" Click="OKBtn_Click" IsDefault="True" Padding="35,5" Visibility="Visible">OK</Button>
+        <Button Grid.Row="1" HorizontalAlignment="Center" Name="OKBtn" Width="Auto" Height="Auto" VerticalAlignment="Center" Click="OKBtn_Click" IsDefault="True" Padding="35,5" Visibility="Visible" Content="Close"></Button>
         <TabControl Margin="12,12,12,0" Name="tabControl1">
             <TabItem Header="Feeds" Name="Feeds">
 
@@ -50,10 +50,10 @@
                     <Label Grid.Row="3" Grid.Column="0" Content="Hover Colour:" HorizontalContentAlignment="Right" Margin="0" Name="label8" VerticalContentAlignment="Center" />
                     <Label Grid.Row="0" Grid.Column="1" Content="Label" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0" Name="fontlabel" VerticalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="1" Content="Label" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0" Name="titlefontlabel" VerticalContentAlignment="Center" Width="Auto" />
-                    <Button Grid.Row="0" Grid.Column="2"  Content="Choose..." Margin="0" Width="100" Height="30" Name="fontchooserbtn" />
-                    <Button Grid.Row="1" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="titlefontchooserbtn" />
-                    <Button Grid.Row="2" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="defaultcolorchooserbtn" />
-                    <Button Grid.Row="3" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="hovercolorchooserbtn" />
+                    <Button Grid.Row="0" Grid.Column="2"  Content="Choose..." Margin="0" Width="100" Height="30" Name="fontchooserbtn" Click="fontchooserbtn_Click" />
+                    <Button Grid.Row="1" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="titlefontchooserbtn" Click="titlefontchooserbtn_Click" />
+                    <Button Grid.Row="2" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="defaultcolorchooserbtn" Click="defaultcolorchooserbtn_Click" />
+                    <Button Grid.Row="3" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="hovercolorchooserbtn" Click="hovercolorchooserbtn_Click" />
                     <Rectangle Grid.Row="3" Grid.Column="1" Margin="0" Width="100" Height="30" Name="hovercolourbox" Stroke="Black" />
                     <Rectangle Grid.Row="2" Grid.Column="1" Margin="0" Width="100" Height="30" Name="defaultcolourbox" Stroke="Black" />
                     <Label Grid.ColumnSpan="2" Content="Apply these settings to all existing feeds?" Grid.Row="4"  HorizontalAlignment="Right" Margin="0" Name="label9" VerticalAlignment="Center" />

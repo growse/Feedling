@@ -134,7 +134,7 @@ namespace Feedling
         /// Thread-safe window drawing method. Decides basically what colour everything should be, depending on the state of the window (selected, pinned etc.)
         /// Also sets the text of the textblocks to either the feed items, some sort of error, or random mumblings from Hamlet.
         /// </summary>
-        private void RedrawWin()
+        internal void RedrawWin()
         {
             if (this.Dispatcher.Thread != Thread.CurrentThread)
             {
@@ -174,7 +174,13 @@ namespace Feedling
                 {
                     TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
                     if (textblock != null)
-                    { textblock.Foreground = textbrush.Clone(); }
+                    {
+                        textblock.Foreground = textbrush.Clone();
+                        textblock.FontFamily = fci.FontFamily;
+                        textblock.FontSize = fci.FontSize;
+                        textblock.FontWeight = fci.FontWeight;
+                        textblock.FontStyle = fci.FontStyle;
+                    }
                 }
 
                 //Figure out what to display

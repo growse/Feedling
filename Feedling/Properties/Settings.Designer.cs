@@ -130,13 +130,13 @@ namespace Feedling.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
-        public global::System.Drawing.Color DefaultFeedColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedColorR {
             get {
-                return ((global::System.Drawing.Color)(this["DefaultFeedColor"]));
+                return ((byte)(this["DefaultFeedColorR"]));
             }
             set {
-                this["DefaultFeedColor"] = value;
+                this["DefaultFeedColorR"] = value;
             }
         }
         
@@ -154,13 +154,13 @@ namespace Feedling.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
-        public global::System.Drawing.Color DefaultFeedHoverColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedHoverColorR {
             get {
-                return ((global::System.Drawing.Color)(this["DefaultFeedHoverColor"]));
+                return ((byte)(this["DefaultFeedHoverColorR"]));
             }
             set {
-                this["DefaultFeedHoverColor"] = value;
+                this["DefaultFeedHoverColorR"] = value;
             }
         }
         
@@ -254,6 +254,54 @@ namespace Feedling.Properties {
             }
             set {
                 this["DefaultTitleFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedColorG {
+            get {
+                return ((byte)(this["DefaultFeedColorG"]));
+            }
+            set {
+                this["DefaultFeedColorG"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedColorB {
+            get {
+                return ((byte)(this["DefaultFeedColorB"]));
+            }
+            set {
+                this["DefaultFeedColorB"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedHoverColorG {
+            get {
+                return ((byte)(this["DefaultFeedHoverColorG"]));
+            }
+            set {
+                this["DefaultFeedHoverColorG"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte DefaultFeedHoverColorB {
+            get {
+                return ((byte)(this["DefaultFeedHoverColorB"]));
+            }
+            set {
+                this["DefaultFeedHoverColorB"] = value;
             }
         }
     }
