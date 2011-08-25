@@ -28,56 +28,44 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Security;
-using System.Xml;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
 namespace RssFeed
 {
-    class Plugin:IPlugin
+    class Plugin : IPlugin
     {
         public string PluginName
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 // If there aren't any Product attributes, return an empty string
-                if (attributes.Length == 0)
-                    return "";
                 // If there is a Product attribute, return its value
-                return ((AssemblyProductAttribute)attributes[0]).Product;
+                return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
 
         public string PluginVersion
         {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public string PluginCopyright
         {
             [SecurityCriticalAttribute]
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
 
         public bool CanHandle(IXPathNavigable document)
         {
             if (document != null)
             {
-                XPathNavigator nav = document.CreateNavigator();
-                if (nav.SelectSingleNode("/rss") != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                var nav = document.CreateNavigator();
+                return nav.SelectSingleNode("/rss") != null;
             }
-            else
-            {
-            } return false;
+            return false;
         }
 
         public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthTypes, string username, string password, IWebProxy reqproxy)

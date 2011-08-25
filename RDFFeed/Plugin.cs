@@ -40,48 +40,40 @@ namespace RdfFeed
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 // If there aren't any Product attributes, return an empty string
-                if (attributes.Length == 0)
-                    return "";
                 // If there is a Product attribute, return its value
-                return ((AssemblyProductAttribute)attributes[0]).Product;
+                return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
 
         public string PluginVersion
         {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public string PluginCopyright
         {
             [SecurityCriticalAttribute]
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
 
         public bool CanHandle(IXPathNavigable document)
         {
             if (document != null)
             {
-                XPathNavigator nav = document.CreateNavigator();
-                XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
-                xnm.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                xnm.AddNamespace("rss", "http://purl.org/rss/1.0/");
-                xnm.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
-                if (nav.SelectSingleNode("/rdf:RDF", xnm) != null)
+                var nav = document.CreateNavigator();
+                if (nav.NameTable != null)
                 {
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    var xnm = new XmlNamespaceManager(nav.NameTable);
+                    xnm.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+                    xnm.AddNamespace("rss", "http://purl.org/rss/1.0/");
+                    xnm.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
+                    return nav.SelectSingleNode("/rdf:RDF", xnm) != null;
                 }
             }
-            else
-            {
-            } return false;
+            return false;
         }
 
         public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthTypes, string username, string password, IWebProxy reqproxy)

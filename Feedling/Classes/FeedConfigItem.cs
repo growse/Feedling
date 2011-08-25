@@ -38,6 +38,22 @@ namespace Feedling
     {
         public FeedConfigItem()
         {
+            this.FontFamilyString = Properties.Settings.Default.DefaultFontFamily;
+            this.FontSize = Properties.Settings.Default.DefaultFontSize;
+            this.FontStyleString = Properties.Settings.Default.DefaultFontStyle;
+            this.FontWeightString = Properties.Settings.Default.DefaultFontWeight;
+            this.TitleFontFamilyString = Properties.Settings.Default.DefaultTitleFontFamily;
+            this.TitleFontSize = Properties.Settings.Default.DefaultTitleFontSize;
+            this.TitleFontStyleString = Properties.Settings.Default.DefaultTitleFontStyle;
+            this.TitleFontWeightString = Properties.Settings.Default.DefaultTitleFontWeight;
+
+            this.DefaultColorR = Properties.Settings.Default.DefaultFeedColorR;
+            this.DefaultColorG = Properties.Settings.Default.DefaultFeedColorG;
+            this.DefaultColorB = Properties.Settings.Default.DefaultFeedColorB;
+
+            this.HoverColorR = Properties.Settings.Default.DefaultFeedHoverColorR;
+            this.HoverColorG = Properties.Settings.Default.DefaultFeedHoverColorG;
+            this.HoverColorB = Properties.Settings.Default.DefaultFeedHoverColorB;
         }
         public FeedConfigItem Copy()
         {

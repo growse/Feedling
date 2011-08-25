@@ -237,15 +237,15 @@ namespace Feedling
                 Properties.Settings.Default.DefaultTitleFontStyle,
                 Properties.Settings.Default.DefaultTitleFontWeight
                 );
-            fontlabel.FontFamily = new FontFamily(Properties.Settings.Default.DefaultStoryFontFamily);
-            fontlabel.FontSize = Properties.Settings.Default.DefaultStoryFontSize;
-            fontlabel.FontWeight = FontConversions.FontWeightFromString(Properties.Settings.Default.DefaultStoryFontWeight);
-            fontlabel.FontStyle = FontConversions.FontStyleFromString(Properties.Settings.Default.DefaultStoryFontStyle);
+            fontlabel.FontFamily = new FontFamily(Properties.Settings.Default.DefaultFontFamily);
+            fontlabel.FontSize = Properties.Settings.Default.DefaultFontSize;
+            fontlabel.FontWeight = FontConversions.FontWeightFromString(Properties.Settings.Default.DefaultFontWeight);
+            fontlabel.FontStyle = FontConversions.FontStyleFromString(Properties.Settings.Default.DefaultFontStyle);
             fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}",
-                Properties.Settings.Default.DefaultStoryFontFamily,
-                Properties.Settings.Default.DefaultStoryFontSize,
-                Properties.Settings.Default.DefaultStoryFontStyle,
-                Properties.Settings.Default.DefaultStoryFontWeight
+                Properties.Settings.Default.DefaultFontFamily,
+                Properties.Settings.Default.DefaultFontSize,
+                Properties.Settings.Default.DefaultFontStyle,
+                Properties.Settings.Default.DefaultFontWeight
                 );
 
             proxyauthcheck.IsChecked = Properties.Settings.Default.ProxyAuth;
@@ -445,6 +445,7 @@ namespace Feedling
                         {
                             FeedWin fw = new FeedWin(fci);
                             fw.LocationChanged += new EventHandler(fw_LocationChanged);
+                            fw.SizeChanged += new SizeChangedEventHandler(fw_SizeChanged);
                             fw.Show();
                             windowlist.Add(fw.FeedConfig.Guid, fw);
                         }
@@ -458,6 +459,20 @@ namespace Feedling
             }
         }
 
+        void fw_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            FeedWin obj = (FeedWin)sender;
+            foreach (FeedConfigItem fci in FeedConfigItems.Items)
+            {
+                if (fci.Url == obj.FeedConfig.Url)
+                {
+                    fci.Width = obj.FeedConfig.Width;
+
+                }
+            }
+            SaveFeedSettings();
+        }
+
         void fw_LocationChanged(object sender, EventArgs e)
         {
             FeedWin obj = (FeedWin)sender;
@@ -466,6 +481,7 @@ namespace Feedling
                 if (fci.Url == obj.FeedConfig.Url)
                 {
                     fci.Position = obj.FeedConfig.Position;
+                    
                 }
             }
             SaveFeedSettings();
@@ -889,10 +905,10 @@ namespace Feedling
                 fci.HoverColorG = Properties.Settings.Default.DefaultFeedHoverColorG;
                 fci.HoverColorB = Properties.Settings.Default.DefaultFeedHoverColorB;
 
-                fci.FontFamilyString = Properties.Settings.Default.DefaultStoryFontFamily;
-                fci.FontSize = Properties.Settings.Default.DefaultStoryFontSize;
-                fci.FontStyleString = Properties.Settings.Default.DefaultStoryFontStyle;
-                fci.FontWeightString = Properties.Settings.Default.DefaultStoryFontWeight;
+                fci.FontFamilyString = Properties.Settings.Default.DefaultFontFamily;
+                fci.FontSize = Properties.Settings.Default.DefaultFontSize;
+                fci.FontStyleString = Properties.Settings.Default.DefaultFontStyle;
+                fci.FontWeightString = Properties.Settings.Default.DefaultFontWeight;
 
                 fci.TitleFontFamilyString = Properties.Settings.Default.DefaultTitleFontFamily;
                 fci.TitleFontSize = Properties.Settings.Default.DefaultTitleFontSize;
@@ -920,10 +936,10 @@ namespace Feedling
                 fontlabel.FontSize = fc.SelectedFontSize;
                 fontlabel.FontStyle = fc.SelectedFontStyle;
                 fontlabel.FontWeight = fc.SelectedFontWeight;
-                Properties.Settings.Default.DefaultStoryFontFamily = fc.SelectedFontFamily.ToString();
-                Properties.Settings.Default.DefaultStoryFontSize = fc.SelectedFontSize;
-                Properties.Settings.Default.DefaultStoryFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
-                Properties.Settings.Default.DefaultStoryFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
+                Properties.Settings.Default.DefaultFontFamily = fc.SelectedFontFamily.ToString();
+                Properties.Settings.Default.DefaultFontSize = fc.SelectedFontSize;
+                Properties.Settings.Default.DefaultFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
+                Properties.Settings.Default.DefaultFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
                 fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
             }
         }

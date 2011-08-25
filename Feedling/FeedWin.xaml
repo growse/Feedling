@@ -14,7 +14,7 @@
     Background="Transparent"
     SizeToContent="Height"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
-    MouseRightButtonDown="Window_MouseRightButtonDown" Icon="/Feedling;component/Feedling.ico">
+    MouseRightButtonDown="Window_MouseRightButtonDown" Icon="/Feedling;component/Feedling.ico" MouseRightButtonUp="Window_MouseRightButtonUp" MouseMove="Window_MouseMove">
     <Window.Resources>
         <Style x:Key="titleTextStyle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Top" />

@@ -73,6 +73,9 @@ namespace Feedling
             InitializeComponent();
 
             fci = feeditem;
+            this.Width = fci.Width;
+            this.Left = fci.Position.X;
+            this.Top = fci.Position.Y;
             updatedcolor = fci.DefaultColor;
             //Kick of thread to figure out what sort of plugin to load for this sort of feed.
             ThreadPool.QueueUserWorkItem(new WaitCallback(GetFeedType), fci);
@@ -514,15 +517,34 @@ namespace Feedling
             }
         }
 
+        private double startpoint;
+        private double initialwidth;
+
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!pinned)
             {
-                //rightstartpoint = e.Location;
+                initialwidth = this.Width;
+                startpoint = PointToScreen(Mouse.GetPosition(this)).X;
                 this.Cursor = Cursors.SizeWE;
             }
         }
-        #endregion
+        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!pinned)
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+        }
 
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!pinned && e.RightButton == MouseButtonState.Pressed)
+            {
+
+                this.Width = initialwidth - (startpoint - PointToScreen(Mouse.GetPosition(this)).X);
+            }
+        }
+        #endregion
     }
 }

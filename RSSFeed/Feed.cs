@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
@@ -39,71 +40,31 @@ namespace RssFeed
     public class Feed : IFeed
     {
         #region Properties
-        private bool loaded = false;
 
-        public bool Loaded
-        {
-            get { return loaded; }
-            set { loaded = value; }
-        }
-        private bool haserror = false;
+        public bool Loaded { get; set; }
 
-        public bool HasError
-        {
-            get { return haserror; }
-            set { haserror = value; }
-        }
-        private string errormessage;
+        public bool HasError { get; set; }
 
-        public string ErrorMessage
-        {
-            get { return errormessage; }
-            set { errormessage = value; }
-        }
-        private XmlDocument feedxml;
+        public string ErrorMessage { get; set; }
 
-        protected XmlDocument Feedxml
-        {
-            get { return feedxml; }
-            set { feedxml = value; }
-        }
-        private int updateinterval = 10;
-        public int UpdateInterval
-        {
-            get { return updateinterval; }
-            set { updateinterval = value; }
-        }
-        protected Uri feeduri;
-        public Uri FeedUri
-        {
-            get { return feeduri; }
-            set { feeduri = value; }
-        }
+        protected XmlDocument Feedxml { get; set; }
+
+        public int UpdateInterval { get; set; }
+
+        public Uri FeedUri { get; set; }
+
         protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
-        private string title;
-        public string Title
-        {
-            get { return title; }
-            set { title = value; }
-        }
-        private Uri url;
 
-        public Uri Url
-        {
-            get { return url; }
-            set { url = value; }
-        }
-        private string description;
+        public string Title { get; set; }
 
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
+        public Uri Url { get; set; }
+
+        public string Description { get; set; }
+
         public Form ConfigForm
         {
             get { return null; }
@@ -124,30 +85,30 @@ namespace RssFeed
         {
             get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
-        private DateTime lastupdate;
-        public DateTime LastUpdate
-        {
-            get
-            {
-                return lastupdate;
-            }
-        }
 
-        private IWebProxy feedproxy;
-        private FeedAuthTypes feedauthtype;
-        private string feedusername;
-        private string feedpassword;
+        public DateTime LastUpdate { get; private set; }
+
+        private readonly IWebProxy feedproxy;
+        private readonly FeedAuthTypes feedauthtype;
+        private readonly string feedusername;
+        private readonly string feedpassword;
         #endregion
 
         #region Methods
         public Feed()
         {
+            UpdateInterval = 10;
+            HasError = false;
+            Loaded = false;
         }
 
         public Feed(Uri url, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
         {
+            UpdateInterval = 10;
+            HasError = false;
+            Loaded = false;
             feedproxy = proxy;
-            feeduri = url;
+            FeedUri = url;
             feedauthtype = authtype;
             feedusername = username;
             feedpassword = password;
@@ -155,18 +116,18 @@ namespace RssFeed
 
         private XmlDocument Fetch(Uri feeduri)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
+            var req = (HttpWebRequest)WebRequest.Create(feeduri);
             req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
                 req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            WebResponse resp = req.GetResponse();
-            XmlDocument tempdoc = new XmlDocument();
-            tempdoc.Load(resp.GetResponseStream());
-            resp.Close();
-            return tempdoc;
+            var webResponse = req.GetResponse();
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(webResponse.GetResponseStream());
+            webResponse.Close();
+            return xmlDocument;
         }
 
         public void Update()
@@ -174,77 +135,63 @@ namespace RssFeed
             Exception retexception = null;
             try
             {
-                List<FeedItem> oldfeeditems = new List<FeedItem>();
-                foreach (FeedItem item in feeditems)
+                var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
+                Feedxml = Fetch(FeedUri);
+                var xPathNavigator = Feedxml.CreateNavigator();
+                var xPathNodeIterator = xPathNavigator.Select("/rss/channel/item");
+
+                var titlenode = xPathNavigator.SelectSingleNode("/rss/channel/title");
+                Title = titlenode == null ? "(untitled)" : titlenode.ToString().Trim();
+
+                var linknode = xPathNavigator.SelectSingleNode("/rss/channel/link");
+                if (linknode != null)
                 {
-                    oldfeeditems.Add((FeedItem)item.Clone());
+                    Url = new Uri(linknode.ToString());
                 }
-                Feedxml = Fetch(feeduri);
-                XPathNavigator nav;
-                XPathNavigator subnav;
-                XPathNodeIterator nodeiterator;
-                nav = Feedxml.CreateNavigator();
-                nodeiterator = nav.Select("/rss/channel/item");
-                if (nav.SelectSingleNode("/rss/channel/title") == null)
+
+                var descriptionnode = xPathNavigator.SelectSingleNode("/rss/channel/description");
+                if (descriptionnode != null)
                 {
-                    this.Title = "(untitled)";
-                }
-                else
-                {
-                    this.Title = nav.SelectSingleNode("/rss/channel/title").ToString().Trim();
-                }
-                if (nav.SelectSingleNode("/rss/channel/link") != null)
-                {
-                    this.Url = new Uri(nav.SelectSingleNode("/rss/channel/link").ToString());
-                }
-                if (nav.SelectSingleNode("/rss/channel/description") != null)
-                {
-                    this.Description = nav.SelectSingleNode("/rss/channel/description").ToString().Trim();
+                    Description = descriptionnode.ToString().Trim();
                 }
                 feeditems.Clear();
-                while (nodeiterator.MoveNext())
+                while (xPathNodeIterator.MoveNext())
                 {
-                    if (nodeiterator.Current.HasChildren)
+                    if (xPathNodeIterator.Current == null || !xPathNodeIterator.Current.HasChildren) continue;
+                    var item = new FeedItem();
+                    var pathNavigator = xPathNodeIterator.Current.CreateNavigator();
+
+                    titlenode = pathNavigator.SelectSingleNode("title");
+                    item.Title = titlenode == null ? "(untitled)" : titlenode.ToString().Trim();
+
+                    linknode = pathNavigator.SelectSingleNode("link");
+                    if (linknode != null)
                     {
-                        FeedItem item = new FeedItem();
-                        subnav = nodeiterator.Current.CreateNavigator();
-                        if (subnav.SelectSingleNode("title") == null)
-                        {
-                            item.Title = "(untitled)";
-                        }
-                        else
-                        {
-                            item.Title = subnav.SelectSingleNode("title").ToString().Trim();
-                        }
-                        if (subnav.SelectSingleNode("link") != null)
-                        {
-                            item.Link = new Uri(subnav.SelectSingleNode("link").ToString());
-                        }
-
-                        try
-                        {
-                            DateTime gdt;
-                            XPathNavigator tempnav = subnav.SelectSingleNode("pubDate");
-                            if (tempnav != null)
-                            {
-                                bool res = DateTime.TryParse(tempnav.ToString(), out gdt);
-                                if (res)
-                                {
-                                    item.Date = gdt;
-                                }
-                            }
-                        }
-                        catch (FormatException)
-                        {
-                        }
-
-                        if (!oldfeeditems.Contains(item))
-                        {
-                            item.Updated = true;
-                        }
-                        feeditems.Add(item);
+                        item.Link = new Uri(linknode.ToString());
                     }
 
+                    try
+                    {
+                        var tempnav = pathNavigator.SelectSingleNode("pubDate");
+                        if (tempnav != null)
+                        {
+                            DateTime gdt;
+                            var res = DateTime.TryParse(tempnav.ToString(), out gdt);
+                            if (res)
+                            {
+                                item.Date = gdt;
+                            }
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                    }
+
+                    if (!oldfeeditems.Contains(item))
+                    {
+                        item.Updated = true;
+                    }
+                    feeditems.Add(item);
                 }
             }
             catch (WebException ex)
@@ -261,15 +208,15 @@ namespace RssFeed
             }
             if (retexception != null)
             {
-                haserror = true;
-                errormessage = retexception.Message;
+                HasError = true;
+                ErrorMessage = retexception.Message;
             }
             else
             {
-                haserror = false;
-                errormessage = null;
+                HasError = false;
+                ErrorMessage = null;
             }
-            loaded = true;
+            Loaded = true;
             FireUpdated();
         }
 
@@ -279,14 +226,14 @@ namespace RssFeed
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
-                int fuzz = new Random().Next(1000, 30000);
-                Thread.Sleep((updateinterval * 60000) + fuzz);
+                var fuzz = new Random().Next(1000, 30000);
+                Thread.Sleep((UpdateInterval * 60000) + fuzz);
             }
         }
 
         protected void FireUpdated()
         {
-            lastupdate = DateTime.Now;
+            LastUpdate = DateTime.Now;
             Updated(null, new EventArgs());
         }
         #endregion

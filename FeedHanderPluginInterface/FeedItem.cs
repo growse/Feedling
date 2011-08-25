@@ -30,53 +30,20 @@ namespace FeedHanderPluginInterface
 {
     public sealed class FeedItem : ICloneable
     {
-        private DateTime date;
-        public DateTime Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
+        public DateTime Date { get; set; }
 
-        private string title;
-        public string Title
-        {
-            get { return title; }
-            set { title = value; }
-        }
-        private string description;
+        public string Title { get; set; }
 
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-        private Uri link;
+        public string Description { get; set; }
 
-        public Uri Link
-        {
-            get { return link; }
-            set { link = value; }
-        }
+        public Uri Link { get; set; }
 
-        private bool updated;
-
-        public bool Updated
-        {
-            get { return updated; }
-            set { updated = value; }
-        }
+        public bool Updated { get; set; }
 
         public override bool Equals(object obj)
         {
-            FeedItem testitem = (FeedItem)obj;
-            if (testitem.Date == this.Date && testitem.Description == this.Description && testitem.Link == this.Link && testitem.Title == this.Title)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var testitem = (FeedItem)obj;
+            return testitem.Date == this.Date && testitem.Description == this.Description && testitem.Link == this.Link && testitem.Title == this.Title;
         }
 
         public override int GetHashCode()
@@ -88,13 +55,15 @@ namespace FeedHanderPluginInterface
 
         public object Clone()
         {
-            FeedItem Copy = new FeedItem();
-            Copy.Date = this.Date;
-            Copy.Description = this.Description;
-            Copy.Link = this.Link;
-            Copy.Title = this.Title;
-            Copy.Updated = false;
-            return Copy;
+            var copy = new FeedItem
+                           {
+                               Date = this.Date,
+                               Description = this.Description,
+                               Link = this.Link,
+                               Title = this.Title,
+                               Updated = false
+                           };
+            return copy;
         }
 
         #endregion

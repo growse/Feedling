@@ -25,11 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
@@ -39,95 +38,54 @@ namespace RdfFeed
     public class Feed : IFeed
     {
         #region Properties
-        private bool loaded = false;
 
-        public bool Loaded
-        {
-            get { return loaded; }
-            set { loaded = value; }
-        }
-        private bool haserror = false;
+        public bool Loaded { get; set; }
 
-        public bool HasError
-        {
-            get { return haserror; }
-            set { haserror = value; }
-        }
-        private string errormessage;
+        public bool HasError { get; set; }
 
-        public string ErrorMessage
-        {
-            get { return errormessage; }
-            set { errormessage = value; }
-        }
-        private XmlDocument feedxml;
+        public string ErrorMessage { get; set; }
 
-        protected XmlDocument Feedxml
-        {
-            get { return feedxml; }
-            set { feedxml = value; }
-        }
-        protected int updateinterval = 10;
-        public int UpdateInterval
-        {
-            get { return updateinterval; }
-            set { updateinterval = value; }
-        }
-        protected Uri feeduri;
-        public Uri FeedUri
-        {
-            get { return feeduri; }
-            set { feeduri = value; }
-        }
+        protected XmlDocument Feedxml { get; set; }
+
+        public int UpdateInterval { get; set; }
+
+        public Uri FeedUri { get; set; }
+
         protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
 
-        private string title;
-        public string Title
-        {
-            get { return title; }
-            set { title = value; }
-        }
-        private Uri url;
+        public string Title { get; set; }
 
-        public Uri Url
-        {
-            get { return url; }
-            set { url = value; }
-        }
-        private string description;
+        public Uri Url { get; set; }
 
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-        private IWebProxy feedproxy;
-        private FeedAuthTypes feedauthtype;
-        private string feedusername;
-        private string feedpassword;
-        private DateTime lastupdate;
-        public DateTime LastUpdate
-        {
-            get
-            {
-                return lastupdate;
-            }
-        }
+        public string Description { get; set; }
+
+        private readonly IWebProxy feedproxy;
+        private readonly FeedAuthTypes feedauthtype;
+        private readonly string feedusername;
+        private readonly string feedpassword;
+        public DateTime LastUpdate { get; private set; }
+
         #endregion
 
         #region Methods
         public Feed()
         {
+            UpdateInterval = 10;
+            HasError = false;
+            Loaded = false;
         }
 
         public Feed(Uri url, FeedAuthTypes authtype, string username, string password, IWebProxy proxy)
         {
+            UpdateInterval = 10;
+            HasError = false;
+            Loaded = false;
             feedproxy = proxy;
-            feeduri = url;
+            FeedUri = url;
             feedauthtype = authtype;
             feedusername = username;
             feedpassword = password;
@@ -137,16 +95,16 @@ namespace RdfFeed
         private XmlDocument Fetch(Uri feeduri)
         {
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(feeduri);
+            var req = (HttpWebRequest)WebRequest.Create(feeduri);
             req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
                 req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            var resp = (HttpWebResponse)req.GetResponse();
 
-            XmlDocument tempdoc = new XmlDocument();
+            var tempdoc = new XmlDocument();
             tempdoc.Load(resp.GetResponseStream());
             resp.Close();
             return tempdoc;
@@ -158,84 +116,78 @@ namespace RdfFeed
             Exception retexception = null;
             try
             {
-                List<FeedItem> oldfeeditems = new List<FeedItem>();
-                foreach (FeedItem item in feeditems)
-                {
-                    oldfeeditems.Add((FeedItem)item.Clone());
-                }
-                Feedxml = Fetch(feeduri);
-                XPathNavigator nav;
-                XPathNavigator subnav;
-                XPathNodeIterator nodeiterator;
-                nav = Feedxml.CreateNavigator();
+                var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
+                Feedxml = Fetch(FeedUri);
+                var xPathNavigator = Feedxml.CreateNavigator();
 
-                XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
-                xnm.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                xnm.AddNamespace("rss", "http://purl.org/rss/1.0/");
-                xnm.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
-                XPathExpression xpe = nav.Compile("/rdf:RDF//rss:item");
-                xpe.SetContext(xnm);
-                nodeiterator = nav.Select(xpe);
-                if (nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xnm) != null)
+                var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
+                xmlNamespaceManager.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+                xmlNamespaceManager.AddNamespace("rss", "http://purl.org/rss/1.0/");
+                xmlNamespaceManager.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
+                var xPathExpression = xPathNavigator.Compile("/rdf:RDF//rss:item");
+                xPathExpression.SetContext(xmlNamespaceManager);
+                var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
+
+                var titlenode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xmlNamespaceManager);
+                if (titlenode != null)
                 {
-                    this.Title = System.Web.HttpUtility.HtmlDecode(nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xnm).ToString()).Trim();
+                    var htmlDecode = System.Web.HttpUtility.HtmlDecode(titlenode.ToString());
+                    Title = htmlDecode != null ? htmlDecode.Trim() : "(untitled)";
                 }
-                else
+
+                var urlnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
+
+                if (urlnode != null)
                 {
-                    this.Title = "(untitled)";
+                    Url = new Uri(urlnode.ToString());
                 }
-                if (nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xnm) != null)
+
+                var descriptionnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xmlNamespaceManager);
+
+                if (descriptionnode != null)
                 {
-                    this.Url = new Uri(nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xnm).ToString());
-                }
-                if (nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xnm) != null)
-                {
-                    this.Description = nav.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xnm).ToString().Trim();
+                    Description = descriptionnode.ToString().Trim();
                 }
                 feeditems.Clear();
-                while (nodeiterator.MoveNext())
+                while (xPathNodeIterator.MoveNext())
                 {
-                    if (nodeiterator.Current.HasChildren)
+                    if (xPathNodeIterator.Current == null || !xPathNodeIterator.Current.HasChildren) continue;
+                    var item = new FeedItem();
+                    var subnav = xPathNodeIterator.Current.CreateNavigator();
+
+                    titlenode = subnav.SelectSingleNode("rss:title", xmlNamespaceManager);
+
+                    item.Title = titlenode != null ? titlenode.ToString().Trim() : "(untitled)";
+
+                    var linknode = subnav.SelectSingleNode("rss:link", xmlNamespaceManager);
+                    if (linknode != null)
                     {
-                        FeedItem item = new FeedItem();
-                        subnav = nodeiterator.Current.CreateNavigator();
-                        if (subnav.SelectSingleNode("rss:title", xnm) != null)
-                        {
-                            item.Title = subnav.SelectSingleNode("rss:title", xnm).ToString().Trim();
-                        }
-                        else
-                        {
-                            item.Title = "(untitled)";
-                        }
-                        if (subnav.SelectSingleNode("rss:link", xnm) != null)
-                        {
-                            item.Link = new Uri(subnav.SelectSingleNode("rss:link", xnm).ToString());
-                        }
-                        if (subnav.SelectSingleNode("rss:description", xnm) != null)
-                        {
-                            item.Description = subnav.SelectSingleNode("rss:description", xnm).ToString();
-                        }
-                        try
+                        item.Link = new Uri(linknode.ToString());
+                    }
+                    descriptionnode = subnav.SelectSingleNode("rss:description", xmlNamespaceManager);
+                    if (descriptionnode != null)
+                    {
+                        item.Description = descriptionnode.ToString();
+                    }
+                    try
+                    {
+                        XPathNavigator tempnav = subnav.SelectSingleNode("dc:date", xmlNamespaceManager);
+                        if (tempnav != null)
                         {
                             DateTime gdt;
-                            XPathNavigator tempnav = subnav.SelectSingleNode("dc:date", xnm);
-                            if (tempnav != null)
+                            var res = DateTime.TryParse(tempnav.ToString(), out gdt);
+                            if (res)
                             {
-                                bool res = DateTime.TryParse(tempnav.ToString(), out gdt);
-                                if (res)
-                                {
-                                    item.Date = gdt;
-                                }
+                                item.Date = gdt;
                             }
                         }
-                        catch (FormatException) { }
-                        if (!oldfeeditems.Contains(item))
-                        {
-                            item.Updated = true;
-                        }
-                        feeditems.Add(item);
                     }
-
+                    catch (FormatException) { }
+                    if (!oldfeeditems.Contains(item))
+                    {
+                        item.Updated = true;
+                    }
+                    feeditems.Add(item);
                 }
 
             }
@@ -254,15 +206,15 @@ namespace RdfFeed
 
             if (retexception != null)
             {
-                haserror = true;
-                errormessage = retexception.Message;
+                HasError = true;
+                ErrorMessage = retexception.Message;
             }
             else
             {
-                haserror = false;
-                errormessage = null;
+                HasError = false;
+                ErrorMessage = null;
             }
-            loaded = true;
+            Loaded = true;
             FireUpdated();
         }
 
@@ -272,14 +224,14 @@ namespace RdfFeed
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
-                int fuzz = new Random().Next(1000, 30000);
-                Thread.Sleep((updateinterval * 60000) + fuzz);
+                var fuzz = new Random().Next(1000, 30000);
+                Thread.Sleep((UpdateInterval * 60000) + fuzz);
             }
         }
 
         protected void FireUpdated()
         {
-            lastupdate = DateTime.Now;
+            LastUpdate = DateTime.Now;
             Updated(null, new EventArgs());
         }
         #endregion

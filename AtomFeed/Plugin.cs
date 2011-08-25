@@ -41,18 +41,16 @@ namespace AtomFeed
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 // If there aren't any Product attributes, return an empty string
-                if (attributes.Length == 0)
-                    return "";
+                return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
                 // If there is a Product attribute, return its value
-                return ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
 
         public string PluginVersion
         {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
@@ -66,20 +64,10 @@ namespace AtomFeed
         {
             if (xml != null)
             {
-                XPathNavigator nav = xml.CreateNavigator();
-                XmlNamespaceManager xnm = new XmlNamespaceManager(nav.NameTable);
+                var nav = xml.CreateNavigator();
+                var xnm = new XmlNamespaceManager(nav.NameTable);
                 xnm.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-                if (nav.SelectSingleNode("/atom:feed", xnm) != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+                return nav.SelectSingleNode("/atom:feed", xnm) != null;
             }
             return false;
         }

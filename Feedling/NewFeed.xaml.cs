@@ -137,7 +137,8 @@ namespace Feedling
 
         private void proxyradio_Checked(object sender, RoutedEventArgs e)
         {
-            proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
+            proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = (customproxybtn.IsChecked == true);
+            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsEnabled == true && proxyauthcheck.IsChecked == true);
         }
 
         private void authradio_Checked(object sender, RoutedEventArgs e)
@@ -297,8 +298,6 @@ namespace Feedling
                 hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
             }
         }
-
         #endregion
-
     }
 }

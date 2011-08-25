@@ -26,9 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections.ObjectModel;
-using System.Net;
-using System.Windows.Forms;
-using System.Xml.XPath;
 
 [assembly: CLSCompliant(false)]
 namespace FeedHanderPluginInterface

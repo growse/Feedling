@@ -167,12 +167,12 @@ namespace Feedling.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt")]
-        public string DefaultStoryFontFamily {
+        public string DefaultFontFamily {
             get {
-                return ((string)(this["DefaultStoryFontFamily"]));
+                return ((string)(this["DefaultFontFamily"]));
             }
             set {
-                this["DefaultStoryFontFamily"] = value;
+                this["DefaultFontFamily"] = value;
             }
         }
         
@@ -188,12 +188,12 @@ namespace Feedling.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DefaultStoryFontWeight {
+        public string DefaultFontWeight {
             get {
-                return ((string)(this["DefaultStoryFontWeight"]));
+                return ((string)(this["DefaultFontWeight"]));
             }
             set {
-                this["DefaultStoryFontWeight"] = value;
+                this["DefaultFontWeight"] = value;
             }
         }
         
@@ -212,12 +212,12 @@ namespace Feedling.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DefaultStoryFontStyle {
+        public string DefaultFontStyle {
             get {
-                return ((string)(this["DefaultStoryFontStyle"]));
+                return ((string)(this["DefaultFontStyle"]));
             }
             set {
-                this["DefaultStoryFontStyle"] = value;
+                this["DefaultFontStyle"] = value;
             }
         }
         
@@ -236,12 +236,12 @@ namespace Feedling.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("12")]
-        public double DefaultStoryFontSize {
+        public double DefaultFontSize {
             get {
-                return ((double)(this["DefaultStoryFontSize"]));
+                return ((double)(this["DefaultFontSize"]));
             }
             set {
-                this["DefaultStoryFontSize"] = value;
+                this["DefaultFontSize"] = value;
             }
         }
         
