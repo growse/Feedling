@@ -20,31 +20,20 @@ namespace RssFeed
     public class Feed : IFeed
     {
         #region Properties
-
         public bool Loaded { get; set; }
-
         public bool HasError { get; set; }
-
         public string ErrorMessage { get; set; }
-
         protected XmlDocument Feedxml { get; set; }
-
         public int UpdateInterval { get; set; }
-
         public Uri FeedUri { get; set; }
-
-        protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
+        private Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
-
         public string Title { get; set; }
-
         public Uri Url { get; set; }
-
         public string Description { get; set; }
-
         public Form ConfigForm
         {
             get { return null; }
@@ -60,14 +49,11 @@ namespace RssFeed
         {
             get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
-
         public string PluginCopyright
         {
             get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
-
         public DateTime LastUpdate { get; private set; }
-
         private readonly IWebProxy feedproxy;
         private readonly FeedAuthTypes feedauthtype;
         private readonly string feedusername;
@@ -121,7 +107,7 @@ namespace RssFeed
                 var xPathNodeIterator = xPathNavigator.Select("/rss/channel/item");
 
                 var titlenode = xPathNavigator.SelectSingleNode("/rss/channel/title");
-                Title = titlenode == null ? "(untitled)" : titlenode.ToString().Trim();
+                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
 
                 var linknode = xPathNavigator.SelectSingleNode("/rss/channel/link");
                 if (linknode != null)
@@ -142,7 +128,7 @@ namespace RssFeed
                     var pathNavigator = xPathNodeIterator.Current.CreateNavigator();
 
                     titlenode = pathNavigator.SelectSingleNode("title");
-                    item.Title = titlenode == null ? "(untitled)" : titlenode.ToString().Trim();
+                    item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
 
                     linknode = pathNavigator.SelectSingleNode("link");
                     if (linknode != null)

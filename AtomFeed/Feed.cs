@@ -114,7 +114,7 @@ namespace AtomFeed
                 var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
                 
                 var titlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:title/text()", xmlNamespaceManager);
-                Title = titlenode == null ? "(untitled)" : titlenode.ToString().Trim();
+                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
                 
                 // Create link from the first link element in feed with rel = 'alternative'
                 var linkiterator = xPathNavigator.Select("atom:feed/atom:link", xmlNamespaceManager);

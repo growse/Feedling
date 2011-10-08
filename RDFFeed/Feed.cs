@@ -18,37 +18,25 @@ namespace RdfFeed
     public class Feed : IFeed
     {
         #region Properties
-
         public bool Loaded { get; set; }
-
         public bool HasError { get; set; }
-
         public string ErrorMessage { get; set; }
-
         protected XmlDocument Feedxml { get; set; }
-
         public int UpdateInterval { get; set; }
-
         public Uri FeedUri { get; set; }
-
         protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
-
         public string Title { get; set; }
-
         public Uri Url { get; set; }
-
         public string Description { get; set; }
-
         private readonly IWebProxy feedproxy;
         private readonly FeedAuthTypes feedauthtype;
         private readonly string feedusername;
         private readonly string feedpassword;
         public DateTime LastUpdate { get; private set; }
-
         #endregion
 
         #region Methods
@@ -109,11 +97,7 @@ namespace RdfFeed
                 var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
 
                 var titlenode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xmlNamespaceManager);
-                if (titlenode != null)
-                {
-                    var htmlDecode = WebUtility.HtmlDecode(titlenode.ToString());
-                    Title = htmlDecode != null ? htmlDecode.Trim() : "(untitled)";
-                }
+                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
 
                 var urlnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
 
@@ -136,8 +120,7 @@ namespace RdfFeed
                     var subnav = xPathNodeIterator.Current.CreateNavigator();
 
                     titlenode = subnav.SelectSingleNode("rss:title", xmlNamespaceManager);
-
-                    item.Title = titlenode != null ? titlenode.ToString().Trim() : "(untitled)";
+                    item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
 
                     var linknode = subnav.SelectSingleNode("rss:link", xmlNamespaceManager);
                     if (linknode != null)
@@ -151,7 +134,7 @@ namespace RdfFeed
                     }
                     try
                     {
-                        XPathNavigator tempnav = subnav.SelectSingleNode("dc:date", xmlNamespaceManager);
+                        var tempnav = subnav.SelectSingleNode("dc:date", xmlNamespaceManager);
                         if (tempnav != null)
                         {
                             DateTime gdt;
