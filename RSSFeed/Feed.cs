@@ -5,14 +5,12 @@ All rights reserved.
 See LICENSE file for license details.
 */
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
 namespace RssFeed

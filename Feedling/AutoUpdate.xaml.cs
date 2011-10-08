@@ -24,39 +24,39 @@ namespace Feedling
         {
             InitializeComponent();
         }
-        private Logger Log = LogManager.GetCurrentClassLogger();
-        private Uri applicationupdateuri = new Uri(Properties.Settings.Default.ApplicationUpdateUrl);
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly Uri applicationupdateuri = new Uri(Properties.Settings.Default.ApplicationUpdateUrl);
         private string remoteMsiPath;
         internal void CheckForUpdates(bool silent = false)
         {
             if (!silent)
             {
-                this.Visibility = Visibility.Visible;
+                Visibility = Visibility.Visible;
             }
             try
             {
                 Log.Info("Entering update block");
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(applicationupdateuri);
+                var request = (HttpWebRequest)WebRequest.Create(applicationupdateuri);
                 request.UserAgent = string.Format("Feedling v{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                     
 
                 Log.Debug("Downloading version definition");
-                WebResponse response = request.GetResponse();
+                var response = request.GetResponse();
                 if (response.ContentLength > 0)
                 {
-                    StreamReader sr = new StreamReader(response.GetResponseStream());
-                    string upgrademeta = sr.ReadToEnd();
+                    var sr = new StreamReader(response.GetResponseStream());
+                    var upgrademeta = sr.ReadToEnd();
                     if (upgrademeta.Contains("|"))
                     {
                         Log.Info("Received valid version definition");
-                        string[] parts = upgrademeta.Split("|".ToCharArray(), 3);
+                        var parts = upgrademeta.Split("|".ToCharArray(), 3);
                         remoteMsiPath = Properties.Settings.Default.ApplicationUpdateUrl.Replace(applicationupdateuri.Segments[applicationupdateuri.Segments.Length - 1].ToString(), parts[1]).Trim();
-                        Version availableversion = new Version(parts[0]);
+                        var availableversion = new Version(parts[0]);
                         if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
                         {
                             Log.Debug("New version available: {0}", availableversion);
-                            this.Visibility = Visibility.Visible;
+                            Visibility = Visibility.Visible;
                             ApplyBtn.IsEnabled = true;
                             UpdateDescription.Text = string.Format(Properties.Resources.UpdatesAvailableText, availableversion, parts[2]);
                         }
@@ -79,9 +79,9 @@ namespace Feedling
                     UpdateDescription.Text = string.Format(Properties.Resources.UpdatesErrorCheckText, ex.Message);
                 }
             }
-            if (silent && this.Visibility == Visibility.Collapsed)
+            if (silent && Visibility == Visibility.Collapsed)
             {
-                this.Close();
+                Close();
             }
         }
         private string localMsiFilePath;
@@ -94,11 +94,10 @@ namespace Feedling
                 Log.Debug("User requests upgrade to new version");
                 localMsiFilePath = string.Concat(Path.GetTempPath(), Path.DirectorySeparatorChar, "Feedling.msi");
 
-                HttpRequestCachePolicy nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+                var nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
-                WebClient wc = new WebClient();
+                var wc = new WebClient {CachePolicy = nocachepolicy};
 
-                wc.CachePolicy = nocachepolicy;
                 wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
                 wc.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(wc_DownloadFileCompleted);
                 wc.DownloadFileAsync(new Uri(remoteMsiPath), localMsiFilePath);
@@ -117,9 +116,7 @@ namespace Feedling
             if (e.Error == null)
             {
                 Log.Debug("MSI saved.");
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.Arguments = "";
-                psi.FileName = localMsiFilePath;
+                var psi = new ProcessStartInfo {Arguments = "", FileName = localMsiFilePath};
                 Log.Info("Starting installer");
                 Process.Start(psi);
                 Log.Info("Exiting.");

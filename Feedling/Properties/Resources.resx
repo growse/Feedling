@@ -158,4 +158,19 @@ Error was {0}</value>
   <data name="UserAgentString" xml:space="preserve">
     <value>Mozilla/5.0 (compatible; Feedling/{0}; http://feedling.net)</value>
   </data>
+  <data name="FeedwinManager_FeedwinManager_About___">
+    <value xml:space="preserve">About...</value>
+  </data>
+  <data name="FeedwinManager_FeedwinManager_Configuration___">
+    <value xml:space="preserve">Configuration...</value>
+  </data>
+  <data name="FeedwinManager_FeedwinManager_Move_Mode">
+    <value xml:space="preserve">Move Mode</value>
+  </data>
+  <data name="FeedwinManager_FeedwinManager_Update_All">
+    <value xml:space="preserve">Update All</value>
+  </data>
+  <data name="FeedwinManager_FeedwinManager_Check_for_updates___">
+    <value xml:space="preserve">Check for updates...</value>
+  </data>
 </root>

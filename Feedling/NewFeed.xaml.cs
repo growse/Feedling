@@ -6,7 +6,6 @@ See LICENSE file for license details.
 */
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using FeedHanderPluginInterface;
 using NLog;
@@ -22,48 +21,44 @@ namespace Feedling
         public NewFeed()
         {
             Log.Debug("Loading NewFeed Window");
-            fci = new FeedConfigItem();
+            FeedConfig = new FeedConfigItem();
             InitializeComponent();
         }
         public NewFeed(FeedConfigItem givenfci)
         {
-            fci = givenfci;
-            Log.Debug("Loading NewFeed Window with given feed {0}", fci.Url);
+            FeedConfig = givenfci;
+            Log.Debug("Loading NewFeed Window with given feed {0}", FeedConfig.Url);
             InitializeComponent();
-            this.Title = string.Format("Edit {0}", givenfci.Url);
+            Title = string.Format("Edit {0}", givenfci.Url);
         }
 
-        private FeedConfigItem fci;
-        public FeedConfigItem FeedConfig
-        {
-            get { return fci; }
-        }
+        public FeedConfigItem FeedConfig { get; private set; }
 
         private void LoadFeedConfigItem()
         {
             Log.Debug("Loading settings from the feedconfigitem");
             try
             {
-                urlbox.Text = fci.Url;
-                defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)fci.DefaultColorR, (byte)fci.DefaultColorG, (byte)fci.DefaultColorB));
-                hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)fci.HoverColorR, (byte)fci.HoverColorG, (byte)fci.HoverColorB));
-                titlefontlabel.FontFamily = fci.TitleFontFamily;
-                titlefontlabel.FontSize = fci.TitleFontSize;
-                titlefontlabel.FontWeight = fci.TitleFontWeight;
-                titlefontlabel.FontStyle = fci.TitleFontStyle;
-                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fci.TitleFontFamily, fci.TitleFontSize, fci.TitleFontStyle, fci.TitleFontWeight);
-                fontlabel.FontFamily = fci.FontFamily;
-                fontlabel.FontSize = fci.FontSize;
-                fontlabel.FontWeight = fci.FontWeight;
-                fontlabel.FontStyle = fci.FontStyle;
-                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fci.FontFamily, fci.FontSize, fci.FontStyle, fci.FontWeight);
+                urlbox.Text = FeedConfig.Url;
+                defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)FeedConfig.DefaultColorR, (byte)FeedConfig.DefaultColorG, (byte)FeedConfig.DefaultColorB));
+                hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)FeedConfig.HoverColorR, (byte)FeedConfig.HoverColorG, (byte)FeedConfig.HoverColorB));
+                titlefontlabel.FontFamily = FeedConfig.TitleFontFamily;
+                titlefontlabel.FontSize = FeedConfig.TitleFontSize;
+                titlefontlabel.FontWeight = FeedConfig.TitleFontWeight;
+                titlefontlabel.FontStyle = FeedConfig.TitleFontStyle;
+                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", FeedConfig.TitleFontFamily, FeedConfig.TitleFontSize, FeedConfig.TitleFontStyle, FeedConfig.TitleFontWeight);
+                fontlabel.FontFamily = FeedConfig.FontFamily;
+                fontlabel.FontSize = FeedConfig.FontSize;
+                fontlabel.FontWeight = FeedConfig.FontWeight;
+                fontlabel.FontStyle = FeedConfig.FontStyle;
+                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", FeedConfig.FontFamily, FeedConfig.FontSize, FeedConfig.FontStyle, FeedConfig.FontWeight);
 
-                updateintervalbox.Text = fci.UpdateInterval.ToString();
-                displayeditemsbox.Text = fci.DisplayedItems.ToString();
+                updateintervalbox.Text = FeedConfig.UpdateInterval.ToString();
+                displayeditemsbox.Text = FeedConfig.DisplayedItems.ToString();
 
-                usernamebox.Text = fci.UserName;
-                passwordbox.Password = fci.Password;
-                switch (fci.AuthType)
+                usernamebox.Text = FeedConfig.UserName;
+                passwordbox.Password = FeedConfig.Password;
+                switch (FeedConfig.AuthType)
                 {
                     case FeedAuthTypes.Other:
                         otherauthradio.IsChecked = true;
@@ -78,7 +73,7 @@ namespace Feedling
                 usernamebox.IsEnabled = (noauthradio.IsChecked == false);
                 passwordbox.IsEnabled = (noauthradio.IsChecked == false);
                 //Proxy
-                switch (fci.ProxyType)
+                switch (FeedConfig.ProxyType)
                 {
                     case ProxyType.Global:
                         globalproxybtn.IsChecked = true;
@@ -94,17 +89,17 @@ namespace Feedling
                         proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = true;
                         break;
                 }
-                proxyhostbox.Text = fci.ProxyHost;
-                proxyportbox.Text = fci.ProxyPort.ToString();
-                proxyauthcheck.IsChecked = fci.ProxyAuth;
-                proxyuserbox.Text = fci.ProxyUser;
-                proxypassbox.Password = fci.ProxyPass;
+                proxyhostbox.Text = FeedConfig.ProxyHost;
+                proxyportbox.Text = FeedConfig.ProxyPort.ToString();
+                proxyauthcheck.IsChecked = FeedConfig.ProxyAuth;
+                proxyuserbox.Text = FeedConfig.ProxyUser;
+                proxypassbox.Password = FeedConfig.ProxyPass;
                 proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
             }
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when loading Newfeed Window with settings", ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -123,18 +118,18 @@ namespace Feedling
 
         private void authradio_Checked(object sender, RoutedEventArgs e)
         {
-            fci.AuthType = FeedAuthTypes.None;
+            FeedConfig.AuthType = FeedAuthTypes.None;
             if (httpauthradio != null && httpauthradio.IsChecked == true)
             {
-                fci.AuthType = FeedAuthTypes.Basic;
+                FeedConfig.AuthType = FeedAuthTypes.Basic;
             }
             if (otherauthradio != null && otherauthradio.IsChecked == true)
             {
-                fci.AuthType = FeedAuthTypes.Other;
+                FeedConfig.AuthType = FeedAuthTypes.Other;
             }
             if (usernamebox != null && passwordbox != null)
             {
-                usernamebox.IsEnabled = passwordbox.IsEnabled = (fci.AuthType != FeedAuthTypes.None);
+                usernamebox.IsEnabled = passwordbox.IsEnabled = (FeedConfig.AuthType != FeedAuthTypes.None);
             }
         }
 
@@ -146,71 +141,71 @@ namespace Feedling
 
         private void okbtn_Click(object sender, RoutedEventArgs e)
         {
-            fci.Url = urlbox.Text;
-            fci.AuthType = FeedAuthTypes.None;
+            FeedConfig.Url = urlbox.Text;
+            FeedConfig.AuthType = FeedAuthTypes.None;
             if (httpauthradio.IsChecked == true)
             {
-                fci.AuthType = FeedAuthTypes.Basic;
+                FeedConfig.AuthType = FeedAuthTypes.Basic;
             }
             if (otherauthradio.IsChecked == true)
             {
-                fci.AuthType = FeedAuthTypes.Other;
+                FeedConfig.AuthType = FeedAuthTypes.Other;
             }
 
-            fci.FontFamily = fontlabel.FontFamily;
-            fci.FontSize = fontlabel.FontSize;
-            fci.FontStyle = fontlabel.FontStyle;
-            fci.FontWeight = fontlabel.FontWeight;
-            fci.Password = passwordbox.Password;
+            FeedConfig.FontFamily = fontlabel.FontFamily;
+            FeedConfig.FontSize = fontlabel.FontSize;
+            FeedConfig.FontStyle = fontlabel.FontStyle;
+            FeedConfig.FontWeight = fontlabel.FontWeight;
+            FeedConfig.Password = passwordbox.Password;
 
-            fci.ProxyType = ProxyType.Global;
+            FeedConfig.ProxyType = ProxyType.Global;
             if (noproxybtn.IsChecked == true)
             {
-                fci.ProxyType = ProxyType.None;
+                FeedConfig.ProxyType = ProxyType.None;
             }
             if (systemproxybtn.IsChecked == true)
             {
-                fci.ProxyType = ProxyType.System;
+                FeedConfig.ProxyType = ProxyType.System;
             }
             if (customproxybtn.IsChecked == true)
             {
-                fci.ProxyType = ProxyType.Custom;
+                FeedConfig.ProxyType = ProxyType.Custom;
             }
-            fci.ProxyAuth = (proxyauthcheck.IsChecked == true);
-            fci.ProxyHost = proxyhostbox.Text;
-            fci.ProxyPass = proxypassbox.Password;
-            int proxyport = fci.ProxyPort;
+            FeedConfig.ProxyAuth = (proxyauthcheck.IsChecked == true);
+            FeedConfig.ProxyHost = proxyhostbox.Text;
+            FeedConfig.ProxyPass = proxypassbox.Password;
+            var proxyport = FeedConfig.ProxyPort;
             if (!string.IsNullOrEmpty(proxyportbox.Text) && int.TryParse(proxyportbox.Text, out proxyport) && proxyport > 0 && proxyport < 63536)
             {
-                fci.ProxyPort = proxyport;
+                FeedConfig.ProxyPort = proxyport;
             }
 
-            fci.ProxyUser = proxyuserbox.Text;
-            fci.TitleFontFamily = titlefontlabel.FontFamily;
-            fci.TitleFontSize = titlefontlabel.FontSize;
-            fci.TitleFontStyle = titlefontlabel.FontStyle;
-            fci.TitleFontWeight = titlefontlabel.FontWeight;
-            fci.DefaultColor = ((SolidColorBrush)defaultcolourbox.Fill).Color;
-            fci.HoverColor = ((SolidColorBrush)hovercolourbox.Fill).Color;
-            int updateinterval = fci.UpdateInterval;
+            FeedConfig.ProxyUser = proxyuserbox.Text;
+            FeedConfig.TitleFontFamily = titlefontlabel.FontFamily;
+            FeedConfig.TitleFontSize = titlefontlabel.FontSize;
+            FeedConfig.TitleFontStyle = titlefontlabel.FontStyle;
+            FeedConfig.TitleFontWeight = titlefontlabel.FontWeight;
+            FeedConfig.DefaultColor = ((SolidColorBrush)defaultcolourbox.Fill).Color;
+            FeedConfig.HoverColor = ((SolidColorBrush)hovercolourbox.Fill).Color;
+            var updateinterval = FeedConfig.UpdateInterval;
             if (!string.IsNullOrEmpty(updateintervalbox.Text) && int.TryParse(updateintervalbox.Text, out updateinterval) && updateinterval > 0)
             {
-                fci.UpdateInterval = updateinterval;
+                FeedConfig.UpdateInterval = updateinterval;
             }
 
-            int displayeditems = fci.DisplayedItems;
+            var displayeditems = FeedConfig.DisplayedItems;
             if (!string.IsNullOrEmpty(displayeditemsbox.Text) && int.TryParse(displayeditemsbox.Text, out displayeditems) && displayeditems > 0)
             {
-                fci.DisplayedItems = displayeditems;
+                FeedConfig.DisplayedItems = displayeditems;
             }
 
-            fci.Url = urlbox.Text;
-            fci.UserName = usernamebox.Text;
+            FeedConfig.Url = urlbox.Text;
+            FeedConfig.UserName = usernamebox.Text;
 
-            if (fci.Url.Trim().Length > 0)
+            if (FeedConfig.Url.Trim().Length > 0)
             {
-                this.DialogResult = true;
-                this.Close();
+                DialogResult = true;
+                Close();
             }
             else
             {
@@ -220,29 +215,29 @@ namespace Feedling
 
         private void fontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            FontChooser fc = new FontChooser();
-            fc.SelectedFontFamily = fontlabel.FontFamily;
-            fc.SelectedFontSize = fontlabel.FontSize;
-            fc.SelectedFontStyle = fontlabel.FontStyle;
-            fc.SelectedFontWeight = fontlabel.FontWeight;
+            var fc = new FontChooser
+                         {
+                             SelectedFontFamily = fontlabel.FontFamily,
+                             SelectedFontSize = fontlabel.FontSize,
+                             SelectedFontStyle = fontlabel.FontStyle,
+                             SelectedFontWeight = fontlabel.FontWeight
+                         };
 
-            Nullable<bool> dr = fc.ShowDialog();
-            if (dr == true)
-            {
-                fontlabel.FontFamily = fc.SelectedFontFamily;
-                fontlabel.FontSize = fc.SelectedFontSize;
-                fontlabel.FontStyle = fc.SelectedFontStyle;
-                fontlabel.FontWeight = fc.SelectedFontWeight;
-                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
-            }
+            var dr = fc.ShowDialog();
+            if (dr != true) return;
+            fontlabel.FontFamily = fc.SelectedFontFamily;
+            fontlabel.FontSize = fc.SelectedFontSize;
+            fontlabel.FontStyle = fc.SelectedFontStyle;
+            fontlabel.FontWeight = fc.SelectedFontWeight;
+            fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
         }
 
         private void defaultcolorchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
-            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)defaultcolourbox.Fill).Color.R, ((SolidColorBrush)defaultcolourbox.Fill).Color.G, ((SolidColorBrush)defaultcolourbox.Fill).Color.B);
+            var cd = new System.Windows.Forms.ColorDialog();
+            var initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)defaultcolourbox.Fill).Color.R, ((SolidColorBrush)defaultcolourbox.Fill).Color.G, ((SolidColorBrush)defaultcolourbox.Fill).Color.B);
             cd.Color = initialcol;
-            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            var dr = cd.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
                 defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
@@ -251,28 +246,28 @@ namespace Feedling
 
         private void titlefontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            FontChooser fc = new FontChooser();
-            fc.SelectedFontFamily = titlefontlabel.FontFamily;
-            fc.SelectedFontSize = titlefontlabel.FontSize;
-            fc.SelectedFontStyle = titlefontlabel.FontStyle;
-            fc.SelectedFontWeight = titlefontlabel.FontWeight;
-            Nullable<bool> dr = fc.ShowDialog();
-            if (dr == true)
-            {
-                titlefontlabel.FontFamily = fc.SelectedFontFamily;
-                titlefontlabel.FontSize = fc.SelectedFontSize;
-                titlefontlabel.FontStyle = fc.SelectedFontStyle;
-                titlefontlabel.FontWeight = fc.SelectedFontWeight;
-                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
-            }
+            var fc = new FontChooser
+                                 {
+                                     SelectedFontFamily = titlefontlabel.FontFamily,
+                                     SelectedFontSize = titlefontlabel.FontSize,
+                                     SelectedFontStyle = titlefontlabel.FontStyle,
+                                     SelectedFontWeight = titlefontlabel.FontWeight
+                                 };
+            var dr = fc.ShowDialog();
+            if (dr != true) return;
+            titlefontlabel.FontFamily = fc.SelectedFontFamily;
+            titlefontlabel.FontSize = fc.SelectedFontSize;
+            titlefontlabel.FontStyle = fc.SelectedFontStyle;
+            titlefontlabel.FontWeight = fc.SelectedFontWeight;
+            titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
         }
 
         private void hovercolorchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
-            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)hovercolourbox.Fill).Color.R, ((SolidColorBrush)hovercolourbox.Fill).Color.G, ((SolidColorBrush)hovercolourbox.Fill).Color.B);
+            var cd = new System.Windows.Forms.ColorDialog();
+            var initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)hovercolourbox.Fill).Color.R, ((SolidColorBrush)hovercolourbox.Fill).Color.G, ((SolidColorBrush)hovercolourbox.Fill).Color.B);
             cd.Color = initialcol;
-            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            var dr = cd.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
                 hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));

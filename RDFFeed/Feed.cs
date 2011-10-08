@@ -10,7 +10,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Xml;
-using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
 namespace RdfFeed

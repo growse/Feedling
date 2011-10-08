@@ -53,9 +53,9 @@ namespace Feedling
             InitializeComponent();
 
             fci = feeditem;
-            this.Width = fci.Width;
-            this.Left = fci.Position.X;
-            this.Top = fci.Position.Y;
+            Width = fci.Width;
+            Left = fci.Position.X;
+            Top = fci.Position.Y;
             updatedcolor = fci.DefaultColor;
             //Kick of thread to figure out what sort of plugin to load for this sort of feed.
             ThreadPool.QueueUserWorkItem(new WaitCallback(GetFeedType), fci);
@@ -67,29 +67,31 @@ namespace Feedling
             textbrush = new SolidColorBrush(feeditem.DefaultColor);
 
             //Add the right number of textblocks to the form, depending on what the user asked for.
-            for (int ii = 0; ii < fci.DisplayedItems; ii++)
+            for (var ii = 0; ii < fci.DisplayedItems; ii++)
             {
                 maingrid.RowDefinitions.Add(new RowDefinition());
-                TextBlock textblock = new TextBlock();
+                var textblock = new TextBlock
+                                    {
+                                        Style = (Style)FindResource("linkTextStyle"),
+                                        Name = string.Format("TextBlock{0}", ii + 1),
+                                        TextTrimming = TextTrimming.CharacterEllipsis,
+                                        Foreground = textbrush.Clone(),
+                                        Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0)),
+                                        FontFamily = fci.FontFamily,
+                                        FontSize = fci.FontSize,
+                                        FontStyle = fci.FontStyle,
+                                        FontWeight = fci.FontWeight,
+                                        Visibility = Visibility.Collapsed
+                                    };
 
-                textblock.Style = (Style)FindResource("linkTextStyle");
-                textblock.Name = string.Format("TextBlock{0}", ii + 1);
-                this.RegisterName(textblock.Name, textblock);
-                textblock.TextTrimming = TextTrimming.CharacterEllipsis;
-                textblock.Foreground = textbrush.Clone();
-                textblock.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
-                textblock.FontFamily = fci.FontFamily;
-                textblock.FontSize = fci.FontSize;
-                textblock.FontStyle = fci.FontStyle;
-                textblock.FontWeight = fci.FontWeight;
-                textblock.Visibility = Visibility.Collapsed;
+
                 textblock.SetValue(Grid.ColumnSpanProperty, 2);
+                RegisterName(textblock.Name, textblock);
                 maingrid.Children.Add(textblock);
                 Grid.SetRow(textblock, ii + 1);
             }
 
-            titletextbrush = new SolidColorBrush();
-            titletextbrush.Color = fci.DefaultColor;
+            titletextbrush = new SolidColorBrush { Color = fci.DefaultColor };
         }
 
         #region Methods
@@ -104,7 +106,7 @@ namespace Feedling
         }
 
         /// <summary>
-        /// Called by FeedWinManager when the feed is selected.Forces a redraw that removes the background a solid colour.
+        /// Called by FeedWinManager when the feed is selected. Forces a redraw that removes the background a solid colour.
         /// </summary>
         public void Deselect()
         {
@@ -119,23 +121,23 @@ namespace Feedling
         /// </summary>
         internal void RedrawWin()
         {
-            if (this.Dispatcher.Thread != Thread.CurrentThread)
+            if (Dispatcher.Thread != Thread.CurrentThread)
             {
-                RedrawWinCallback d = new RedrawWinCallback(RedrawWin);
-                this.Dispatcher.Invoke(d, null);
+                RedrawWinCallback d = RedrawWin;
+                Dispatcher.Invoke(d, null);
             }
             else
             {
                 if (selected)
                 {
-                    this.Background = new SolidColorBrush(Colors.White);
+                    Background = new SolidColorBrush(Colors.White);
                     textbrush = new SolidColorBrush(Colors.Black);
                     fadein.To = fadein.From = Colors.Black;
                     fadeout.To = fadeout.From = Colors.Black;
                 }
                 else if (pinned)
                 {
-                    this.Background = new SolidColorBrush(Colors.Transparent);
+                    Background = new SolidColorBrush(Colors.Transparent);
                     textbrush = new SolidColorBrush(fci.DefaultColor);
                     fadein.To = fadeout.From = fci.HoverColor;
                     fadeout.To = fadein.From = fci.DefaultColor;
@@ -145,7 +147,7 @@ namespace Feedling
                     fadein.To = fadein.From = Colors.White;
                     fadeout.To = fadeout.From = Colors.White;
                     textbrush = new SolidColorBrush(Colors.White);
-                    this.Background = new SolidColorBrush(Colors.Black);
+                    Background = new SolidColorBrush(Colors.Black);
                 }
 
                 //Set textblock styling
@@ -153,17 +155,15 @@ namespace Feedling
                 titleTextBlock.FontSize = fci.TitleFontSize;
                 titleTextBlock.FontStyle = fci.TitleFontStyle;
                 titleTextBlock.FontWeight = fci.TitleFontWeight;
-                for (int n = 1; n <= fci.DisplayedItems; n++)
+                for (var n = 1; n <= fci.DisplayedItems; n++)
                 {
-                    TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
-                    if (textblock != null)
-                    {
-                        textblock.Foreground = textbrush.Clone();
-                        textblock.FontFamily = fci.FontFamily;
-                        textblock.FontSize = fci.FontSize;
-                        textblock.FontWeight = fci.FontWeight;
-                        textblock.FontStyle = fci.FontStyle;
-                    }
+                    var textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                    if (textblock == null) continue;
+                    textblock.Foreground = textbrush.Clone();
+                    textblock.FontFamily = fci.FontFamily;
+                    textblock.FontSize = fci.FontSize;
+                    textblock.FontWeight = fci.FontWeight;
+                    textblock.FontStyle = fci.FontStyle;
                 }
 
                 //Figure out what to display
@@ -174,28 +174,19 @@ namespace Feedling
                         Log.Debug("Feed has error, so setting title error: {0}", rssfeed.ErrorMessage);
                         //Error has been discovered loading this feed.
                         titleTextBlock.Text = "Error";
-                        TextBlock leadingtextblock = ((TextBlock)FindName("TextBlock1"));
+                        var leadingtextblock = ((TextBlock)FindName("TextBlock1"));
                         if (leadingtextblock != null)
                         {
-                            if (string.IsNullOrEmpty(rssfeed.ErrorMessage))
-                            {
-                                leadingtextblock.Text = "No error message was given";
-                            }
-                            else
-                            {
-                                leadingtextblock.Text = rssfeed.ErrorMessage;
-                            }
+                            leadingtextblock.Text = string.IsNullOrEmpty(rssfeed.ErrorMessage) ? "No error message was given" : rssfeed.ErrorMessage;
                             leadingtextblock.Visibility = Visibility.Visible;
                         }
-                        for (int n = 2; n <= fci.DisplayedItems; n++)
+                        for (var n = 2; n <= fci.DisplayedItems; n++)
                         {
-                            TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
-                            if (textblock != null)
-                            {
-                                textblock.Text = "";
-                                textblock.Tag = null;
-                                textblock.Visibility = Visibility.Collapsed;
-                            }
+                            var textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                            if (textblock == null) continue;
+                            textblock.Text = "";
+                            textblock.Tag = null;
+                            textblock.Visibility = Visibility.Collapsed;
                         }
                     }
                     else
@@ -204,23 +195,21 @@ namespace Feedling
                         //No error, get one with putting the headlines out.
                         titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
                         titleTextBlock.Tag = rssfeed.FeedUri;
-                        for (int n = 1; n <= fci.DisplayedItems; n++)
+                        for (var n = 1; n <= fci.DisplayedItems; n++)
                         {
-                            TextBlock textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
-                            if (textblock != null)
+                            var textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
+                            if (textblock == null) continue;
+                            if (rssfeed.FeedItems.Count >= n)
                             {
-                                if (rssfeed.FeedItems.Count >= n)
-                                {
-                                    textblock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.FeedItems[n - 1].Title);
-                                    textblock.Tag = rssfeed.FeedItems[n - 1].Link;
-                                    textblock.Visibility = Visibility.Visible;
-                                }
-                                else
-                                {
-                                    textblock.Text = "";
-                                    textblock.Tag = null;
-                                    textblock.Visibility = Visibility.Collapsed;
-                                }
+                                textblock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.FeedItems[n - 1].Title);
+                                textblock.Tag = rssfeed.FeedItems[n - 1].Link;
+                                textblock.Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                textblock.Text = "";
+                                textblock.Tag = null;
+                                textblock.Visibility = Visibility.Collapsed;
                             }
                         }
                     }
@@ -229,7 +218,7 @@ namespace Feedling
                 {
                     //Still fetching the feed. Let the user know.
                     titleTextBlock.Text = "Fetching...";
-                    TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
+                    var textblock = ((TextBlock)FindName("TextBlock1"));
                     if (textblock != null)
                     {
                         textblock.Text = fci.Url;
@@ -239,14 +228,14 @@ namespace Feedling
                 else if (rssfeed == null)
                 {
                     titleTextBlock.Text = errormsg;
-                    TextBlock textblock = ((TextBlock)FindName("TextBlock1"));
+                    var textblock = ((TextBlock)FindName("TextBlock1"));
                     if (textblock != null)
                     {
                         textblock.Text = fci.Url;
                         textblock.Visibility = Visibility.Visible;
                     }
                 }
-                this.InvalidateVisual();
+                InvalidateVisual();
             }
         }
 
@@ -258,30 +247,27 @@ namespace Feedling
         {
             try
             {
-                FeedConfigItem fci = (FeedConfigItem)state;
+                var fci = (FeedConfigItem)state;
                 Log.Debug("Getting the Feed Type");
-                XmlDocument document = (XmlDocument)FeedwinManager.Fetch(fci);
-                foreach (IPlugin feedplugin in FeedwinManager.thisinst.Plugins)
+                var document = (XmlDocument)FeedwinManager.Fetch(fci);
+                foreach (var feedplugin in FeedwinManager.thisinst.Plugins)
                 {
                     Log.Debug("Testing {0} to see if it can handle feed", feedplugin.PluginName);
-                    if (feedplugin.CanHandle(document))
+                    if (!feedplugin.CanHandle(document)) continue;
+                    Log.Debug("It can! Yay!");
+                    IWebProxy reqproxy;
+                    reqproxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : FeedwinManager.GetGlobalProxy();
+                    if (reqproxy != null)
                     {
-                        Log.Debug("It can! Yay!");
-                        IWebProxy reqproxy;
-                        if (fci.ProxyType != ProxyType.Global) { reqproxy = fci.Proxy; }
-                        else { reqproxy = FeedwinManager.GetGlobalProxy(); }
-                        if (reqproxy != null)
-                        {
-                            Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
-                        }
-                        else
-                        {
-                            Log.Debug("Set Proxy for feed to nothing, nothing at all");
-                        }
-                        rssfeed = feedplugin.AddFeed(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
-                        rssfeed.UpdateInterval = fci.UpdateInterval;
-                        break;
+                        Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
                     }
+                    else
+                    {
+                        Log.Debug("Set Proxy for feed to nothing, nothing at all");
+                    }
+                    rssfeed = feedplugin.AddFeed(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
+                    rssfeed.UpdateInterval = fci.UpdateInterval;
+                    break;
                 }
             }
             catch (XmlException ex) { errormsg = "Invalid XML Document"; Log.Error("XMLException thrown in parsing the feed", ex); }
@@ -297,9 +283,9 @@ namespace Feedling
             }
             else
             {
-                rssfeed.Updated += new EventHandler(rssfeed_Updated);
+                rssfeed.Updated += rssfeed_Updated;
                 Log.Debug("Kicking off the watcher thread");
-                ThreadPool.QueueUserWorkItem(new WaitCallback(rssfeed.Watch));
+                ThreadPool.QueueUserWorkItem(rssfeed.Watch);
             }
             RedrawWin();
         }
@@ -326,18 +312,18 @@ namespace Feedling
         /// Called to load the browser and pass it the given url.
         /// </summary>
         /// <param name="url">URL string to load</param>
-        private void StartProcess(object url)
+        private static void StartProcess(object url)
         {
-            if (url.ToString().StartsWith("http://") || url.ToString().StartsWith("https://"))
+            if (!url.ToString().StartsWith("http://") && !url.ToString().StartsWith("https://")) return;
+            try
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(url.ToString());
-                }
-                catch (System.ComponentModel.Win32Exception)
-                {
-                    MessageBox.Show("An error occurred in trying to open this URL in the browser. Windows is stupid, so can't really say why. Try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                System.Diagnostics.Process.Start(url.ToString());
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                MessageBox.Show(
+                    "An error occurred in trying to open this URL in the browser. Windows is stupid, so can't really say why. Try again",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -348,7 +334,7 @@ namespace Feedling
         /// <returns></returns>
         private static int NearestX(double input)
         {
-            return Convert.ToInt32(Math.Round((double)input / Properties.Settings.Default.GridWidth) * Properties.Settings.Default.GridWidth);
+            return Convert.ToInt32(Math.Round(input / Properties.Settings.Default.GridWidth) * Properties.Settings.Default.GridWidth);
         }
 
         /// <summary>
@@ -359,9 +345,9 @@ namespace Feedling
             pinned = true;
             RedrawWin();
 
-            this.Topmost = false;
+            Topmost = false;
             NativeMethods.SendWpfWindowBack(this);
-            this.Cursor = Cursors.Arrow;
+            Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -371,8 +357,8 @@ namespace Feedling
         {
             pinned = false;
             RedrawWin();
-            this.Topmost = true;
-            this.Cursor = Cursors.SizeAll;
+            Topmost = true;
+            Cursor = Cursors.SizeAll;
         }
         #endregion
 
@@ -397,19 +383,19 @@ namespace Feedling
         {
             if (pinned)
             {
-                this.Width = fci.Width;
+                Width = fci.Width;
             }
             else
             {
-                fci.Width = this.Width;
+                fci.Width = Width;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Log.Debug("Feedwin has been loaded");
-            this.Width = fci.Width;
-            this.Height = 200;
+            Width = fci.Width;
+            Height = 200;
             if (FeedwinManager.thisinst.MoveMode)
             {
                 UnpinFromDesktop();
@@ -418,10 +404,9 @@ namespace Feedling
             {
                 PinToDesktop();
             }
-            this.Left = fci.Position.X;
-            this.Top = fci.Position.Y;
-            FeedwinManager.thisinst.RedrawAll += new EventHandler(thisinst_RedrawAll);
-            FeedwinManager.thisinst.ToggleMoveMode += new Action<bool>(thisinst_ToggleMoveMode);
+            Left = fci.Position.X;
+            Top = fci.Position.Y;
+            FeedwinManager.thisinst.ToggleMoveMode += thisinst_ToggleMoveMode;
             NativeMethods.SetWindowLongToolWindow(this);
         }
 
@@ -437,26 +422,21 @@ namespace Feedling
                 Log.Debug("Move mode toggled - unpinning from desktop");
                 UnpinFromDesktop();
             }
-
-        }
-        void thisinst_RedrawAll(object sender, EventArgs e)
-        {
-            RedrawWin();
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)
         {
             if (pinned)
             {
-                this.Left = fci.Position.X;
-                this.Top = fci.Position.Y;
-                this.WindowState = WindowState.Normal;
+                Left = fci.Position.X;
+                Top = fci.Position.Y;
+                WindowState = WindowState.Normal;
             }
             else
             {
-                this.Left = NearestX(this.Left);
-                this.Top = NearestX(this.Top);
-                fci.Position = new Point(this.Left, this.Top);
+                Left = NearestX(Left);
+                Top = NearestX(Top);
+                fci.Position = new Point(Left, Top);
             }
         }
 
@@ -479,14 +459,10 @@ namespace Feedling
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender != null && sender is TextBlock && pinned)
-            {
-                if (((TextBlock)sender).Tag != null)
-                {
-                    Log.Debug("Starting browser with url [{0}]", ((TextBlock)sender).Tag.ToString());
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(StartProcess), ((TextBlock)sender).Tag.ToString());
-                }
-            }
+            if (sender == null || !(sender is TextBlock) || !pinned) return;
+            if (((TextBlock)sender).Tag == null) return;
+            Log.Debug("Starting browser with url [{0}]", ((TextBlock)sender).Tag.ToString());
+            ThreadPool.QueueUserWorkItem(new WaitCallback(StartProcess), ((TextBlock)sender).Tag.ToString());
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -502,18 +478,16 @@ namespace Feedling
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!pinned)
-            {
-                initialwidth = this.Width;
-                startpoint = PointToScreen(Mouse.GetPosition(this)).X;
-                this.Cursor = Cursors.SizeWE;
-            }
+            if (pinned) return;
+            initialwidth = Width;
+            startpoint = PointToScreen(Mouse.GetPosition(this)).X;
+            Cursor = Cursors.SizeWE;
         }
         private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (!pinned)
             {
-                this.Cursor = Cursors.Arrow;
+                Cursor = Cursors.Arrow;
             }
         }
 
@@ -521,8 +495,7 @@ namespace Feedling
         {
             if (!pinned && e.RightButton == MouseButtonState.Pressed)
             {
-
-                this.Width = initialwidth - (startpoint - PointToScreen(Mouse.GetPosition(this)).X);
+                Width = initialwidth - (startpoint - PointToScreen(Mouse.GetPosition(this)).X);
             }
         }
         #endregion

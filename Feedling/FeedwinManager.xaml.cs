@@ -10,15 +10,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
@@ -46,15 +43,14 @@ namespace Feedling
         private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quititem;
         private List<IPlugin> plugins;
-        private OpenFileDialog importfeeddlg = new OpenFileDialog();
-        private SaveFileDialog exportfeeddlg = new SaveFileDialog();
-        public event EventHandler RedrawAll;
+        private readonly OpenFileDialog importfeeddlg = new OpenFileDialog();
+        private readonly SaveFileDialog exportfeeddlg = new SaveFileDialog();
         public static FeedwinManager thisinst;
         private Hashtable windowlist = new Hashtable();
         private FeedConfigItemList FeedConfigItems = new FeedConfigItemList();
         public event Action<bool> ToggleMoveMode;
-        private XmlSerializer serializer;
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly XmlSerializer serializer;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public ICollection<IPlugin> Plugins
         {
             get { return plugins; }
@@ -83,74 +79,74 @@ namespace Feedling
                 //We're going to use the notifyicon and context menu from Winforms, because the WPF versions are a bit shit at the moment.
                 #region ContextMenu
 
-                this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                this.updateAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                this.checkforUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                this.moveModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                this.quititem = new System.Windows.Forms.ToolStripMenuItem();
-                this.contextmenustrip = new System.Windows.Forms.ContextMenuStrip();
+                aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                updateAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                checkforUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                moveModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                quititem = new System.Windows.Forms.ToolStripMenuItem();
+                contextmenustrip = new System.Windows.Forms.ContextMenuStrip();
                 // 
                 // aboutToolStripMenuItem
                 // 
-                this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-                this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                this.aboutToolStripMenuItem.Text = "About...";
-                this.aboutToolStripMenuItem.Click += new EventHandler(aboutToolStripMenuItem_Click);
+                aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+                aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                aboutToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_About___;
+                aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
                 // 
                 // checkforUpdatesToolStripMenuItem
                 // 
-                this.checkforUpdatesToolStripMenuItem.Name = "checkforUpdatesToolStripMenuItem";
-                this.checkforUpdatesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                this.checkforUpdatesToolStripMenuItem.Text = "Check for updates...";
-                this.checkforUpdatesToolStripMenuItem.Click += new EventHandler(checkforUpdatesToolStripMenuItem_Click);
+                checkforUpdatesToolStripMenuItem.Name = "checkforUpdatesToolStripMenuItem";
+                checkforUpdatesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                checkforUpdatesToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Check_for_updates___;
+                checkforUpdatesToolStripMenuItem.Click += checkforUpdatesToolStripMenuItem_Click;
                 // 
                 // updateAllToolStripMenuItem
                 // 
-                this.updateAllToolStripMenuItem.Name = "updateAllToolStripMenuItem";
-                this.updateAllToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                this.updateAllToolStripMenuItem.Text = "Update All";
-                this.updateAllToolStripMenuItem.Click += new System.EventHandler(this.updateAllToolStripMenuItem_Click);
+                updateAllToolStripMenuItem.Name = "updateAllToolStripMenuItem";
+                updateAllToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                updateAllToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Update_All;
+                updateAllToolStripMenuItem.Click += updateAllToolStripMenuItem_Click;
                 // 
                 // moveModeToolStripMenuItem
                 // 
-                //this.moveModeToolStripMenuItem.CanSelect
-                this.moveModeToolStripMenuItem.Name = "moveModeToolStripMenuItem";
-                this.moveModeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                this.moveModeToolStripMenuItem.Text = "Move Mode";
-                this.moveModeToolStripMenuItem.CheckOnClick = true;
-                this.moveModeToolStripMenuItem.Click += new System.EventHandler(this.moveModeToolStripMenuItem_Click);
+                //moveModeToolStripMenuItem.CanSelect
+                moveModeToolStripMenuItem.Name = "moveModeToolStripMenuItem";
+                moveModeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                moveModeToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Move_Mode;
+                moveModeToolStripMenuItem.CheckOnClick = true;
+                moveModeToolStripMenuItem.Click += moveModeToolStripMenuItem_Click;
                 // 
                 // configurationToolStripMenuItem
                 // 
-                this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
-                this.configurationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                this.configurationToolStripMenuItem.Text = "Configuration...";
-                this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
+                configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
+                configurationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+                configurationToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Configuration___;
+                configurationToolStripMenuItem.Click += configurationToolStripMenuItem_Click;
                 // 
                 // quititem
                 // 
-                this.quititem.Name = "quititem";
-                this.quititem.Size = new System.Drawing.Size(157, 22);
-                this.quititem.Text = "Quit";
-                this.quititem.Click += new System.EventHandler(this.quititem_Click);
+                quititem.Name = "quititem";
+                quititem.Size = new System.Drawing.Size(157, 22);
+                quititem.Text = "Quit";
+                quititem.Click += quititem_Click;
 
-                this.contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem,
-            this.checkforUpdatesToolStripMenuItem,
-            this.updateAllToolStripMenuItem,
-            this.moveModeToolStripMenuItem,
-            this.configurationToolStripMenuItem,
-            this.quititem});
-                this.contextmenustrip.Name = "menustrip";
-                this.contextmenustrip.Size = new System.Drawing.Size(158, 114);
+                contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            aboutToolStripMenuItem,
+            checkforUpdatesToolStripMenuItem,
+            updateAllToolStripMenuItem,
+            moveModeToolStripMenuItem,
+            configurationToolStripMenuItem,
+            quititem});
+                contextmenustrip.Name = "menustrip";
+                contextmenustrip.Size = new System.Drawing.Size(158, 114);
 
-                this.notifyicon = new System.Windows.Forms.NotifyIcon();
-                this.notifyicon.BalloonTipText = Properties.Resources.FirstTimeStartBalloonText;
-                this.notifyicon.Text = "Feedling";
-                this.notifyicon.Icon = Properties.Resources.FeedlingIcon;
-                this.notifyicon.Visible = true;
-                this.notifyicon.ContextMenuStrip = contextmenustrip;
+                notifyicon = new System.Windows.Forms.NotifyIcon();
+                notifyicon.BalloonTipText = Properties.Resources.FirstTimeStartBalloonText;
+                notifyicon.Text = "Feedling";
+                notifyicon.Icon = Properties.Resources.FeedlingIcon;
+                notifyicon.Visible = true;
+                notifyicon.ContextMenuStrip = contextmenustrip;
 
 
                 importfeeddlg.Filter = exportfeeddlg.Filter = "Feeling Config Files (*.xml)|*.xml";
@@ -164,11 +160,8 @@ namespace Feedling
                 thisinst = this;
                 Log.Debug("Removing SSL cert validation");
                 //We currently don't care if your RSS feed is being MITM'd.
-                ServicePointManager.ServerCertificateValidationCallback = delegate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-                {
-                    bool validationResult = true;
-                    return validationResult;
-                };
+                ServicePointManager.ServerCertificateValidationCallback =
+                    (sender, certificate, chain, sslPolicyErrors) => true;
 
                 LoadPlugins();
 
@@ -180,24 +173,24 @@ namespace Feedling
                 //If we don't have any feeds loaded, prompt the user to add some.
                 if (FeedConfigItems.Items.Count == 0)
                 {
-                    this.notifyicon.ShowBalloonTip(1000);
+                    notifyicon.ShowBalloonTip(1000);
                 }
 
                 LoadProxy();
 
                 SetGuiConfigValues();
 
-                this.Visibility = System.Windows.Visibility.Collapsed;
-                this.Hide();
+                Visibility = Visibility.Collapsed;
+                Hide();
 
                 Log.Debug("Checking for udpates on startup");
-                AutoUpdate updater = new AutoUpdate();
+                var updater = new AutoUpdate();
                 updater.CheckForUpdates(true);
             }
             catch (Exception ex)
             {
                 Log.Error("Exception caught during FeedwinManager constructor", ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -461,7 +454,7 @@ namespace Feedling
                 if (fci.Url == obj.FeedConfig.Url)
                 {
                     fci.Position = obj.FeedConfig.Position;
-                    
+
                 }
             }
             SaveFeedSettings();
@@ -565,7 +558,7 @@ namespace Feedling
         #region Events
         void checkforUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoUpdate updater = new AutoUpdate();
+            var updater = new AutoUpdate();
             updater.CheckForUpdates();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -576,21 +569,22 @@ namespace Feedling
 
         void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            About aboutfrm = new About();
+            var aboutfrm = new About();
             aboutfrm.ShowDialog();
 
         }
 
         private void pluginaboutbtn_Click(object sender, EventArgs e)
         {
-            if (pluginlistbox.SelectedItems.Count == 1)
+            if (pluginlistbox.SelectedItems.Count != 1) return;
+            foreach (var feedplugin in plugins)
             {
-                foreach (IPlugin feedplugin in plugins)
+                if (feedplugin.PluginName == pluginlistbox.SelectedItem.ToString())
                 {
-                    if (feedplugin.PluginName == pluginlistbox.SelectedItem.ToString())
-                    {
-                        MessageBox.Show(string.Format("{0}\nVersion:\t{1}\n{2}", feedplugin.PluginName, feedplugin.PluginVersion, feedplugin.PluginCopyright), feedplugin.PluginName, MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
+                    MessageBox.Show(
+                        string.Format("{0}\nVersion:\t{1}\n{2}", feedplugin.PluginName, feedplugin.PluginVersion,
+                                      feedplugin.PluginCopyright), feedplugin.PluginName, MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
             }
         }
@@ -609,16 +603,15 @@ namespace Feedling
         }
         private void configurationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!this.IsVisible)
+            if (!IsVisible)
             {
-                this.Show();
+                Show();
             }
-            if (this.WindowState == WindowState.Minimized)
+            if (WindowState == WindowState.Minimized)
             {
                 WindowState = WindowState.Normal;
             }
-
-            this.ShowInTaskbar = true;
+            ShowInTaskbar = true;
         }
 
         private void quititem_Click(object sender, EventArgs e)
@@ -666,15 +659,13 @@ namespace Feedling
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when trying to save the settings on closing the FeedwinManager window", ex);
-                throw ex;
+                throw;
             }
             finally
             {
-                this.Hide();
+                Hide();
             }
         }
-
-
 
         internal void LoadFeedConfig(XmlReader xmlr)
         {
@@ -713,7 +704,7 @@ namespace Feedling
 
         private void proxyportbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            int port = 0;
+            int port;
             if (int.TryParse(proxyportbox.Text, out port) && port > 0)
             {
             }
@@ -730,7 +721,7 @@ namespace Feedling
             feedtemplatebtn.IsEnabled = (feedlistbox.SelectedItems.Count == 1);
             feeddeletebtn.IsEnabled = (feedlistbox.SelectedItems.Count > 0);
 
-            FeedConfigItem fci = (FeedConfigItem)feedlistbox.SelectedItem;
+            var fci = (FeedConfigItem)feedlistbox.SelectedItem;
             if (fci != null)
             {
                 if (previousselectedguid != null && windowlist.Contains(previousselectedguid))
@@ -745,137 +736,118 @@ namespace Feedling
 
         private void feededitbtn_Click(object sender, RoutedEventArgs e)
         {
-            if (feedlistbox.SelectedItems.Count == 1)
+            if (feedlistbox.SelectedItems.Count != 1) return;
+            var fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
+            var nf = new NewFeed(fci);
+            var dr = nf.ShowDialog();
+            if (dr != true || nf.FeedConfig.Url.Trim().Length <= 0) return;
+            FeedConfigItems.Remove(((FeedConfigItem)feedlistbox.SelectedItem));
+            FeedConfigItems.Add(nf.FeedConfig);
+            SaveFeedSettings();
+
+            ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
+            windowlist.Remove(nf.FeedConfig.Guid);
+
+            var nfw = new FeedWin(nf.FeedConfig);
+            windowlist.Add(nf.FeedConfig.Guid, nfw);
+            nfw.Show();
+
+            feedlistbox.Items.Clear();
+            foreach (var fcil in FeedConfigItems.Items)
             {
-                FeedConfigItem fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
-                NewFeed nf = new NewFeed(fci);
-                bool? dr = nf.ShowDialog();
-                if (dr == true && nf.FeedConfig.Url.Trim().Length > 0)
-                {
-                    FeedConfigItems.Remove(((FeedConfigItem)feedlistbox.SelectedItem));
-                    FeedConfigItems.Add(nf.FeedConfig);
-                    SaveFeedSettings();
-
-                    ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
-                    windowlist.Remove(nf.FeedConfig.Guid);
-
-                    FeedWin nfw = new FeedWin(nf.FeedConfig);
-                    windowlist.Add(nf.FeedConfig.Guid, nfw);
-                    nfw.Show();
-
-                    feedlistbox.Items.Clear();
-                    foreach (FeedConfigItem fcil in FeedConfigItems.Items)
-                    {
-                        feedlistbox.Items.Add(fcil);
-                    }
-                }
+                feedlistbox.Items.Add(fcil);
             }
         }
 
         private void feedtemplatebtn_Click(object sender, RoutedEventArgs e)
         {
-            if (feedlistbox.SelectedItems.Count == 1)
-            {
-                FeedConfigItem fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
-                fci.Url = "";
-                NewFeed nf = new NewFeed(fci);
-                Nullable<bool> dr = nf.ShowDialog();
-                if (dr == true && nf.FeedConfig.Url.Trim().Length > 0)
-                {
-                    FeedConfigItems.Add(nf.FeedConfig);
-                    SaveFeedSettings();
-                    ReloadFeedConfigItems();
-                }
-            }
+            if (feedlistbox.SelectedItems.Count != 1) return;
+            var fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
+            fci.Url = "";
+            var nf = new NewFeed(fci);
+            var dr = nf.ShowDialog();
+
+            if (dr != true || nf.FeedConfig.Url.Trim().Length <= 0) return;
+            FeedConfigItems.Add(nf.FeedConfig);
+            SaveFeedSettings();
+            ReloadFeedConfigItems();
         }
         private void feeddeletebtn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult dr = MessageBox.Show(Properties.Resources.FeedDeleteQuestion, Properties.Resources.FeedDeleteQuestionCaption, MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (dr == MessageBoxResult.Yes)
+            var dr = MessageBox.Show(Properties.Resources.FeedDeleteQuestion, Properties.Resources.FeedDeleteQuestionCaption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (dr != MessageBoxResult.Yes || feedlistbox.SelectedItems.Count <= 0) return;
+            var toberemoved = new List<FeedConfigItem>();
+            foreach (FeedConfigItem fci in feedlistbox.SelectedItems)
             {
-                if (feedlistbox.SelectedItems.Count > 0)
+                FeedConfigItems.Remove(fci);
+                if (windowlist.ContainsKey(fci.Guid))
                 {
-                    List<FeedConfigItem> toberemoved = new List<FeedConfigItem>();
-                    foreach (FeedConfigItem fci in feedlistbox.SelectedItems)
-                    {
-                        FeedConfigItems.Remove(fci);
-                        if (windowlist.ContainsKey(fci.Guid))
-                        {
-                            ((FeedWin)windowlist[fci.Guid]).Close();
-                            windowlist.Remove(fci.Guid);
-                        }
-                        toberemoved.Add(fci);
-                    }
-                    foreach (FeedConfigItem fci in toberemoved)
-                    {
-                        feedlistbox.Items.Remove(fci);
-                    }
-                    SaveFeedSettings();
+                    ((FeedWin)windowlist[fci.Guid]).Close();
+                    windowlist.Remove(fci.Guid);
                 }
+                toberemoved.Add(fci);
             }
+            foreach (var fci in toberemoved)
+            {
+                feedlistbox.Items.Remove(fci);
+            }
+            SaveFeedSettings();
         }
         private void feedaddbtn_Click(object sender, RoutedEventArgs e)
         {
-            NewFeed nf = new NewFeed();
-            Nullable<bool> dr = nf.ShowDialog();
-            if (dr == true && nf.FeedConfig.Url.Trim().Length > 0)
-            {
-                FeedConfigItems.Add(nf.FeedConfig);
-                SaveFeedSettings();
-                ReloadFeedConfigItems();
-            }
+            var nf = new NewFeed();
+            var dr = nf.ShowDialog();
+            if (dr != true || nf.FeedConfig.Url.Trim().Length <= 0) return;
+            FeedConfigItems.Add(nf.FeedConfig);
+            SaveFeedSettings();
+            ReloadFeedConfigItems();
         }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            //this.Hide();
-        }
+
         private void feedimportbtn_Click(object sender, RoutedEventArgs e)
         {
-            Nullable<bool> dr = importfeeddlg.ShowDialog();
-            if (dr == true)
+            var dr = importfeeddlg.ShowDialog();
+            if (dr != true) return;
+            Log.Debug("Importing feed list from {0}", importfeeddlg.FileName);
+            var sr = new StreamReader(importfeeddlg.FileName);
+            try
             {
-                Log.Debug("Importing feed list from {0}", importfeeddlg.FileName);
-                StreamReader sr = new StreamReader(importfeeddlg.FileName);
-                try
+                var xmlr = XmlReader.Create(sr);
+                if (serializer.CanDeserialize(xmlr))
                 {
-                    XmlReader xmlr = XmlReader.Create(sr);
-                    if (serializer.CanDeserialize(xmlr))
-                    {
-                        LoadFeedConfig(xmlr);
-                    }
-                    xmlr.Close();
-                    sr.Close();
+                    LoadFeedConfig(xmlr);
                 }
-                catch (XmlException)
-                {
-                }
+                xmlr.Close();
+                sr.Close();
+            }
+            catch (XmlException)
+            {
             }
         }
+
 
         private void feedexportbtn_Click(object sender, RoutedEventArgs e)
         {
-            Nullable<bool> dr = exportfeeddlg.ShowDialog();
-            if (dr == true)
+            var dr = exportfeeddlg.ShowDialog();
+            if (dr != true) return;
+            Log.Debug("Exporting feed list to {0}", exportfeeddlg.FileName);
+            SaveFeedSettings();
+            try
             {
-                Log.Debug("Exporting feed list to {0}", exportfeeddlg.FileName);
-                SaveFeedSettings();
-                try
-                {
-                    TextWriter tw = new StreamWriter(exportfeeddlg.FileName);
-                    tw.Write(Properties.Settings.Default.FeedConfigItems);
-                    tw.Close();
-                }
-                catch (IOException ex)
-                {
-                    Log.Error("IOException thrown when trying to export the feed list: {0}", ex);
-                    MessageBox.Show("There was an error writing to the file.");
-                }
+                var tw = new StreamWriter(exportfeeddlg.FileName);
+                tw.Write(Properties.Settings.Default.FeedConfigItems);
+                tw.Close();
+            }
+            catch (IOException ex)
+            {
+                Log.Error("IOException thrown when trying to export the feed list: {0}", ex);
+                MessageBox.Show("There was an error writing to the file.");
             }
         }
 
+
         private void applytoallbtn_Click(object sender, RoutedEventArgs e)
         {
-            foreach (FeedConfigItem fci in FeedConfigItems.Items)
+            foreach (var fci in FeedConfigItems.Items)
             {
                 fci.DefaultColorR = Properties.Settings.Default.DefaultFeedColorR;
                 fci.DefaultColorG = Properties.Settings.Default.DefaultFeedColorG;
@@ -903,54 +875,54 @@ namespace Feedling
 
         private void fontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            FontChooser fc = new FontChooser();
-            fc.SelectedFontFamily = fontlabel.FontFamily;
-            fc.SelectedFontSize = fontlabel.FontSize;
-            fc.SelectedFontStyle = fontlabel.FontStyle;
-            fc.SelectedFontWeight = fontlabel.FontWeight;
+            var fc = new FontChooser
+                         {
+                             SelectedFontFamily = fontlabel.FontFamily,
+                             SelectedFontSize = fontlabel.FontSize,
+                             SelectedFontStyle = fontlabel.FontStyle,
+                             SelectedFontWeight = fontlabel.FontWeight
+                         };
 
-            Nullable<bool> dr = fc.ShowDialog();
-            if (dr == true)
-            {
-                fontlabel.FontFamily = fc.SelectedFontFamily;
-                fontlabel.FontSize = fc.SelectedFontSize;
-                fontlabel.FontStyle = fc.SelectedFontStyle;
-                fontlabel.FontWeight = fc.SelectedFontWeight;
-                Properties.Settings.Default.DefaultFontFamily = fc.SelectedFontFamily.ToString();
-                Properties.Settings.Default.DefaultFontSize = fc.SelectedFontSize;
-                Properties.Settings.Default.DefaultFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
-                Properties.Settings.Default.DefaultFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
-                fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
-            }
+            var dr = fc.ShowDialog();
+            if (dr != true) return;
+            fontlabel.FontFamily = fc.SelectedFontFamily;
+            fontlabel.FontSize = fc.SelectedFontSize;
+            fontlabel.FontStyle = fc.SelectedFontStyle;
+            fontlabel.FontWeight = fc.SelectedFontWeight;
+            Properties.Settings.Default.DefaultFontFamily = fc.SelectedFontFamily.ToString();
+            Properties.Settings.Default.DefaultFontSize = fc.SelectedFontSize;
+            Properties.Settings.Default.DefaultFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
+            Properties.Settings.Default.DefaultFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
+            fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", fontlabel.FontFamily, fontlabel.FontSize, fontlabel.FontStyle, fontlabel.FontWeight);
         }
         private void titlefontchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            FontChooser fc = new FontChooser();
-            fc.SelectedFontFamily = titlefontlabel.FontFamily;
-            fc.SelectedFontSize = titlefontlabel.FontSize;
-            fc.SelectedFontStyle = titlefontlabel.FontStyle;
-            fc.SelectedFontWeight = titlefontlabel.FontWeight;
-            Nullable<bool> dr = fc.ShowDialog();
-            if (dr == true)
-            {
-                titlefontlabel.FontFamily = fc.SelectedFontFamily;
-                titlefontlabel.FontSize = fc.SelectedFontSize;
-                titlefontlabel.FontStyle = fc.SelectedFontStyle;
-                titlefontlabel.FontWeight = fc.SelectedFontWeight;
-                Properties.Settings.Default.DefaultTitleFontFamily = fc.SelectedFontFamily.ToString();
-                Properties.Settings.Default.DefaultTitleFontSize = fc.SelectedFontSize;
-                Properties.Settings.Default.DefaultTitleFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
-                Properties.Settings.Default.DefaultTitleFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
-                titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
-            }
+            var fc = new FontChooser
+                         {
+                             SelectedFontFamily = titlefontlabel.FontFamily,
+                             SelectedFontSize = titlefontlabel.FontSize,
+                             SelectedFontStyle = titlefontlabel.FontStyle,
+                             SelectedFontWeight = titlefontlabel.FontWeight
+                         };
+            var dr = fc.ShowDialog();
+            if (dr != true) return;
+            titlefontlabel.FontFamily = fc.SelectedFontFamily;
+            titlefontlabel.FontSize = fc.SelectedFontSize;
+            titlefontlabel.FontStyle = fc.SelectedFontStyle;
+            titlefontlabel.FontWeight = fc.SelectedFontWeight;
+            Properties.Settings.Default.DefaultTitleFontFamily = fc.SelectedFontFamily.ToString();
+            Properties.Settings.Default.DefaultTitleFontSize = fc.SelectedFontSize;
+            Properties.Settings.Default.DefaultTitleFontStyle = FontConversions.FontStyleToString(fc.SelectedFontStyle);
+            Properties.Settings.Default.DefaultTitleFontWeight = FontConversions.FontWeightToString(fc.SelectedFontWeight);
+            titlefontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", titlefontlabel.FontFamily, titlefontlabel.FontSize, titlefontlabel.FontStyle, titlefontlabel.FontWeight);
         }
 
         private void defaultcolorchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
-            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)defaultcolourbox.Fill).Color.R, ((SolidColorBrush)defaultcolourbox.Fill).Color.G, ((SolidColorBrush)defaultcolourbox.Fill).Color.B);
+            var cd = new System.Windows.Forms.ColorDialog();
+            var initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)defaultcolourbox.Fill).Color.R, ((SolidColorBrush)defaultcolourbox.Fill).Color.G, ((SolidColorBrush)defaultcolourbox.Fill).Color.B);
             cd.Color = initialcol;
-            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            var dr = cd.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
                 defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
@@ -962,10 +934,10 @@ namespace Feedling
 
         private void hovercolorchooserbtn_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog cd = new System.Windows.Forms.ColorDialog();
-            System.Drawing.Color initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)hovercolourbox.Fill).Color.R, ((SolidColorBrush)hovercolourbox.Fill).Color.G, ((SolidColorBrush)hovercolourbox.Fill).Color.B);
+            var cd = new System.Windows.Forms.ColorDialog();
+            var initialcol = System.Drawing.Color.FromArgb(((SolidColorBrush)hovercolourbox.Fill).Color.R, ((SolidColorBrush)hovercolourbox.Fill).Color.G, ((SolidColorBrush)hovercolourbox.Fill).Color.B);
             cd.Color = initialcol;
-            System.Windows.Forms.DialogResult dr = cd.ShowDialog();
+            var dr = cd.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
                 hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(cd.Color.R, cd.Color.G, cd.Color.B));
