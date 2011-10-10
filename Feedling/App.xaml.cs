@@ -24,6 +24,8 @@ namespace Feedling
 
 #if DEBUG
             LogManager.GlobalThreshold = LogLevel.Trace;
+#else
+            LogManager.GlobalThreshold = LogLevel.Info;
 #endif
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
         }
