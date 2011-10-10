@@ -150,7 +150,6 @@
     <Compile Include="FeedWin.xaml.cs">
       <DependentUpon>FeedWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\HttpUtility.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="NewFeed.xaml.cs">
       <DependentUpon>NewFeed.xaml</DependentUpon>

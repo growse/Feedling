@@ -193,7 +193,7 @@ namespace Feedling
                     {
                         Log.Debug("No error, get on with the headlines for: {0}", rssfeed.Title);
                         //No error, get one with putting the headlines out.
-                        titleTextBlock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.Title);
+                        titleTextBlock.Text = rssfeed.Title;
                         titleTextBlock.Tag = rssfeed.FeedUri;
                         for (var n = 1; n <= fci.DisplayedItems; n++)
                         {
@@ -201,7 +201,7 @@ namespace Feedling
                             if (textblock == null) continue;
                             if (rssfeed.FeedItems.Count >= n)
                             {
-                                textblock.Text = System.Web.HttpUtility.HtmlDecode(rssfeed.FeedItems[n - 1].Title);
+                                textblock.Text = rssfeed.FeedItems[n - 1].Title;
                                 textblock.Tag = rssfeed.FeedItems[n - 1].Link;
                                 textblock.Visibility = Visibility.Visible;
                             }
