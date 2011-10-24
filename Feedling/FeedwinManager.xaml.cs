@@ -687,7 +687,7 @@ namespace Feedling
         {
             foreach (FeedWin fw in windowlist.Values)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(fw.UpdateNow));
+                ThreadPool.QueueUserWorkItem(fw.UpdateNow);
             }
         }
 
