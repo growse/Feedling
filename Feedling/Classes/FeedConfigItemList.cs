@@ -5,7 +5,6 @@ All rights reserved.
 See LICENSE file for license details.
 */
 using System.Collections.ObjectModel;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace Feedling

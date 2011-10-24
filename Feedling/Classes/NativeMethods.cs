@@ -5,12 +5,9 @@ All rights reserved.
 See LICENSE file for license details.
 */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Interop;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace Feedling
 {
@@ -25,7 +22,7 @@ namespace Feedling
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern System.UInt32 GetWindowLong(IntPtr hWnd, int nIndex);
+        private static extern UInt32 GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(
             IntPtr hWnd,
@@ -53,16 +50,16 @@ namespace Feedling
 
         public static void SetWindowLongToolWindow(Window window)
         {
-            WindowInteropHelper wh = new WindowInteropHelper(window);
-            uint exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
+            var wh = new WindowInteropHelper(window);
+            var exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
             exStyle |= WS_EX_TOOLWINDOW;
             SetWindowLong(wh.Handle, GWL_EXSTYLE, (int)exStyle);
         }
         public static void MakeWindowMovable(Window window)
         {
-            WindowInteropHelper wh = new WindowInteropHelper(window);
-            NativeMethods.ReleaseCapture();
-            NativeMethods.SendMessage(wh.Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, IntPtr.Zero);
+            var wh = new WindowInteropHelper(window);
+            ReleaseCapture();
+            SendMessage(wh.Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, IntPtr.Zero);
         }
     }
 }

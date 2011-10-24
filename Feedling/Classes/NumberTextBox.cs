@@ -23,14 +23,11 @@ namespace Feedling
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            if (e != null)
-            {
-                e.Handled = (e.Key == Key.Space);
-            }
+            e.Handled = (e.Key == Key.Space);
             base.OnPreviewKeyDown(e);
         }
 
-        private bool nosymbols = false;
+        private bool nosymbols;
 
         public bool NoSymbols
         {
@@ -40,7 +37,7 @@ namespace Feedling
 
         bool AreAllValidNumericChars(string str)
         {
-            bool ret = true;
+            var ret = true;
             if (!nosymbols)
             {
                 if (str == System.Globalization.NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator |
@@ -59,10 +56,10 @@ namespace Feedling
                     return ret;
             }
 
-            int l = str.Length;
-            for (int i = 0; i < l; i++)
+            var l = str.Length;
+            for (var i = 0; i < l; i++)
             {
-                char ch = str[i];
+                var ch = str[i];
                 ret &= Char.IsDigit(ch);
             }
 

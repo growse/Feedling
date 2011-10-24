@@ -132,12 +132,12 @@ namespace Feedling
                 quititem.Click += quititem_Click;
 
                 contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            aboutToolStripMenuItem,
-            checkforUpdatesToolStripMenuItem,
-            updateAllToolStripMenuItem,
-            moveModeToolStripMenuItem,
-            configurationToolStripMenuItem,
-            quititem});
+                    aboutToolStripMenuItem,
+                    checkforUpdatesToolStripMenuItem,
+                    updateAllToolStripMenuItem,
+                    moveModeToolStripMenuItem,
+                    configurationToolStripMenuItem,
+                    quititem});
                 contextmenustrip.Name = "menustrip";
                 contextmenustrip.Size = new System.Drawing.Size(158, 114);
 
