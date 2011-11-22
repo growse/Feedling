@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
-        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
-        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
+        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,25 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A131C19BE8354188544BD223172BB369"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -124,7 +106,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A131C19BE8354188544BD223172BB369"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -417,15 +417,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
-        "ProductCode" = "8:{54FB0FE0-C95E-4267-BE4D-2A5D7F32AE4D}"
-        "PackageCode" = "8:{3E9F4829-3F51-4DB2-8DB9-2C42FF450546}"
+        "ProductCode" = "8:{2E6CACC7-6C42-4EA9-9821-749163B617C4}"
+        "PackageCode" = "8:{27727005-940F-47D1-8203-01BE63D1237F}"
         "UpgradeCode" = "8:{513C01DE-2A25-4226-85EB-D46EFC493ECA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.9.0"
+        "ProductVersion" = "8:0.9.1"
         "Manufacturer" = "8:Andrew Rowson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://feedling.net"

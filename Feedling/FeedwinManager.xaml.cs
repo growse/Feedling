@@ -385,11 +385,11 @@ namespace Feedling
         public void ReloadFeedConfigItems(bool clearall)
         {
 
-            if (this.Dispatcher.Thread != Thread.CurrentThread)
+            if (Dispatcher.Thread != Thread.CurrentThread)
             {
                 Log.Debug("Received request to Reload FeedConfigItems - thread miss, reinvoking");
-                ReloadFeedConfigItemsCallBack d = new ReloadFeedConfigItemsCallBack(ReloadFeedConfigItems);
-                this.Dispatcher.Invoke(d, new object[] { clearall });
+                var d = new ReloadFeedConfigItemsCallBack(ReloadFeedConfigItems);
+                Dispatcher.Invoke(d, new object[] { clearall });
             }
             else
             {
@@ -398,7 +398,7 @@ namespace Feedling
                 {
                     feedlistbox.Items.Clear();
                     LoadFeedSettings();
-                    foreach (FeedConfigItem fci in FeedConfigItems.Items)
+                    foreach (var fci in FeedConfigItems.Items)
                     {
                         feedlistbox.Items.Add(fci);
                     }
@@ -412,13 +412,13 @@ namespace Feedling
                         }
                         windowlist.Clear();
                     }
-                    foreach (FeedConfigItem fci in FeedConfigItems.Items)
+                    foreach (var fci in FeedConfigItems.Items)
                     {
                         if (!windowlist.ContainsKey(fci.Guid))
                         {
-                            FeedWin fw = new FeedWin(fci);
-                            fw.LocationChanged += new EventHandler(fw_LocationChanged);
-                            fw.SizeChanged += new SizeChangedEventHandler(fw_SizeChanged);
+                            var fw = new FeedWin(fci);
+                            fw.LocationChanged += fw_LocationChanged;
+                            fw.SizeChanged += fw_SizeChanged;
                             fw.Show();
                             windowlist.Add(fw.FeedConfig.Guid, fw);
                         }
@@ -427,7 +427,7 @@ namespace Feedling
                 catch (Exception ex)
                 {
                     Log.Error("Exception thrown when trying to reload the FeedConfigItems", ex);
-                    throw ex;
+                    throw;
                 }
             }
         }
@@ -717,6 +717,7 @@ namespace Feedling
 
         private void feedlistbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             feededitbtn.IsEnabled = (feedlistbox.SelectedItems.Count == 1);
             feedtemplatebtn.IsEnabled = (feedlistbox.SelectedItems.Count == 1);
             feeddeletebtn.IsEnabled = (feedlistbox.SelectedItems.Count > 0);
@@ -731,6 +732,7 @@ namespace Feedling
                 previousselectedguid = fci.Guid;
 
                 ((FeedWin)windowlist[previousselectedguid]).Select();
+                System.Windows.Forms.MessageBox.Show(fci.Guid.ToString());
             }
         }
 
@@ -766,7 +768,7 @@ namespace Feedling
             fci.Url = "";
             var nf = new NewFeed(fci);
             var dr = nf.ShowDialog();
-
+            
             if (dr != true || nf.FeedConfig.Url.Trim().Length <= 0) return;
             FeedConfigItems.Add(nf.FeedConfig);
             SaveFeedSettings();

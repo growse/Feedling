@@ -1,4 +1,5 @@
-﻿using Feedling;
+﻿using System.Reflection;
+using Feedling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using FeedHanderPluginInterface;
@@ -55,14 +56,21 @@ namespace FeedlingTests
 
 
         /// <summary>
-        ///A test for Copy
+        ///A test for Copy Results should have the same properties but different GUIDs.
         ///</summary>
         [TestMethod]
         public void CopyTest()
         {
             var expected = new FeedConfigItem();
             var actual = expected.Copy();
-            Assert.AreEqual(expected, actual);
+            var properties = typeof(FeedConfigItem).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.PropertyType != typeof(Guid))
+                {
+                    Assert.AreEqual(property.GetValue(actual, null), property.GetValue(expected, null));
+                }
+            }
         }
 
         /// <summary>

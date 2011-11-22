@@ -40,6 +40,11 @@ namespace Feedling
             HoverColorG = Properties.Settings.Default.DefaultFeedHoverColorG;
             HoverColorB = Properties.Settings.Default.DefaultFeedHoverColorB;
         }
+
+        /// <summary>
+        /// Copy maintains equality between all variables but generates a new GUID.
+        /// </summary>
+        /// <returns>A new FeedConfigItem object with the same values but a different GUID.</returns>
         public FeedConfigItem Copy()
         {
             var fci = new FeedConfigItem
@@ -48,14 +53,14 @@ namespace Feedling
                               DefaultColor = DefaultColor,
                               FontFamily = FontFamily,
                               FontSize = FontSize,
-                              FontStyle = FontStyle,
-                              FontWeight = FontWeight,
+                              FontStyleString = FontStyleString,
+                              FontWeightString = FontWeightString,
                               HoverColor = HoverColor,
                               Position = Position,
                               TitleFontFamily = TitleFontFamily,
                               TitleFontSize = TitleFontSize,
-                              TitleFontStyle = TitleFontStyle,
-                              TitleFontWeight = TitleFontWeight,
+                              TitleFontStyleString = TitleFontStyleString,
+                              TitleFontWeightString = TitleFontWeightString,
                               AuthType = AuthType,
                               UserName = UserName,
                               Password = Password,
@@ -67,7 +72,10 @@ namespace Feedling
                               ProxyPort = ProxyPort,
                               UpdateInterval = UpdateInterval,
                               DisplayedItems = DisplayedItems,
-                              Guid = Guid
+                              Width = Width,
+                              XPos = XPos,
+                              YPos = YPos,
+                              Guid = Guid.NewGuid()
                           };
             return fci;
         }
@@ -298,11 +306,11 @@ namespace Feedling
         public override bool Equals(object obj)
         {
             var fci = obj as FeedConfigItem;
-            return GetHashCode() == fci.GetHashCode();
+            return fci != null && GetHashCode() == fci.GetHashCode();
         }
         public override int GetHashCode()
         {
-            return Guid.GetHashCode();
+            return string.Concat(Url, Guid.ToString()).GetHashCode();
         }
     }
 }
