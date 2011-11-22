@@ -59,7 +59,7 @@ namespace Feedling
         {
             var wh = new WindowInteropHelper(window);
             ReleaseCapture();
-            SendMessage(wh.Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, IntPtr.Zero);
+            SendMessage(wh.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, IntPtr.Zero);
         }
     }
 }

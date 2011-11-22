@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using FeedHanderPluginInterface;
 using NLog;
@@ -58,11 +59,11 @@ namespace Feedling
             Top = fci.Position.Y;
             updatedcolor = fci.DefaultColor;
             //Kick of thread to figure out what sort of plugin to load for this sort of feed.
-            ThreadPool.QueueUserWorkItem(new WaitCallback(GetFeedType), fci);
+            ThreadPool.QueueUserWorkItem(GetFeedType, fci);
 
             //Set up the animations for the mouseovers
-            fadein = new ColorAnimation() { AutoReverse = false, From = fci.DefaultColor, To = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
-            fadeout = new ColorAnimation() { AutoReverse = false, To = fci.DefaultColor, From = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
+            fadein = new ColorAnimation { AutoReverse = false, From = fci.DefaultColor, To = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
+            fadeout = new ColorAnimation { AutoReverse = false, To = fci.DefaultColor, From = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
 
             textbrush = new SolidColorBrush(feeditem.DefaultColor);
 
@@ -90,6 +91,22 @@ namespace Feedling
                 maingrid.Children.Add(textblock);
                 Grid.SetRow(textblock, ii + 1);
             }
+
+
+            maingrid.RowDefinitions.Add(new RowDefinition());
+            var movehandle = new Image();
+            movehandle.Width = movehandle.Height = 30;
+            movehandle.Name = "movehandle";
+
+            movehandle.HorizontalAlignment = HorizontalAlignment.Left;
+
+            movehandle.Cursor = Cursors.SizeAll;
+            movehandle.Source = new BitmapImage(new Uri("http://mintywhite.com/images/wg/0904/05rssfeedicons/rss-feed-icons11.jpg"));
+            movehandle.SetValue(Grid.ColumnSpanProperty, 2);
+            RegisterName(movehandle.Name, movehandle);
+            maingrid.Children.Add(movehandle);
+            movehandle.MouseDown += movehandle_MouseDown;
+            Grid.SetRow(movehandle, maingrid.RowDefinitions.Count);
 
             titletextbrush = new SolidColorBrush { Color = fci.DefaultColor };
         }
@@ -255,8 +272,7 @@ namespace Feedling
                     Log.Debug("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (!feedplugin.CanHandle(document)) continue;
                     Log.Debug("It can! Yay!");
-                    IWebProxy reqproxy;
-                    reqproxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : FeedwinManager.GetGlobalProxy();
+                    var reqproxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : FeedwinManager.GetGlobalProxy();
                     if (reqproxy != null)
                     {
                         Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
@@ -358,7 +374,6 @@ namespace Feedling
             pinned = false;
             RedrawWin();
             Topmost = true;
-            Cursor = Cursors.SizeAll;
         }
         #endregion
 
@@ -428,9 +443,9 @@ namespace Feedling
         {
             if (pinned)
             {
-                Left = fci.Position.X;
-                Top = fci.Position.Y;
-                WindowState = WindowState.Normal;
+                //Left = fci.Position.X;
+                //Top = fci.Position.Y;
+                //WindowState = WindowState.Normal;
             }
             else
             {
@@ -462,14 +477,14 @@ namespace Feedling
             if (sender == null || !(sender is TextBlock) || !pinned) return;
             if (((TextBlock)sender).Tag == null) return;
             Log.Debug("Starting browser with url [{0}]", ((TextBlock)sender).Tag.ToString());
-            ThreadPool.QueueUserWorkItem(new WaitCallback(StartProcess), ((TextBlock)sender).Tag.ToString());
+            ThreadPool.QueueUserWorkItem(StartProcess, ((TextBlock)sender).Tag.ToString());
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!pinned)
             {
-                NativeMethods.MakeWindowMovable(this);
+                //NativeMethods.MakeWindowMovable(this);
             }
         }
 
@@ -498,6 +513,14 @@ namespace Feedling
                 Width = initialwidth - (startpoint - PointToScreen(Mouse.GetPosition(this)).X);
             }
         }
+        void movehandle_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
+        }
+
         #endregion
     }
 }

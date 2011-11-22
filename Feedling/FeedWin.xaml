@@ -37,7 +37,7 @@
 
     <Grid Name="maingrid" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave" IsHitTestVisible="True" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -50,6 +50,8 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <TextBlock Style="{DynamicResource titleTextStyle}" Grid.Row="0" Name="titleTextBlock" />
+        
     </Grid>
+    
 
 </Window>
