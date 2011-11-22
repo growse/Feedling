@@ -271,7 +271,7 @@ namespace Feedling
                 var types = ass.GetTypes();
                 foreach (var plugintype in types)
                 {
-                    if (typeof(IPlugin).IsAssignableFrom(plugintype) && !t.IsAbstract)
+                    if (typeof(IPlugin).IsAssignableFrom(plugintype) && !plugintype.IsAbstract)
                     {
                         Log.Debug("Found valid plugin: {0}", plugintype);
                         plugins.Add((IPlugin)Activator.CreateInstance(plugintype));
