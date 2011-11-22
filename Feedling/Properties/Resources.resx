@@ -173,4 +173,7 @@ Error was {0}</value>
   <data name="FeedwinManager_FeedwinManager_Check_for_updates___">
     <value xml:space="preserve">Check for updates...</value>
   </data>
+  <data name="FeedwinManager_feedimportbtn_Click_Invalid_Config_file">
+    <value xml:space="preserve">Invalid Config file</value>
+  </data>
 </root>

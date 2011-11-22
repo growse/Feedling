@@ -46,7 +46,7 @@ namespace Feedling
         private readonly OpenFileDialog importfeeddlg = new OpenFileDialog();
         private readonly SaveFileDialog exportfeeddlg = new SaveFileDialog();
         public static FeedwinManager thisinst;
-        private Hashtable windowlist = new Hashtable();
+        private readonly Hashtable windowlist = new Hashtable();
         private FeedConfigItemList FeedConfigItems = new FeedConfigItemList();
         public event Action<bool> ToggleMoveMode;
         private readonly XmlSerializer serializer;
@@ -260,26 +260,26 @@ namespace Feedling
         {
             //Load our Plugins. Find everything that's a Dll, figure out if it's a plugin and load it.
             Log.Debug("Loading Plugins");
-            string[] pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+            var pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
             plugins = new List<IPlugin>();
             Log.Debug("{0} plugin candidates found", pluginfiles.Length);
-            for (int ii = 0; ii < pluginfiles.Length; ii++)
+            foreach (var t in pluginfiles)
             {
-                string args = pluginfiles[ii].Substring(pluginfiles[ii].LastIndexOf("\\") + 1, pluginfiles[ii].IndexOf(".dll") - pluginfiles[ii].LastIndexOf("\\") - 1);
-                Assembly ass = Assembly.Load(args);
+                var args = t.Substring(t.LastIndexOf("\\") + 1, t.IndexOf(".dll") - t.LastIndexOf("\\") - 1);
+                var ass = Assembly.Load(args);
 
-                Type[] types = ass.GetTypes();
-                foreach (Type t in types)
+                var types = ass.GetTypes();
+                foreach (var plugintype in types)
                 {
-                    if (typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
+                    if (typeof(IPlugin).IsAssignableFrom(plugintype) && !t.IsAbstract)
                     {
-                        Log.Debug("Found valid plugin: {0}", t);
-                        plugins.Add((IPlugin)Activator.CreateInstance(t));
+                        Log.Debug("Found valid plugin: {0}", plugintype);
+                        plugins.Add((IPlugin)Activator.CreateInstance(plugintype));
                     }
                 }
                 //type = ass.GetTypes(args + ".Feed");
             }
-            foreach (IPlugin feedplugin in plugins)
+            foreach (var feedplugin in plugins)
             {
                 pluginlistbox.Items.Add(feedplugin.PluginName);
             }
@@ -335,11 +335,10 @@ namespace Feedling
             HttpWebResponse resp = null;
             try
             {
-                Uri requri = new Uri(fci.Url);
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requri);
+                var requri = new Uri(fci.Url);
+                var req = (HttpWebRequest)WebRequest.Create(requri);
                 req.UserAgent = FetchUserAgentString();
-                if (fci.ProxyType != ProxyType.Global) { req.Proxy = fci.Proxy; }
-                else { req.Proxy = GetGlobalProxy(); }
+                req.Proxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : GetGlobalProxy();
                 switch (fci.AuthType)
                 {
                     case FeedAuthTypes.Basic:
@@ -351,13 +350,13 @@ namespace Feedling
                         resp = (HttpWebResponse)req.GetResponse();
                         break;
                 }
-                XmlDocument tempdoc = new XmlDocument();
+                var tempdoc = new XmlDocument();
                 if (resp != null)
                 {
-                    Stream respstream = resp.GetResponseStream();
+                    var respstream = resp.GetResponseStream();
                     if (respstream != null)
                     {
-                        string streamtext = new StreamReader(resp.GetResponseStream()).ReadToEnd();
+                        var streamtext = new StreamReader(resp.GetResponseStream()).ReadToEnd();
                         tempdoc.LoadXml(streamtext);
                     }
                 }
@@ -366,7 +365,7 @@ namespace Feedling
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when fetching feed", ex);
-                throw ex;
+                throw;
             }
             finally
             {
@@ -434,8 +433,8 @@ namespace Feedling
 
         void fw_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            FeedWin obj = (FeedWin)sender;
-            foreach (FeedConfigItem fci in FeedConfigItems.Items)
+            var obj = (FeedWin)sender;
+            foreach (var fci in FeedConfigItems.Items)
             {
                 if (fci.Url == obj.FeedConfig.Url)
                 {
@@ -448,8 +447,8 @@ namespace Feedling
 
         void fw_LocationChanged(object sender, EventArgs e)
         {
-            FeedWin obj = (FeedWin)sender;
-            foreach (FeedConfigItem fci in FeedConfigItems.Items)
+            var obj = (FeedWin)sender;
+            foreach (var fci in FeedConfigItems.Items)
             {
                 if (fci.Url == obj.FeedConfig.Url)
                 {
@@ -466,7 +465,7 @@ namespace Feedling
             Log.Debug("Loading Feed Settings");
             try
             {
-                XmlReader xmlr = XmlReader.Create(new StringReader(Properties.Settings.Default.FeedConfigItems));
+                var xmlr = XmlReader.Create(new StringReader(Properties.Settings.Default.FeedConfigItems));
                 if (serializer.CanDeserialize(xmlr))
                 {
                     FeedConfigItems = (FeedConfigItemList)serializer.Deserialize(xmlr);
@@ -486,7 +485,7 @@ namespace Feedling
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when Loading the feed settings", ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -495,7 +494,7 @@ namespace Feedling
             Log.Debug("Saving Feed Settings");
             try
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 serializer.Serialize(new StringWriter(sb), FeedConfigItems);
                 Properties.Settings.Default.FeedConfigItems = sb.ToString();
                 Properties.Settings.Default.Save();
@@ -503,7 +502,7 @@ namespace Feedling
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when Saving the feed settings", ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -544,10 +543,8 @@ namespace Feedling
                     proxy = WebRequest.GetSystemWebProxy();
                     break;
                 case ProxyType.None:
-                    proxy = null;
                     break;
                 case ProxyType.Global:
-                    proxy = null;
                     break;
             }
             return proxy;
@@ -730,9 +727,7 @@ namespace Feedling
                     ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
                 previousselectedguid = fci.Guid;
-
                 ((FeedWin)windowlist[previousselectedguid]).Select();
-                System.Windows.Forms.MessageBox.Show(fci.Guid.ToString());
             }
         }
 
@@ -768,7 +763,7 @@ namespace Feedling
             fci.Url = "";
             var nf = new NewFeed(fci);
             var dr = nf.ShowDialog();
-            
+
             if (dr != true || nf.FeedConfig.Url.Trim().Length <= 0) return;
             FeedConfigItems.Add(nf.FeedConfig);
             SaveFeedSettings();
@@ -823,6 +818,7 @@ namespace Feedling
             }
             catch (XmlException)
             {
+                MessageBox.Show(Properties.Resources.FeedwinManager_feedimportbtn_Click_Invalid_Config_file);
             }
         }
 

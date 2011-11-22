@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="XmlImportTest1" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;FeedConfigItemList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;item XPos="975" YPos="5" Url="http://rss.slashdot.org/Slashdot/slashdot" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;c55f067a-f5e8-471f-a422-4036d489935d&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="975" YPos="180" Url="http://www.theregister.co.uk/headlines.atom" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;8b108f5d-c047-4db7-ad87-c05c278229d6&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="975" YPos="355" Url="http://feeds.theinquirer.net/feed/vnunet/the_INQUIRER" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;283ef006-835d-46b5-b457-e3d034e80dc6&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="670" YPos="5" Url="http://www.engadget.com/rss.xml" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;f37b7c85-ddbd-4261-878c-1ef7027391ee&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="670" YPos="530" Url="http://feeds.feedburner.com/blogspot/WOBq" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;52401bc7-ccc5-4312-ade0-92aee6095279&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="365" YPos="180" Url="http://feeds.feedburner.com/TechCrunch" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;e4a8d43f-0149-4180-bed6-4c7228191305&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="60" YPos="180" Url="http://radiac.net/diary/rss/" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;02d59c49-25b9-4396-b3d1-46c70ff01c86&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="60" YPos="355" Url="http://feedproxy.google.com/freakonomicsblog" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;1b400df8-e333-41b7-a8a1-0e82b01dc69f&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="365" YPos="355" Url="http://feeds.reuters.com/reuters/UKDomesticNews?format=xml" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;9999b3c5-6d8b-49ef-bee4-1d438aae0d57&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="670" YPos="355" Url="http://feeds.theonion.com/theonion/daily" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;2c95fa15-757a-4e89-9a10-4c7a6b88381c&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="365" YPos="530" Url="http://www.badscience.net/feed/" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;ab258d79-1020-4e0e-9cc2-738effb82120&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="975" YPos="530" Url="http://www.xkcd.com/atom.xml" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="5" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;ce6578a0-6d18-4b02-b5a2-d24081094f6a&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="60" YPos="5" Url="http://www.growse.com/news/rss/" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;1555dee4-13fc-4b8d-a42c-726848236701&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="670" YPos="180" Url="http://feeds.wired.com/wired/index" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;52c520ef-67b9-4a03-94b6-911bd2719ce1&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="365" YPos="5" Url="http://feeds.feedburner.com/schneier/excerpts" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="10" AuthType="None" Username="" Password="" Width="300" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;aca49096-425e-4da4-8010-9ccc02a6cafb&lt;/Guid&gt;
+  &lt;/item&gt;
+  &lt;item XPos="1285" YPos="5" Url="http://lonsbrndmon01.int.thomsonreuters.com/cgi-bin/nagios3/rss.cgi" DefaultColorR="0" DefaultColorG="0" DefaultColorB="0" HoverColorR="255" HoverColorG="128" HoverColorB="0" FontFamily="Calibri" FontSize="12" FontStyle="Normal" FontWeight="Normal" TitleFontFamily="Calibri" TitleFontSize="17.333333333333332" TitleFontStyle="Normal" TitleFontWeight="Bold" UpdateInterval="10" DisplayedItems="50" AuthType="Basic" Username="andrew.rowson" Password="blfq2VFH" Width="627" Proxytype="Global" Proxyhost="" Proxyport="80" Proxyauth="false" Proxyuser="" Proxypass=""&gt;
+    &lt;Guid&gt;bcbc1b8e-63a8-414a-97b5-169972729d34&lt;/Guid&gt;
+  &lt;/item&gt;
+&lt;/FeedConfigItemList&gt;</value>
+  </data>
+</root>
