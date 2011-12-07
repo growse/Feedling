@@ -98,11 +98,15 @@ namespace RdfFeed
                 var titlenode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xmlNamespaceManager);
                 Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
 
-                var urlnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
+                var feedlinknode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
 
-                if (urlnode != null)
+                if (feedlinknode != null)
                 {
-                    Url = new Uri(urlnode.ToString());
+                    Uri result;
+                    if (Uri.TryCreate(feedlinknode.ToString(), UriKind.Absolute, out result))
+                    {
+                        Url = result;
+                    }
                 }
 
                 var descriptionnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xmlNamespaceManager);
@@ -124,7 +128,11 @@ namespace RdfFeed
                     var linknode = subnav.SelectSingleNode("rss:link", xmlNamespaceManager);
                     if (linknode != null)
                     {
-                        item.Link = new Uri(linknode.ToString());
+                        Uri result;
+                        if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                        {
+                            item.Link = result;
+                        }
                     }
                     descriptionnode = subnav.SelectSingleNode("rss:description", xmlNamespaceManager);
                     if (descriptionnode != null)

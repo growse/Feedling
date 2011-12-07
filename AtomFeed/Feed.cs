@@ -112,10 +112,10 @@ namespace AtomFeed
                 xPathExpression.SetContext(xmlNamespaceManager);
 
                 var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
-                
+
                 var titlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:title/text()", xmlNamespaceManager);
                 Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
-                
+
                 // Create link from the first link element in feed with rel = 'alternative'
                 var linkiterator = xPathNavigator.Select("atom:feed/atom:link", xmlNamespaceManager);
                 while (linkiterator.MoveNext() && Url == null)
@@ -134,7 +134,11 @@ namespace AtomFeed
                     var linknode = xPathNavigator.SelectSingleNode("/atom:feed/atom:link", xmlNamespaceManager);
                     if (linknode != null)
                     {
-                        Url = new Uri(linknode.GetAttribute("href", ""));
+                        Uri result;
+                        if (Uri.TryCreate(linknode.GetAttribute("href", ""), UriKind.Absolute, out result))
+                        {
+                            Url = result;
+                        }
                     }
                 }
 
@@ -170,7 +174,11 @@ namespace AtomFeed
                     {
                         if (subnav.SelectSingleNode("atom:link", xmlNamespaceManager) != null && subnav.SelectSingleNode("atom:link", xmlNamespaceManager).GetAttribute("href", "") != null)
                         {
-                            item.Link = new Uri(subnav.SelectSingleNode("atom:link", xmlNamespaceManager).GetAttribute("href", ""));
+                            Uri result;
+                            if (Uri.TryCreate(subnav.SelectSingleNode("atom:link", xmlNamespaceManager).GetAttribute("href", ""), UriKind.Absolute, out result))
+                            {
+                                item.Link = result;
+                            }
                         }
                     }
                     if (subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager) != null)

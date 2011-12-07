@@ -110,7 +110,11 @@ namespace RssFeed
                 var linknode = xPathNavigator.SelectSingleNode("/rss/channel/link");
                 if (linknode != null)
                 {
-                    Url = new Uri(linknode.ToString());
+                    Uri result;
+                    if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                    {
+                        Url = result;
+                    }
                 }
 
                 var descriptionnode = xPathNavigator.SelectSingleNode("/rss/channel/description");
@@ -131,7 +135,11 @@ namespace RssFeed
                     linknode = pathNavigator.SelectSingleNode("link");
                     if (linknode != null)
                     {
-                        item.Link = new Uri(linknode.ToString());
+                        Uri result;
+                        if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                        {
+                            item.Link = result;
+                        }
                     }
 
                     try
