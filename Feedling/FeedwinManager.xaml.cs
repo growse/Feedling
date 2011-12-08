@@ -742,7 +742,7 @@ namespace Feedling
             FeedConfigItems.Add(nf.FeedConfig);
             SaveFeedSettings();
 
-            ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
+            if (windowlist.ContainsKey(nf.FeedConfig.Guid) && windowlist[nf.FeedConfig.Guid] != null) ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
             windowlist.Remove(nf.FeedConfig.Guid);
 
             var nfw = new FeedWin(nf.FeedConfig);
