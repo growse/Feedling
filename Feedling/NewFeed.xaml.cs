@@ -17,7 +17,7 @@ namespace Feedling
     /// </summary>
     public partial class NewFeed : Window
     {
-        private Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         public NewFeed()
         {
             Log.Debug("Loading NewFeed Window");
@@ -95,6 +95,7 @@ namespace Feedling
                 proxyuserbox.Text = FeedConfig.ProxyUser;
                 proxypassbox.Password = FeedConfig.ProxyPass;
                 proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true);
+                notificationcheckbox.IsChecked = FeedConfig.NotifyOnNewItem;
             }
             catch (Exception ex)
             {

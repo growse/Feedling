@@ -6,6 +6,8 @@ See LICENSE file for license details.
 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows;
@@ -27,16 +29,16 @@ namespace Feedling
     {
         #region Vars and Consts
         private FeedConfigItem fci;
-        private bool selected = false;
-        private Color updatedcolor;
-        private Hashtable hotrects = new Hashtable();
+        private bool selected;
         private IFeed rssfeed;
         private bool pinned;
         private string errormsg = "Fetching...";
         private SolidColorBrush textbrush = new SolidColorBrush();
-        private Image movehandle;
-        private ColorAnimation fadein, fadeout;
+        private readonly Image movehandle;
+        private readonly ColorAnimation fadein;
+        private readonly ColorAnimation fadeout;
         private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private string CurrentTopStory = "";
         public FeedConfigItem FeedConfig
         {
             get { return fci; }
@@ -57,7 +59,6 @@ namespace Feedling
             Width = fci.Width;
             Left = fci.Position.X;
             Top = fci.Position.Y;
-            updatedcolor = fci.DefaultColor;
             //Kick of thread to figure out what sort of plugin to load for this sort of feed.
             ThreadPool.QueueUserWorkItem(GetFeedType, fci);
 
@@ -377,7 +378,21 @@ namespace Feedling
         void rssfeed_Updated(object sender, EventArgs e)
         {
             Log.Debug("Updated event fired");
-            updatedcolor = fci.HoverColor;
+            if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count>0 &&  rssfeed.FeedItems[0].Title.Equals(CurrentTopStory) && string.IsNullOrEmpty(CurrentTopStory))
+            {
+                var newitemlist = new List<Tuple<string, string>>();
+                foreach (var item in rssfeed.FeedItems)
+                {
+                    if (item.Title.Equals(CurrentTopStory))
+                    {
+                        break;
+                    }
+                    newitemlist.Add(new Tuple<string, string>(item.Title,item.Link.ToString()));
+                }
+                CurrentTopStory = rssfeed.FeedItems[0].Title;
+                var notifier = new Notifier(rssfeed.Title, newitemlist);
+                notifier.Show();
+            }
             RedrawWin();
         }
 

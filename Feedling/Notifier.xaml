@@ -1,0 +1,45 @@
+﻿<Window x:Class="Feedling.Notifier"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Notifier" AllowsTransparency="True" Background="Transparent" 
+        SizeToContent="Height"
+        WindowStyle="None"
+        Width="300"
+        ShowInTaskbar="False"
+        Topmost="True">
+    <Grid>
+        <Border Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="3">
+            <WrapPanel Margin="5">
+                <Image VerticalAlignment="top" Margin="0,5,0,0" Source="/Feedling;component/Resources/Feedling.ico" Width="16" HorizontalAlignment="Left"></Image>
+                <StackPanel  Margin="0">
+
+                    <TextBlock Name="titlebox" TextWrapping="Wrap" Margin="5">
+                        <Hyperlink NavigateUri="http://google.com" RequestNavigate="Hyperlink_RequestNavigate">Hi there</Hyperlink>
+                    </TextBlock>
+                    <Button Content="Dismiss" HorizontalAlignment="Right" Click="Button_Click" />
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                            <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <SplineDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                            <SplineDoubleKeyFrame KeyTime="0:0:6" Value="0"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
+
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleY="1" />
+        </Grid.RenderTransform>
+    </Grid>
+</Window>

@@ -183,7 +183,16 @@ namespace Feedling
                 Visibility = Visibility.Collapsed;
                 Hide();
 
-                Log.Debug("Checking for udpates on startup");
+                var notifier = new Notifier(
+                    "Test feed",
+                    new List<Tuple<string, string>>
+                        {
+                            new Tuple<string, string>("test feedtitle","http://www.google.com"),
+                            new Tuple<string, string>("Another test","http://www.google.com")
+                        });
+                notifier.Show();
+
+                Log.Debug("Checking for updates on startup");
                 var updater = new AutoUpdate();
                 updater.CheckForUpdates(true);
             }

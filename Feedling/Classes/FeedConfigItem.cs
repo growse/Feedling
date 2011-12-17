@@ -238,6 +238,9 @@ namespace Feedling
         [XmlAttribute("Width")]
         public double Width { get; set; }
 
+        [XmlAttribute("NotifyOnNewItem")]
+        public bool NotifyOnNewItem { get; set; }
+
         [XmlAttribute("Proxytype")]
         public ProxyType ProxyType { get; set; }
 
