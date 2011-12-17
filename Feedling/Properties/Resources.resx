@@ -165,7 +165,7 @@ Error was {0}</value>
     <value xml:space="preserve">Configuration...</value>
   </data>
   <data name="FeedwinManager_FeedwinManager_Move_Mode">
-    <value xml:space="preserve">Move Mode</value>
+    <value xml:space="preserve">Show Move Handles</value>
   </data>
   <data name="FeedwinManager_FeedwinManager_Update_All">
     <value xml:space="preserve">Update All</value>

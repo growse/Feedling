@@ -129,7 +129,7 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move Mode.
+        ///   Looks up a localized string similar to Show Move Handles.
         /// </summary>
         internal static string FeedwinManager_FeedwinManager_Move_Mode {
             get {

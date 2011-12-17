@@ -33,10 +33,10 @@ namespace Feedling
         private IFeed rssfeed;
         private bool pinned;
         private string errormsg = "Fetching...";
-        SolidColorBrush textbrush = new SolidColorBrush();
-        SolidColorBrush titletextbrush = new SolidColorBrush();
+        private SolidColorBrush textbrush = new SolidColorBrush();
+        private Image movehandle;
         private ColorAnimation fadein, fadeout;
-        private Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         public FeedConfigItem FeedConfig
         {
             get { return fci; }
@@ -94,21 +94,22 @@ namespace Feedling
 
 
             maingrid.RowDefinitions.Add(new RowDefinition());
-            var movehandle = new Image();
-            movehandle.Width = movehandle.Height = 30;
+            movehandle = new Image();
+            movehandle.Width = movehandle.Height = 16;
             movehandle.Name = "movehandle";
 
             movehandle.HorizontalAlignment = HorizontalAlignment.Left;
 
             movehandle.Cursor = Cursors.SizeAll;
-            movehandle.Source = new BitmapImage(new Uri("http://mintywhite.com/images/wg/0904/05rssfeedicons/rss-feed-icons11.jpg"));
+            movehandle.Source = new BitmapImage(new Uri("/Feedling;component/Resources/move-icon.png", UriKind.Relative));
             movehandle.SetValue(Grid.ColumnSpanProperty, 2);
             RegisterName(movehandle.Name, movehandle);
             maingrid.Children.Add(movehandle);
             movehandle.MouseDown += movehandle_MouseDown;
+            movehandle.Visibility = Visibility.Collapsed;
             Grid.SetRow(movehandle, maingrid.RowDefinitions.Count);
 
-            titletextbrush = new SolidColorBrush { Color = fci.DefaultColor };
+
         }
 
         #region Methods
@@ -152,19 +153,13 @@ namespace Feedling
                     fadein.To = fadein.From = Colors.Black;
                     fadeout.To = fadeout.From = Colors.Black;
                 }
-                else if (pinned)
+                else
                 {
                     Background = new SolidColorBrush(Colors.Transparent);
                     textbrush = new SolidColorBrush(fci.DefaultColor);
                     fadein.To = fadeout.From = fci.HoverColor;
                     fadeout.To = fadein.From = fci.DefaultColor;
-                }
-                else
-                {
-                    fadein.To = fadein.From = Colors.White;
-                    fadeout.To = fadeout.From = Colors.White;
-                    textbrush = new SolidColorBrush(Colors.White);
-                    Background = new SolidColorBrush(Colors.Black);
+                    movehandle.Visibility = !pinned ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 //Set textblock styling
