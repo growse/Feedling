@@ -722,7 +722,7 @@ namespace Feedling
             var fci = (FeedConfigItem)feedlistbox.SelectedItem;
             if (fci != null)
             {
-                if (previousselectedguid != null && windowlist.Contains(previousselectedguid))
+                if (windowlist.Contains(previousselectedguid))
                 {
                     ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
@@ -734,6 +734,7 @@ namespace Feedling
         private void feededitbtn_Click(object sender, RoutedEventArgs e)
         {
             if (feedlistbox.SelectedItems.Count != 1) return;
+            var oldguid = ((FeedConfigItem)feedlistbox.SelectedItem).Guid;
             var fci = ((FeedConfigItem)feedlistbox.SelectedItem).Copy();
             var nf = new NewFeed(fci);
             var dr = nf.ShowDialog();
@@ -742,7 +743,7 @@ namespace Feedling
             FeedConfigItems.Add(nf.FeedConfig);
             SaveFeedSettings();
 
-            if (windowlist.ContainsKey(nf.FeedConfig.Guid) && windowlist[nf.FeedConfig.Guid] != null) ((FeedWin)windowlist[nf.FeedConfig.Guid]).Close();
+            if (windowlist.ContainsKey(oldguid) && windowlist[oldguid] != null) ((FeedWin)windowlist[oldguid]).Close();
             windowlist.Remove(nf.FeedConfig.Guid);
 
             var nfw = new FeedWin(nf.FeedConfig);

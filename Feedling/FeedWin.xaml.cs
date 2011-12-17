@@ -172,6 +172,7 @@ namespace Feedling
                 titleTextBlock.FontSize = fci.TitleFontSize;
                 titleTextBlock.FontStyle = fci.TitleFontStyle;
                 titleTextBlock.FontWeight = fci.TitleFontWeight;
+                titleTextBlock.Foreground = textbrush.Clone();
                 for (var n = 1; n <= fci.DisplayedItems; n++)
                 {
                     var textblock = ((TextBlock)FindName(string.Format("TextBlock{0}", n)));
