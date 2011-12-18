@@ -378,17 +378,10 @@ namespace Feedling
         void rssfeed_Updated(object sender, EventArgs e)
         {
             Log.Debug("Updated event fired");
+            FeedConfig.FeedLabel = rssfeed.Title;
             if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count>0 &&  rssfeed.FeedItems[0].Title.Equals(CurrentTopStory) && string.IsNullOrEmpty(CurrentTopStory))
             {
-                var newitemlist = new List<Tuple<string, string>>();
-                foreach (var item in rssfeed.FeedItems)
-                {
-                    if (item.Title.Equals(CurrentTopStory))
-                    {
-                        break;
-                    }
-                    newitemlist.Add(new Tuple<string, string>(item.Title,item.Link.ToString()));
-                }
+                var newitemlist = rssfeed.FeedItems.TakeWhile(item => !item.Title.Equals(CurrentTopStory)).Select(item => new Tuple<string, string>(item.Title, item.Link.ToString())).ToList();
                 CurrentTopStory = rssfeed.FeedItems[0].Title;
                 var notifier = new Notifier(rssfeed.Title, newitemlist);
                 notifier.Show();

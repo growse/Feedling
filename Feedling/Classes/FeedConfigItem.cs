@@ -75,6 +75,8 @@ namespace Feedling
                               Width = Width,
                               XPos = XPos,
                               YPos = YPos,
+                              NotifyOnNewItem = NotifyOnNewItem,
+                              FeedLabel = FeedLabel,
                               Guid = Guid.NewGuid()
                           };
             return fci;
@@ -241,6 +243,9 @@ namespace Feedling
         [XmlAttribute("NotifyOnNewItem")]
         public bool NotifyOnNewItem { get; set; }
 
+        [XmlAttribute("FeedLabel")]
+        public string FeedLabel { get; set; }
+
         [XmlAttribute("Proxytype")]
         public ProxyType ProxyType { get; set; }
 
@@ -304,8 +309,9 @@ namespace Feedling
 
         public override string ToString()
         {
-            return Url;
+            return string.IsNullOrEmpty(FeedLabel) ? Url : FeedLabel;
         }
+
         public override bool Equals(object obj)
         {
             var fci = obj as FeedConfigItem;

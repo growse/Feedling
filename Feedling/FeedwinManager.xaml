@@ -30,7 +30,7 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Formatting" Name="Formatting">
+            <TabItem Header="Global Feed Settings" Name="Formatting">
                 <Grid  Margin="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -43,11 +43,13 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Content="Font:" HorizontalContentAlignment="Right" Margin="0" Name="label5" VerticalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="0" Content="Title Font:" HorizontalContentAlignment="Right" Margin="0" Name="label6" VerticalContentAlignment="Center" />
                     <Label Grid.Row="2" Grid.Column="0" Content="Default Colour:" HorizontalContentAlignment="Right" Margin="0" Name="label7" VerticalContentAlignment="Center" />
                     <Label Grid.Row="3" Grid.Column="0" Content="Hover Colour:" HorizontalContentAlignment="Right" Margin="0" Name="label8" VerticalContentAlignment="Center" />
+                    <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Notify when new items arrive:" HorizontalContentAlignment="Right" Margin="0" Name="label10" VerticalContentAlignment="Center" />
                     <Label Grid.Row="0" Grid.Column="1" Content="Label" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0" Name="fontlabel" VerticalContentAlignment="Center" />
                     <Label Grid.Row="1" Grid.Column="1" Content="Label" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0" Name="titlefontlabel" VerticalContentAlignment="Center" Width="Auto" />
                     <Button Grid.Row="0" Grid.Column="2"  Content="Choose..." Margin="0" Width="100" Height="30" Name="fontchooserbtn" Click="fontchooserbtn_Click" />
@@ -56,8 +58,9 @@
                     <Button Grid.Row="3" Grid.Column="2" Content="Choose..." Margin="0" Width="100" Height="30" Name="hovercolorchooserbtn" Click="hovercolorchooserbtn_Click" />
                     <Rectangle Grid.Row="3" Grid.Column="1" Margin="0" Width="100" Height="30" Name="hovercolourbox" Stroke="Black" />
                     <Rectangle Grid.Row="2" Grid.Column="1" Margin="0" Width="100" Height="30" Name="defaultcolourbox" Stroke="Black" />
-                    <Label Grid.ColumnSpan="2" Content="Apply these settings to all existing feeds?" Grid.Row="4"  HorizontalAlignment="Right" Margin="0" Name="label9" VerticalAlignment="Center" />
-                    <Button Grid.Row="4" Grid.Column="2" Content="Apply to all" Margin="0" Width="100" Height="30" Name="applytoallbtn" Click="applytoallbtn_Click" />
+                    <CheckBox Grid.Row="4" Grid.Column="2" Margin="0" VerticalAlignment="Center" Name="notifycheckbox" Click="notifycheckbox_Click"></CheckBox>
+                    <Label Grid.ColumnSpan="2" Content="Apply these settings to all existing feeds?" Grid.Row="5"  HorizontalAlignment="Right" Margin="0" Name="label9" VerticalAlignment="Center" />
+                    <Button Grid.Row="5" Grid.Column="2" Content="Apply to all" Margin="0" Width="100" Height="30" Name="applytoallbtn" Click="applytoallbtn_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="Proxy" Name="Proxy">

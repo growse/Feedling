@@ -183,15 +183,6 @@ namespace Feedling
                 Visibility = Visibility.Collapsed;
                 Hide();
 
-                var notifier = new Notifier(
-                    "Test feed",
-                    new List<Tuple<string, string>>
-                        {
-                            new Tuple<string, string>("test feedtitle","http://www.google.com"),
-                            new Tuple<string, string>("Another test","http://www.google.com")
-                        });
-                notifier.Show();
-
                 Log.Debug("Checking for updates on startup");
                 var updater = new AutoUpdate();
                 updater.CheckForUpdates(true);
@@ -236,6 +227,7 @@ namespace Feedling
             proxypassbox.Password = Properties.Settings.Default.ProxyPass;
             proxyuserbox.Text = Properties.Settings.Default.ProxyUser;
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
+            notifycheckbox.IsChecked = Properties.Settings.Default.NotifyOnNewFeedItem;
         }
 
         private void LoadProxy()
@@ -874,6 +866,8 @@ namespace Feedling
                 fci.TitleFontSize = Properties.Settings.Default.DefaultTitleFontSize;
                 fci.TitleFontStyleString = Properties.Settings.Default.DefaultTitleFontStyle;
                 fci.TitleFontWeightString = Properties.Settings.Default.DefaultTitleFontWeight;
+
+                fci.NotifyOnNewItem = Properties.Settings.Default.NotifyOnNewFeedItem;
                 ((FeedWin)windowlist[fci.Guid]).FeedConfig = fci;
                 ((FeedWin)windowlist[fci.Guid]).RedrawWin();
 
@@ -956,7 +950,11 @@ namespace Feedling
         }
         #endregion
 
-
+        private void notifycheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            if (notifycheckbox.IsChecked != null)
+                Properties.Settings.Default.NotifyOnNewFeedItem = notifycheckbox.IsChecked.Value;
+        }
     }
 
     public enum ProxyType
