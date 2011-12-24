@@ -176,4 +176,7 @@ Error was {0}</value>
   <data name="FeedwinManager_feedimportbtn_Click_Invalid_Config_file">
     <value xml:space="preserve">Invalid Config file</value>
   </data>
+  <data name="FeedwinManager_FeedwinManager_Quit">
+    <value xml:space="preserve">Quit</value>
+  </data>
 </root>

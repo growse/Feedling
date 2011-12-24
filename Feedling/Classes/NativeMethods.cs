@@ -15,12 +15,24 @@ namespace Feedling
     {
         private NativeMethods() { }
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, IntPtr windowTitle);
+
         [DllImportAttribute("user32.dll")]
         static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern UInt32 GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
@@ -39,6 +51,7 @@ namespace Feedling
         const UInt32 WS_EX_TOOLWINDOW = 0x00000080;
         const Int32 GWL_EXSTYLE = (-20);
         const Int32 WM_NCLBUTTONDOWN = 0xA1;
+        const int GWL_HWNDPARENT = -8;
         static readonly IntPtr HT_CAPTION = new IntPtr(0x2);
         static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
 
@@ -48,7 +61,7 @@ namespace Feedling
             SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
         }
 
-        public static void SetWindowLongToolWindow(Window window)
+        public static void HideFromAltTab(Window window)
         {
             var wh = new WindowInteropHelper(window);
             var exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
@@ -60,6 +73,17 @@ namespace Feedling
             var wh = new WindowInteropHelper(window);
             ReleaseCapture();
             SendMessage(wh.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, IntPtr.Zero);
+        }
+
+        public static void SetParentWindowToDesktop(Window window)
+        {
+            var hWnd = new WindowInteropHelper(window).Handle;
+            var hprog = FindWindowEx(
+               FindWindowEx(
+               FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""),
+               IntPtr.Zero, "SysListView32", "FolderView");
+
+            SetWindowLong(hWnd, GWL_HWNDPARENT, hprog);
         }
     }
 }

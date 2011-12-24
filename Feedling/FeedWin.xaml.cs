@@ -5,8 +5,6 @@ All rights reserved.
 See LICENSE file for license details.
 */
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -298,7 +296,7 @@ namespace Feedling
             {
                 rssfeed.Updated += rssfeed_Updated;
                 Log.Debug("Kicking off the watcher thread");
-                var t = new Thread(rssfeed.Watch);
+                var t = new Thread(rssfeed.Watch) {IsBackground = true};
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
             }
@@ -359,10 +357,8 @@ namespace Feedling
         {
             pinned = true;
             RedrawWin();
-
-            Topmost = false;
-            NativeMethods.SendWpfWindowBack(this);
-            Cursor = Cursors.Arrow;
+//            NativeMethods.SendWpfWindowBack(this);
+//            Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -372,7 +368,6 @@ namespace Feedling
         {
             pinned = false;
             RedrawWin();
-            Topmost = true;
         }
         #endregion
 
@@ -430,7 +425,8 @@ namespace Feedling
             Left = fci.Position.X;
             Top = fci.Position.Y;
             FeedwinManager.thisinst.ToggleMoveMode += thisinst_ToggleMoveMode;
-            NativeMethods.SetWindowLongToolWindow(this);
+            NativeMethods.HideFromAltTab(this);
+            NativeMethods.SetParentWindowToDesktop(this);
         }
 
         void thisinst_ToggleMoveMode(bool obj)

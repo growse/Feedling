@@ -138,6 +138,15 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        internal static string FeedwinManager_FeedwinManager_Quit {
+            get {
+                return ResourceManager.GetString("FeedwinManager_FeedwinManager_Quit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update All.
         /// </summary>
         internal static string FeedwinManager_FeedwinManager_Update_All {

@@ -128,7 +128,7 @@ namespace Feedling
                 // 
                 quititem.Name = "quititem";
                 quititem.Size = new System.Drawing.Size(157, 22);
-                quititem.Text = "Quit";
+                quititem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Quit;
                 quititem.Click += quititem_Click;
 
                 contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
