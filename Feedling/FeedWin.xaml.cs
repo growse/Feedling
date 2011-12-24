@@ -298,7 +298,9 @@ namespace Feedling
             {
                 rssfeed.Updated += rssfeed_Updated;
                 Log.Debug("Kicking off the watcher thread");
-                ThreadPool.QueueUserWorkItem(rssfeed.Watch);
+                var t = new Thread(rssfeed.Watch);
+                t.SetApartmentState(ApartmentState.STA);
+                t.Start();
             }
             RedrawWin();
         }
@@ -379,13 +381,15 @@ namespace Feedling
         {
             Log.Debug("Updated event fired");
             FeedConfig.FeedLabel = rssfeed.Title;
-            if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count>0 &&  rssfeed.FeedItems[0].Title.Equals(CurrentTopStory) && string.IsNullOrEmpty(CurrentTopStory))
+            if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count > 0 && !rssfeed.FeedItems[0].Title.Equals(CurrentTopStory) && !string.IsNullOrEmpty(CurrentTopStory))
             {
                 var newitemlist = rssfeed.FeedItems.TakeWhile(item => !item.Title.Equals(CurrentTopStory)).Select(item => new Tuple<string, string>(item.Title, item.Link.ToString())).ToList();
-                CurrentTopStory = rssfeed.FeedItems[0].Title;
                 var notifier = new Notifier(rssfeed.Title, newitemlist);
                 notifier.Show();
+                //I'm sure there's a good reason why this works. Notifier doens't show up otherwise, as we're on our own Thread.
+                System.Windows.Threading.Dispatcher.Run();
             }
+            CurrentTopStory = rssfeed.FeedItems[0].Title;
             RedrawWin();
         }
 

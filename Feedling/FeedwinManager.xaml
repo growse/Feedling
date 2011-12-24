@@ -1,6 +1,6 @@
 ﻿<Window x:Class="Feedling.FeedwinManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Title="Feedling" Height="399" Width="552" Icon="/Feedling;component/Resources/Feedling.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" WindowState="Minimized" Closing="Window_Closing" Visibility="Collapsed">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,7 +23,7 @@
                         <ColumnDefinition Width="164*" />
                     </Grid.ColumnDefinitions>
                     <ListBox Grid.RowSpan="4" Name="feedlistbox" SelectionChanged="feedlistbox_SelectionChanged" />
-                    <Button Grid.Column="1" Margin="0" Name="feedaddbtn" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedaddbtn_Click">Add...</Button>
+                    <Button Template="{DynamicResource ButtonControlTemplate1}" FocusVisualStyle="{DynamicResource ControlStyle1}" Grid.Column="1" Margin="0" Name="feedaddbtn" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedaddbtn_Click">Add...</Button>
                     <Button Name="feedtemplatebtn" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feedtemplatebtn_Click">Duplicate...</Button>
                     <Button Name="feededitbtn" Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feededitbtn_Click">Edit...</Button>
                     <Button Name="feeddeletebtn" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Center" VerticalAlignment="Center" Padding="35,5" Height="29.96" Margin="0" HorizontalAlignment="Center" MaxWidth="150" Width="140" Click="feeddeletebtn_Click">Delete</Button>
