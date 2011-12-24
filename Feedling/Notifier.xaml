@@ -6,7 +6,8 @@
         WindowStyle="None"
         Width="300"
         ShowInTaskbar="False"
-        Topmost="True">
+        Topmost="True"
+        ShowActivated="False">
     <Grid>
         <Border Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="3">
             <WrapPanel Margin="5">

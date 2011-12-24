@@ -203,6 +203,8 @@ namespace Feedling
             FeedConfig.Url = urlbox.Text;
             FeedConfig.UserName = usernamebox.Text;
 
+            FeedConfig.NotifyOnNewItem = notificationcheckbox.IsChecked.Value;
+
             if (FeedConfig.Url.Trim().Length > 0)
             {
                 DialogResult = true;
