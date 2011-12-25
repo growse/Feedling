@@ -46,6 +46,7 @@ namespace Feedling
                     Top = corner.Y - ActualHeight;
                 }
             }));
+            NativeMethods.HideFromAltTab(this);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
