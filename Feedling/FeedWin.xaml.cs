@@ -384,7 +384,10 @@ namespace Feedling
                 //I'm sure there's a good reason why this works. Notifier doens't show up otherwise, as we're on our own Thread.
                 System.Windows.Threading.Dispatcher.Run();
             }
-            CurrentTopStory = rssfeed.FeedItems[0].Title;
+            if (rssfeed.FeedItems.Count > 0)
+            {
+                CurrentTopStory = rssfeed.FeedItems[0].Title;
+            }
             RedrawWin();
         }
 
