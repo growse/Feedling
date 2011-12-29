@@ -46,7 +46,7 @@ namespace Feedling
                     Top = corner.Y - ActualHeight;
                 }
             }));
-            NativeMethods.HideFromAltTab(this);
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -58,6 +58,11 @@ namespace Feedling
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            NativeMethods.HideFromAltTab(this);
         }
     }
 }
