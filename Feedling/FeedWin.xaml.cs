@@ -376,19 +376,21 @@ namespace Feedling
         {
             Log.Debug("Updated event fired");
             FeedConfig.FeedLabel = rssfeed.Title;
-            if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count > 0 && !rssfeed.FeedItems[0].Title.Equals(CurrentTopStory) && !string.IsNullOrEmpty(CurrentTopStory))
+            RedrawWin();
+            var previouscurrenttopstory = CurrentTopStory;
+            if (rssfeed.FeedItems.Count > 0)
+            {
+                CurrentTopStory = rssfeed.FeedItems[0].Title;
+            }
+
+            if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count > 0 && !rssfeed.FeedItems[0].Title.Equals(previouscurrenttopstory) && !string.IsNullOrEmpty(previouscurrenttopstory))
             {
                 var newitemlist = rssfeed.FeedItems.TakeWhile(item => !item.Title.Equals(CurrentTopStory)).Select(item => new Tuple<string, string>(item.Title, item.Link.ToString())).ToList();
                 var notifier = new Notifier(rssfeed.Title, newitemlist);
                 notifier.Show();
                 //I'm sure there's a good reason why this works. Notifier doens't show up otherwise, as we're on our own Thread.
                 System.Windows.Threading.Dispatcher.Run();
-            }
-            if (rssfeed.FeedItems.Count > 0)
-            {
-                CurrentTopStory = rssfeed.FeedItems[0].Title;
-            }
-            RedrawWin();
+            }            
         }
 
         protected override void OnActivated(EventArgs e)

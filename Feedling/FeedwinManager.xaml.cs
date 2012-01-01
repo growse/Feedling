@@ -685,7 +685,9 @@ namespace Feedling
         {
             foreach (FeedWin fw in windowlist.Values)
             {
-                ThreadPool.QueueUserWorkItem(fw.UpdateNow);
+                var t = new Thread(fw.UpdateNow) { IsBackground = true };
+                t.SetApartmentState(ApartmentState.STA);
+                t.Start();
             }
         }
 
