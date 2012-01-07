@@ -389,6 +389,7 @@ namespace Feedling
                 var notifier = new Notifier(rssfeed.Title, newitemlist);
                 notifier.Show();
                 //I'm sure there's a good reason why this works. Notifier doens't show up otherwise, as we're on our own Thread.
+                //Also, this needs to go right at the end, because everything after this stops working. Hmm.
                 System.Windows.Threading.Dispatcher.Run();
             }            
         }

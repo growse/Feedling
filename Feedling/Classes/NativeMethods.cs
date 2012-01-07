@@ -15,18 +15,18 @@ namespace Feedling
     {
         private NativeMethods() { }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, IntPtr windowTitle);
 
         [DllImportAttribute("user32.dll")]
-        static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
         [DllImportAttribute("user32.dll")]
-        public static extern bool ReleaseCapture();
+        private static extern bool ReleaseCapture();
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
@@ -39,8 +39,8 @@ namespace Feedling
         static extern bool SetWindowPos(
             IntPtr hWnd,
             IntPtr hWndInsertAfter,
-            int X,
-            int Y,
+            int x,
+            int y,
             int cx,
             int cy,
             uint uFlags);
@@ -66,7 +66,7 @@ namespace Feedling
             var wh = new WindowInteropHelper(window);
             var exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
             exStyle |= WS_EX_TOOLWINDOW;
-            SetWindowLong(wh.Handle, GWL_EXSTYLE, (int)exStyle);
+            var result = SetWindowLong(wh.Handle, GWL_EXSTYLE, (int)exStyle);
         }
         public static void MakeWindowMovable(Window window)
         {
@@ -83,7 +83,7 @@ namespace Feedling
                FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""),
                IntPtr.Zero, "SysListView32", "FolderView");
 
-            SetWindowLong(hWnd, GWL_HWNDPARENT, hprog);
+            var result = SetWindowLong(hWnd, GWL_HWNDPARENT, hprog);
         }
     }
 }
