@@ -179,4 +179,7 @@ Error was {0}</value>
   <data name="FeedwinManager_FeedwinManager_Quit">
     <value xml:space="preserve">Quit</value>
   </data>
+  <data name="FeedwinManager_FeedwinManager_Feedling">
+    <value xml:space="preserve">Feedling</value>
+  </data>
 </root>

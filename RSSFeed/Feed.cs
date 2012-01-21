@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -24,7 +24,7 @@ namespace RssFeed
         protected XmlDocument Feedxml { get; set; }
         public int UpdateInterval { get; set; }
         public Uri FeedUri { get; set; }
-        private Collection<FeedItem> feeditems = new Collection<FeedItem>();
+        private readonly Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
@@ -80,6 +80,7 @@ namespace RssFeed
 
         private XmlDocument Fetch(Uri feeduri)
         {
+            var xmlDocument = new XmlDocument();
             var req = (HttpWebRequest)WebRequest.Create(feeduri);
             req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
@@ -87,10 +88,13 @@ namespace RssFeed
             {
                 req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            var webResponse = req.GetResponse();
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(webResponse.GetResponseStream());
-            webResponse.Close();
+            using (var webResponse = req.GetResponse())
+            {
+                using (var responseStream = webResponse.GetResponseStream())
+                {
+                    if (responseStream != null) xmlDocument.Load(responseStream);
+                }
+            }
             return xmlDocument;
         }
 

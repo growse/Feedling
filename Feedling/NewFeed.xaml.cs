@@ -1,10 +1,11 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
 */
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using FeedHanderPluginInterface;
@@ -40,8 +41,8 @@ namespace Feedling
             try
             {
                 urlbox.Text = FeedConfig.Url;
-                defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)FeedConfig.DefaultColorR, (byte)FeedConfig.DefaultColorG, (byte)FeedConfig.DefaultColorB));
-                hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb((byte)FeedConfig.HoverColorR, (byte)FeedConfig.HoverColorG, (byte)FeedConfig.HoverColorB));
+                defaultcolourbox.Fill = new SolidColorBrush(Color.FromRgb(FeedConfig.DefaultColorR, FeedConfig.DefaultColorG, FeedConfig.DefaultColorB));
+                hovercolourbox.Fill = new SolidColorBrush(Color.FromRgb(FeedConfig.HoverColorR, FeedConfig.HoverColorG, FeedConfig.HoverColorB));
                 titlefontlabel.FontFamily = FeedConfig.TitleFontFamily;
                 titlefontlabel.FontSize = FeedConfig.TitleFontSize;
                 titlefontlabel.FontWeight = FeedConfig.TitleFontWeight;
@@ -53,8 +54,8 @@ namespace Feedling
                 fontlabel.FontStyle = FeedConfig.FontStyle;
                 fontlabel.Content = string.Format("{0}, {1}pt, {2}, {3}", FeedConfig.FontFamily, FeedConfig.FontSize, FeedConfig.FontStyle, FeedConfig.FontWeight);
 
-                updateintervalbox.Text = FeedConfig.UpdateInterval.ToString();
-                displayeditemsbox.Text = FeedConfig.DisplayedItems.ToString();
+                updateintervalbox.Text = FeedConfig.UpdateInterval.ToString(CultureInfo.InvariantCulture);
+                displayeditemsbox.Text = FeedConfig.DisplayedItems.ToString(CultureInfo.InvariantCulture);
 
                 usernamebox.Text = FeedConfig.UserName;
                 passwordbox.Password = FeedConfig.Password;
@@ -90,7 +91,7 @@ namespace Feedling
                         break;
                 }
                 proxyhostbox.Text = FeedConfig.ProxyHost;
-                proxyportbox.Text = FeedConfig.ProxyPort.ToString();
+                proxyportbox.Text = FeedConfig.ProxyPort.ToString(CultureInfo.InvariantCulture);
                 proxyauthcheck.IsChecked = FeedConfig.ProxyAuth;
                 proxyuserbox.Text = FeedConfig.ProxyUser;
                 proxypassbox.Password = FeedConfig.ProxyPass;
@@ -114,7 +115,7 @@ namespace Feedling
         private void proxyradio_Checked(object sender, RoutedEventArgs e)
         {
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = (customproxybtn.IsChecked == true);
-            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsEnabled == true && proxyauthcheck.IsChecked == true);
+            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsEnabled && proxyauthcheck.IsChecked == true);
         }
 
         private void authradio_Checked(object sender, RoutedEventArgs e)
@@ -175,7 +176,7 @@ namespace Feedling
             FeedConfig.ProxyAuth = (proxyauthcheck.IsChecked == true);
             FeedConfig.ProxyHost = proxyhostbox.Text;
             FeedConfig.ProxyPass = proxypassbox.Password;
-            var proxyport = FeedConfig.ProxyPort;
+            int proxyport;
             if (!string.IsNullOrEmpty(proxyportbox.Text) && int.TryParse(proxyportbox.Text, out proxyport) && proxyport > 0 && proxyport < 63536)
             {
                 FeedConfig.ProxyPort = proxyport;
@@ -188,13 +189,13 @@ namespace Feedling
             FeedConfig.TitleFontWeight = titlefontlabel.FontWeight;
             FeedConfig.DefaultColor = ((SolidColorBrush)defaultcolourbox.Fill).Color;
             FeedConfig.HoverColor = ((SolidColorBrush)hovercolourbox.Fill).Color;
-            var updateinterval = FeedConfig.UpdateInterval;
+            int updateinterval;
             if (!string.IsNullOrEmpty(updateintervalbox.Text) && int.TryParse(updateintervalbox.Text, out updateinterval) && updateinterval > 0)
             {
                 FeedConfig.UpdateInterval = updateinterval;
             }
 
-            var displayeditems = FeedConfig.DisplayedItems;
+            int displayeditems;
             if (!string.IsNullOrEmpty(displayeditemsbox.Text) && int.TryParse(displayeditemsbox.Text, out displayeditems) && displayeditems > 0)
             {
                 FeedConfig.DisplayedItems = displayeditems;

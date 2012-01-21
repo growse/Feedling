@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -37,7 +37,7 @@ namespace AtomFeed
         public string PluginCopyright
         {
             [SecurityCriticalAttribute]
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
+            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).LegalCopyright; }
         }
 
         public bool CanHandle(IXPathNavigable xml)
@@ -45,16 +45,19 @@ namespace AtomFeed
             if (xml != null)
             {
                 var nav = xml.CreateNavigator();
-                var xnm = new XmlNamespaceManager(nav.NameTable);
-                xnm.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-                return nav.SelectSingleNode("/atom:feed", xnm) != null;
+                if (nav.NameTable != null)
+                {
+                    var xnm = new XmlNamespaceManager(nav.NameTable);
+                    xnm.AddNamespace("atom", "http://www.w3.org/2005/Atom");
+                    return nav.SelectSingleNode("/atom:feed", xnm) != null;
+                }
             }
             return false;
         }
 
-        public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthTypes, string username, string password, IWebProxy reqproxy)
+        public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthType, string username, string password, IWebProxy reqproxy)
         {
-            return new Feed(uri, feedAuthTypes, username, password, reqproxy);
+            return new Feed(uri, feedAuthType, username, password, reqproxy);
         }
     }
 }

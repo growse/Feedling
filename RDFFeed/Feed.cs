@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -61,20 +61,23 @@ namespace RdfFeed
 
         private XmlDocument Fetch(Uri feeduri)
         {
-
+            var xmlDocument = new XmlDocument();
             var req = (HttpWebRequest)WebRequest.Create(feeduri);
-            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net",
+                                          System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
                 req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            var resp = (HttpWebResponse)req.GetResponse();
-
-            var tempdoc = new XmlDocument();
-            tempdoc.Load(resp.GetResponseStream());
-            resp.Close();
-            return tempdoc;
+            using (var webResponse = req.GetResponse())
+            {
+                using (var responseStream = webResponse.GetResponseStream())
+                {
+                    if (responseStream != null) xmlDocument.Load(responseStream);
+                }
+            }
+            return xmlDocument;
 
         }
 

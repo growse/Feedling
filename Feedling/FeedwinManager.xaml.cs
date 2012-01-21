@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -8,7 +8,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -21,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using FeedHanderPluginInterface;
+using Feedling.Classes;
 using Microsoft.Win32;
 using NLog;
 
@@ -34,14 +37,14 @@ namespace Feedling
 
         #region Vars and Consts
 
-        private System.Windows.Forms.NotifyIcon notifyicon;
-        private System.Windows.Forms.ContextMenuStrip contextmenustrip;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem checkforUpdatesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem updateAllToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem quititem;
+        private readonly System.Windows.Forms.NotifyIcon notifyicon;
+        private readonly System.Windows.Forms.ContextMenuStrip contextmenustrip;
+        private readonly System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private readonly System.Windows.Forms.ToolStripMenuItem checkforUpdatesToolStripMenuItem;
+        private readonly System.Windows.Forms.ToolStripMenuItem updateAllToolStripMenuItem;
+        private readonly System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
+        private readonly System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
+        private readonly System.Windows.Forms.ToolStripMenuItem quititem;
         private List<IPlugin> plugins;
         private readonly OpenFileDialog importfeeddlg = new OpenFileDialog();
         private readonly SaveFileDialog exportfeeddlg = new SaveFileDialog();
@@ -141,12 +144,14 @@ namespace Feedling
                 contextmenustrip.Name = "menustrip";
                 contextmenustrip.Size = new System.Drawing.Size(158, 114);
 
-                notifyicon = new System.Windows.Forms.NotifyIcon();
-                notifyicon.BalloonTipText = Properties.Resources.FirstTimeStartBalloonText;
-                notifyicon.Text = "Feedling";
-                notifyicon.Icon = Properties.Resources.FeedlingIcon;
-                notifyicon.Visible = true;
-                notifyicon.ContextMenuStrip = contextmenustrip;
+                notifyicon = new System.Windows.Forms.NotifyIcon
+                                 {
+                                     BalloonTipText = Properties.Resources.FirstTimeStartBalloonText,
+                                     Text = Properties.Resources.FeedwinManager_FeedwinManager_Feedling,
+                                     Icon = Properties.Resources.FeedlingIcon,
+                                     Visible = true,
+                                     ContextMenuStrip = contextmenustrip
+                                 };
 
 
                 importfeeddlg.Filter = exportfeeddlg.Filter = "Feeling Config Files (*.xml)|*.xml";
@@ -223,7 +228,7 @@ namespace Feedling
 
             proxyauthcheck.IsChecked = Properties.Settings.Default.ProxyAuth;
             proxyhostbox.Text = Properties.Settings.Default.ProxyHost;
-            proxyportbox.Text = Properties.Settings.Default.ProxyPort.ToString();
+            proxyportbox.Text = Properties.Settings.Default.ProxyPort.ToString(CultureInfo.InvariantCulture);
             proxypassbox.Password = Properties.Settings.Default.ProxyPass;
             proxyuserbox.Text = Properties.Settings.Default.ProxyUser;
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (customproxybtn.IsChecked == true);
@@ -266,7 +271,7 @@ namespace Feedling
             Log.Debug("{0} plugin candidates found", pluginfiles.Length);
             foreach (var t in pluginfiles)
             {
-                var args = t.Substring(t.LastIndexOf("\\") + 1, t.IndexOf(".dll") - t.LastIndexOf("\\") - 1);
+                var args = t.Substring(t.LastIndexOf("\\", StringComparison.Ordinal) + 1, t.IndexOf(".dll", StringComparison.Ordinal) - t.LastIndexOf("\\", StringComparison.Ordinal) - 1);
                 var ass = Assembly.Load(args);
 
                 var types = ass.GetTypes();
@@ -310,9 +315,10 @@ namespace Feedling
                 }
                 else
                 {
-                    if (ex.InnerException is ConfigurationErrorsException)
+                    var configurationErrorsException = ex.InnerException as ConfigurationErrorsException;
+                    if (configurationErrorsException != null)
                     {
-                        filename = ((ConfigurationErrorsException)ex.InnerException).Filename;
+                        filename = (configurationErrorsException).Filename;
                     }
                 }
                 Log.Error("Filename is {0}. Deleting it and reinitializing", filename);
@@ -357,7 +363,7 @@ namespace Feedling
                     var respstream = resp.GetResponseStream();
                     if (respstream != null)
                     {
-                        var streamtext = new StreamReader(resp.GetResponseStream()).ReadToEnd();
+                        var streamtext = new StreamReader(respstream).ReadToEnd();
                         tempdoc.LoadXml(streamtext);
                     }
                 }
@@ -623,7 +629,7 @@ namespace Feedling
             Log.Debug("FeedwinManager closing - saving settings");
             try
             {
-                if (previousselectedguid != null && windowlist.Contains(previousselectedguid))
+                if (windowlist.Contains(previousselectedguid))
                 {
                     ((FeedWin)windowlist[previousselectedguid]).Deselect();
                 }
@@ -677,15 +683,14 @@ namespace Feedling
             catch (Exception ex)
             {
                 Log.Error("Exception thrown when trying to load the FeedConfig", ex);
-                throw ex;
+                throw;
             }
         }
 
         private void updateAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (FeedWin fw in windowlist.Values)
+            foreach (var t in from FeedWin fw in windowlist.Values select new Thread(fw.UpdateNow) { IsBackground = true })
             {
-                var t = new Thread(fw.UpdateNow) { IsBackground = true };
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
             }
@@ -694,7 +699,7 @@ namespace Feedling
         private void proxybtn_Checked(object sender, RoutedEventArgs e)
         {
             proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = (customproxybtn.IsChecked == true);
-            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true && proxyauthcheck.IsEnabled == true);
+            proxyuserbox.IsEnabled = proxypassbox.IsEnabled = (proxyauthcheck.IsChecked == true && proxyauthcheck.IsEnabled);
         }
 
         private void proxyauthcheck_Click(object sender, RoutedEventArgs e)

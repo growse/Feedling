@@ -129,6 +129,15 @@ namespace Feedling.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feedling.
+        /// </summary>
+        internal static string FeedwinManager_FeedwinManager_Feedling {
+            get {
+                return ResourceManager.GetString("FeedwinManager_FeedwinManager_Feedling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Move Handles.
         /// </summary>
         internal static string FeedwinManager_FeedwinManager_Move_Mode {

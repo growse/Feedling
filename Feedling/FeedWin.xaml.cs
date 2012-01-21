@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using FeedHanderPluginInterface;
+using Feedling.Classes;
 using NLog;
 
 namespace Feedling
@@ -259,25 +260,25 @@ namespace Feedling
         {
             try
             {
-                var fci = (FeedConfigItem)state;
+                var feedConfigItem = (FeedConfigItem)state;
                 Log.Debug("Getting the Feed Type");
-                var document = (XmlDocument)FeedwinManager.Fetch(fci);
+                var document = (XmlDocument)FeedwinManager.Fetch(feedConfigItem);
                 foreach (var feedplugin in FeedwinManager.thisinst.Plugins)
                 {
                     Log.Debug("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (!feedplugin.CanHandle(document)) continue;
                     Log.Debug("It can! Yay!");
-                    var reqproxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : FeedwinManager.GetGlobalProxy();
+                    var reqproxy = feedConfigItem.ProxyType != ProxyType.Global ? feedConfigItem.Proxy : FeedwinManager.GetGlobalProxy();
                     if (reqproxy != null)
                     {
-                        Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(fci.Url)));
+                        Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(feedConfigItem.Url)));
                     }
                     else
                     {
                         Log.Debug("Set Proxy for feed to nothing, nothing at all");
                     }
-                    rssfeed = feedplugin.AddFeed(new Uri(fci.Url), fci.AuthType, fci.UserName, fci.Password, reqproxy);
-                    rssfeed.UpdateInterval = fci.UpdateInterval;
+                    rssfeed = feedplugin.AddFeed(new Uri(feedConfigItem.Url), feedConfigItem.AuthType, feedConfigItem.UserName, feedConfigItem.Password, reqproxy);
+                    rssfeed.UpdateInterval = feedConfigItem.UpdateInterval;
                     break;
                 }
             }

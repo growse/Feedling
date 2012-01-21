@@ -1,14 +1,15 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
 */
+
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Feedling
+namespace Feedling.Classes
 {
     public class NumberTextBox : TextBox
     {
@@ -53,7 +54,7 @@ namespace Feedling
                     str == System.Globalization.NumberFormatInfo.CurrentInfo.PerMilleSymbol |
                     str == System.Globalization.NumberFormatInfo.CurrentInfo.PositiveInfinitySymbol |
                     str == System.Globalization.NumberFormatInfo.CurrentInfo.PositiveSign)
-                    return ret;
+                    return true;
             }
 
             var l = str.Length;

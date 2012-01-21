@@ -1,11 +1,12 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
 */
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -77,22 +78,24 @@ namespace AtomFeed
             feedpassword = password;
         }
 
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private XmlDocument Fetch(Uri uri)
         {
+            var xmlDocument = new XmlDocument();
             var req = (HttpWebRequest)WebRequest.Create(uri);
-            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Atom-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            req.UserAgent = string.Format(CultureInfo.CurrentCulture, "Mozilla/5.0 (compatible; Atom-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
                 req.Credentials = new NetworkCredential(feedusername, feedpassword);
             }
-            var resp = req.GetResponse();
-            var tempdoc = new XmlDocument();
-            tempdoc.Load(resp.GetResponseStream());
-            resp.Close();
-            return tempdoc;
+            using (var webResponse = req.GetResponse())
+            {
+                using (var responseStream = webResponse.GetResponseStream())
+                {
+                    if (responseStream != null) xmlDocument.Load(responseStream);
+                }
+            }
+            return xmlDocument;
         }
 
         public void Update()
@@ -103,109 +106,39 @@ namespace AtomFeed
                 var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
                 feedxml = Fetch(FeedUri);
 
-                var xPathNavigator = FeedXml.CreateNavigator();
+                var xPathNavigator = feedxml.CreateNavigator();
 
-                var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
-                xmlNamespaceManager.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-
-                var xPathExpression = xPathNavigator.Compile("/atom:feed/atom:entry");
-                xPathExpression.SetContext(xmlNamespaceManager);
-
-                var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
-
-                var titlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:title/text()", xmlNamespaceManager);
-                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
-
-                // Create link from the first link element in feed with rel = 'alternative'
-                var linkiterator = xPathNavigator.Select("atom:feed/atom:link", xmlNamespaceManager);
-                while (linkiterator.MoveNext() && Url == null)
+                if (xPathNavigator.NameTable != null)
                 {
-                    var linknav = linkiterator.Current;
-                    if (linknav == null || !linknav.HasAttributes) continue;
-                    var rel = linknav.GetAttribute("rel", "");
-                    if (rel.Equals("alternate"))
+                    var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
+                    xmlNamespaceManager.AddNamespace("atom", "http://www.w3.org/2005/Atom");
+
+
+                    SetFeedTitle(xPathNavigator, xmlNamespaceManager);
+                    SetFeedLink(xPathNavigator, xmlNamespaceManager);
+                    SetFeedDescription(xPathNavigator, xmlNamespaceManager);
+
+                    //Set up the node iterater to jump through all the entries
+                    var xPathExpression = xPathNavigator.Compile("/atom:feed/atom:entry");
+                    xPathExpression.SetContext(xmlNamespaceManager);
+                    var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
+
+                    feeditems.Clear();
+                    while (xPathNodeIterator.MoveNext())
                     {
-                        Url = new Uri(linknav.GetAttribute("href", ""));
-                    }
-                }
-                // If no link with rel = 'alternate' in the feed, just pick the first link
-                if (Url == null)
-                {
-                    var linknode = xPathNavigator.SelectSingleNode("/atom:feed/atom:link", xmlNamespaceManager);
-                    if (linknode != null)
-                    {
-                        Uri result;
-                        if (Uri.TryCreate(linknode.GetAttribute("href", ""), UriKind.Absolute, out result))
+                        if (xPathNodeIterator.Current != null)
                         {
-                            Url = result;
-                        }
-                    }
-                }
+                            if (!xPathNodeIterator.Current.HasChildren) continue;
 
-                var subtitlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:subtitle", xmlNamespaceManager);
-                if (subtitlenode != null)
-                {
-                    Description = subtitlenode.ToString().Trim();
-                }
+                            var item = GetItemFromFeedEntry(xPathNodeIterator, xmlNamespaceManager);
 
-                feeditems.Clear();
-                while (xPathNodeIterator.MoveNext())
-                {
-                    if (!xPathNodeIterator.Current.HasChildren) continue;
-
-                    var item = new FeedItem();
-                    var subnav = xPathNodeIterator.Current.CreateNavigator();
-                    var textnode = subnav.SelectSingleNode("atom:title/text()", xmlNamespaceManager);
-                    item.Title = textnode == null ? "(untitled)" : WebUtility.HtmlDecode(textnode.ToString()).Trim();
-                    linkiterator = subnav.Select("atom:link", xmlNamespaceManager);
-                    while (linkiterator.MoveNext() && item.Link == null)
-                    {
-                        var linknav = linkiterator.Current;
-                        if (!linknav.HasAttributes || linknav.GetAttribute("rel", "") == null ||
-                            linknav.GetAttribute("href", "") == null) continue;
-                        var rel = linknav.GetAttribute("rel", "");
-                        if (rel.Equals("alternate"))
-                        {
-                            item.Link = new Uri(linknav.GetAttribute("href", ""));
-                        }
-                    }
-                    // If no link with rel = 'alternate' in the entry, just pick the first link
-                    if (item.Link == null)
-                    {
-                        if (subnav.SelectSingleNode("atom:link", xmlNamespaceManager) != null && subnav.SelectSingleNode("atom:link", xmlNamespaceManager).GetAttribute("href", "") != null)
-                        {
-                            Uri result;
-                            if (Uri.TryCreate(subnav.SelectSingleNode("atom:link", xmlNamespaceManager).GetAttribute("href", ""), UriKind.Absolute, out result))
+                            if (!oldfeeditems.Contains(item))
                             {
-                                item.Link = result;
+                                item.Updated = true;
                             }
+                            feeditems.Add(item);
                         }
                     }
-                    if (subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager) != null)
-                    {
-                        try
-                        {
-                            var tempnav = subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager);
-                            if (tempnav != null)
-                            {
-                                DateTime gdt;
-                                var res = DateTime.TryParse(tempnav.ToString(), out gdt);
-                                if (res)
-                                {
-                                    item.Date = gdt;
-                                }
-                            }
-                        }
-                        catch (FormatException)
-                        {
-
-                        }
-                    }
-                    if (!oldfeeditems.Contains(item))
-                    {
-                        item.Updated = true;
-                    }
-                    feeditems.Add(item);
                 }
             }
             catch (WebException ex)
@@ -235,13 +168,104 @@ namespace AtomFeed
             FireUpdated();
         }
 
+        private static FeedItem GetItemFromFeedEntry(XPathNodeIterator xPathNodeIterator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var item = new FeedItem();
+
+            var subnav = xPathNodeIterator.Current.CreateNavigator();
+            var textnode = subnav.SelectSingleNode("atom:title/text()", xmlNamespaceManager);
+            item.Title = textnode == null ? "(untitled)" : WebUtility.HtmlDecode(textnode.ToString()).Trim();
+            var linkiterator = subnav.Select("atom:link", xmlNamespaceManager);
+            while (linkiterator.MoveNext() && item.Link == null)
+            {
+                var linknav = linkiterator.Current;
+                if (linknav != null)
+                {
+                    if (!linknav.HasAttributes) continue;
+                    var rel = linknav.GetAttribute("rel", "");
+                    if (rel.Equals("alternate"))
+                    {
+                        item.Link = new Uri(linknav.GetAttribute("href", ""));
+                    }
+                }
+            }
+            // If no link with rel = 'alternate' in the entry, just pick the first link
+            if (item.Link == null)
+            {
+                var linknav = subnav.SelectSingleNode("atom:link", xmlNamespaceManager);
+                if (linknav != null)
+                {
+                    Uri result;
+                    if (Uri.TryCreate(linknav.GetAttribute("href", ""), UriKind.Absolute, out result))
+                    {
+                        item.Link = result;
+                    }
+                }
+            }
+            var updatednav = subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager);
+            if (updatednav != null)
+            {
+                DateTime gdt;
+                var res = DateTime.TryParse(updatednav.ToString(), out gdt);
+                if (res)
+                {
+                    item.Date = gdt;
+                }
+            }
+            return item;
+        }
+
+        private void SetFeedDescription(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var subtitlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:subtitle", xmlNamespaceManager);
+            if (subtitlenode != null)
+            {
+                Description = subtitlenode.ToString().Trim();
+            }
+        }
+
+        private void SetFeedTitle(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var titlenode = xPathNavigator.SelectSingleNode("/atom:feed/atom:title/text()", xmlNamespaceManager);
+            Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
+        }
+
+        private void SetFeedLink(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            // Create link from the first link element in feed with rel = 'alternative'
+            var linkiterator = xPathNavigator.Select("atom:feed/atom:link", xmlNamespaceManager);
+            while (linkiterator.MoveNext() && Url == null)
+            {
+                var linknav = linkiterator.Current;
+                if (linknav == null || !linknav.HasAttributes) continue;
+                var rel = linknav.GetAttribute("rel", "");
+                if (rel.Equals("alternate"))
+                {
+                    Url = new Uri(linknav.GetAttribute("href", ""));
+                }
+            }
+            // If no link with rel = 'alternate' in the feed, just pick the first link
+            if (Url == null)
+            {
+                var linknode = xPathNavigator.SelectSingleNode("/atom:feed/atom:link", xmlNamespaceManager);
+                if (linknode != null)
+                {
+                    Uri result;
+                    if (Uri.TryCreate(linknode.GetAttribute("href", ""), UriKind.Absolute, out result))
+                    {
+                        Url = result;
+                    }
+                }
+            }
+        }
+
         public void Watch(object state)
         {
             while (true)
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
-                int fuzz = new Random().Next(1000, 30000);
+                var fuzz = new Random().Next(1000, 30000);
                 Thread.Sleep((UpdateInterval * 60000) + fuzz);
             }
         }

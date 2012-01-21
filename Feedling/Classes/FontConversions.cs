@@ -1,12 +1,14 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
 */
+
 using System;
 using System.Windows;
-namespace Feedling
+
+namespace Feedling.Classes
 {
     public static class FontConversions
     {
@@ -34,19 +36,21 @@ namespace Feedling
         /// </summary>
         public static FontStyle FontStyleFromString(string value)
         {
-            FontStyle result;
+            var result = FontStyles.Normal;
 
             try
             {
-                result = (FontStyle)new FontStyleConverter().ConvertFromString((value));
+                var convertFromString = new FontStyleConverter().ConvertFromString((value));
+                if (convertFromString != null)
+                {
+                    result = (FontStyle)convertFromString;
+                }
             }
             catch (NotSupportedException)
             {
-                result = FontStyles.Normal;
             }
             catch (FormatException)
             {
-                result = FontStyles.Normal;
             }
 
             return result;
@@ -76,24 +80,26 @@ namespace Feedling
         /// </summary>
         public static FontWeight FontWeightFromString(string value)
         {
-            FontWeight result;
+            var result = FontWeights.Normal;
 
             try
             {
-                result = (FontWeight)new FontWeightConverter().ConvertFromString((value));
+                var convertFromString = new FontWeightConverter().ConvertFromString((value));
+                if (convertFromString != null)
+                {
+                    result = (FontWeight)convertFromString;
+                }
             }
             catch (NotSupportedException)
             {
-                result = FontWeights.Normal;
             }
             catch (FormatException)
             {
-                result = FontWeights.Normal;
             }
 
             return result;
         }
 
-     
+
     }
 }

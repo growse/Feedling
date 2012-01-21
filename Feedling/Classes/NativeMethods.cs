@@ -1,15 +1,16 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
 */
+
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Feedling
+namespace Feedling.Classes
 {
     class NativeMethods
     {
@@ -23,9 +24,9 @@ namespace Feedling
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, IntPtr windowTitle);
 
-        [DllImportAttribute("user32.dll")]
+        [DllImport("user32.dll")]
         static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-        [DllImportAttribute("user32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
@@ -67,6 +68,10 @@ namespace Feedling
             var exStyle = GetWindowLong(wh.Handle, GWL_EXSTYLE);
             exStyle |= WS_EX_TOOLWINDOW;
             var result = SetWindowLong(wh.Handle, GWL_EXSTYLE, (int)exStyle);
+            if (result != 0)
+            {
+                throw new InvalidOperationException(string.Concat("Error raised attempting to SetWindowLong: ", result));
+            }
         }
         public static void MakeWindowMovable(Window window)
         {
@@ -84,6 +89,11 @@ namespace Feedling
                IntPtr.Zero, "SysListView32", "FolderView");
 
             var result = SetWindowLong(hWnd, GWL_HWNDPARENT, hprog);
+            if (result != 0)
+            {
+                throw new InvalidOperationException(string.Concat("Error raised attempting to SetWindowLong: ", result));
+            }
+
         }
     }
 }

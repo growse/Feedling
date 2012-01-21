@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using FeedHanderPluginInterface;
+using Feedling.Classes;
 
 namespace Feedling
 {

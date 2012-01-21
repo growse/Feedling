@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Threading;
+using Feedling.Classes;
 
 namespace Feedling
 {

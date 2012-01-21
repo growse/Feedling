@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2008-2011, Andrew Rowson
+Copyright © 2008-2012, Andrew Rowson
 All rights reserved.
 
 See LICENSE file for license details.
@@ -56,9 +56,9 @@ namespace RdfFeed
             return false;
         }
 
-        public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthTypes, string username, string password, IWebProxy reqproxy)
+        public IFeed AddFeed(Uri uri, FeedAuthTypes feedAuthType, string username, string password, IWebProxy reqproxy)
         {
-            return new Feed(uri, feedAuthTypes, username, password, reqproxy);
+            return new Feed(uri, feedAuthType, username, password, reqproxy);
         }
     }
 }
