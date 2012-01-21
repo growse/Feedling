@@ -6,11 +6,13 @@ See LICENSE file for license details.
 */
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
 namespace RssFeed
@@ -18,10 +20,11 @@ namespace RssFeed
     public class Feed : IFeed
     {
         #region Properties
+
+        private XmlDocument feedxml;
         public bool Loaded { get; set; }
         public bool HasError { get; set; }
         public string ErrorMessage { get; set; }
-        protected XmlDocument Feedxml { get; set; }
         public int UpdateInterval { get; set; }
         public Uri FeedUri { get; set; }
         private readonly Collection<FeedItem> feeditems = new Collection<FeedItem>();
@@ -37,26 +40,12 @@ namespace RssFeed
         {
             get { return null; }
         }
-        public string PluginName
-        {
-            get
-            {
-                return "RSSFeed";
-            }
-        }
-        public string PluginVersion
-        {
-            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-        public string PluginCopyright
-        {
-            get { return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LegalCopyright; }
-        }
         public DateTime LastUpdate { get; private set; }
         private readonly IWebProxy feedproxy;
         private readonly FeedAuthTypes feedauthtype;
         private readonly string feedusername;
         private readonly string feedpassword;
+        public bool RunWatchLoop { get; set; }
         #endregion
 
         #region Methods
@@ -83,7 +72,7 @@ namespace RssFeed
         {
             var xmlDocument = new XmlDocument();
             var req = (HttpWebRequest)WebRequest.Create(feeduri);
-            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            req.UserAgent = string.Format(CultureInfo.CurrentCulture, "Mozilla/5.0 (compatible; Feedling-RSSFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
@@ -105,70 +94,30 @@ namespace RssFeed
             try
             {
                 var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
-                Feedxml = Fetch(FeedUri);
-                var xPathNavigator = Feedxml.CreateNavigator();
+                feedxml = Fetch(FeedUri);
+
+                var xPathNavigator = feedxml.CreateNavigator();
+
+                SetFeedTitle(xPathNavigator);
+                SetFeedLink(xPathNavigator);
+                SetFeedDescription(xPathNavigator);
+
                 var xPathNodeIterator = xPathNavigator.Select("/rss/channel/item");
 
-                var titlenode = xPathNavigator.SelectSingleNode("/rss/channel/title");
-                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
-
-                var linknode = xPathNavigator.SelectSingleNode("/rss/channel/link");
-                if (linknode != null)
-                {
-                    Uri result;
-                    if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
-                    {
-                        Url = result;
-                    }
-                }
-
-                var descriptionnode = xPathNavigator.SelectSingleNode("/rss/channel/description");
-                if (descriptionnode != null)
-                {
-                    Description = descriptionnode.ToString().Trim();
-                }
                 feeditems.Clear();
                 while (xPathNodeIterator.MoveNext())
                 {
-                    if (xPathNodeIterator.Current == null || !xPathNodeIterator.Current.HasChildren) continue;
-                    var item = new FeedItem();
-                    var pathNavigator = xPathNodeIterator.Current.CreateNavigator();
-
-                    titlenode = pathNavigator.SelectSingleNode("title");
-                    item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
-
-                    linknode = pathNavigator.SelectSingleNode("link");
-                    if (linknode != null)
+                    if (xPathNodeIterator.Current != null)
                     {
-                        Uri result;
-                        if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                        if (!xPathNodeIterator.Current.HasChildren) continue;
+                        var item = GetItemFromFeedEntry(xPathNodeIterator);
+
+                        if (!oldfeeditems.Contains(item))
                         {
-                            item.Link = result;
+                            item.Updated = true;
                         }
+                        feeditems.Add(item);
                     }
-
-                    try
-                    {
-                        var tempnav = pathNavigator.SelectSingleNode("pubDate");
-                        if (tempnav != null)
-                        {
-                            DateTime gdt;
-                            var res = DateTime.TryParse(tempnav.ToString(), out gdt);
-                            if (res)
-                            {
-                                item.Date = gdt;
-                            }
-                        }
-                    }
-                    catch (FormatException)
-                    {
-                    }
-
-                    if (!oldfeeditems.Contains(item))
-                    {
-                        item.Updated = true;
-                    }
-                    feeditems.Add(item);
                 }
             }
             catch (WebException ex)
@@ -197,9 +146,78 @@ namespace RssFeed
             FireUpdated();
         }
 
+        private static FeedItem GetItemFromFeedEntry(XPathNodeIterator xPathNodeIterator)
+        {
+            var item = new FeedItem();
+            if (xPathNodeIterator.Current != null)
+            {
+                var pathNavigator = xPathNodeIterator.Current.CreateNavigator();
+
+                var titlenode = pathNavigator.SelectSingleNode("title");
+                item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
+
+                var linknode = pathNavigator.SelectSingleNode("link");
+                if (linknode != null)
+                {
+                    Uri result;
+                    if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                    {
+                        item.Link = result;
+                    }
+                }
+
+                try
+                {
+                    var tempnav = pathNavigator.SelectSingleNode("pubDate");
+                    if (tempnav != null)
+                    {
+                        DateTime gdt;
+                        var res = DateTime.TryParse(tempnav.ToString(), out gdt);
+                        if (res)
+                        {
+                            item.Date = gdt;
+                        }
+                    }
+                }
+                catch (FormatException)
+                {
+                }
+            }
+            return item;
+        }
+
+        private void SetFeedDescription(XPathNavigator xPathNavigator)
+        {
+            var descriptionnode = xPathNavigator.SelectSingleNode("/rss/channel/description");
+            if (descriptionnode != null)
+            {
+                Description = descriptionnode.ToString().Trim();
+            }
+        }
+
+        private void SetFeedLink(XPathNavigator xPathNavigator)
+        {
+            var linknode = xPathNavigator.SelectSingleNode("/rss/channel/link");
+            if (linknode != null)
+            {
+                Uri result;
+                if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                {
+                    Url = result;
+                }
+            }
+        }
+
+        private void SetFeedTitle(XPathNavigator xPathNavigator)
+        {
+            var titlenode = xPathNavigator.SelectSingleNode("/rss/channel/title");
+            Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
+        }
+
         public void Watch()
         {
-            while (true)
+            RunWatchLoop = true;
+            while (RunWatchLoop)
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
@@ -216,7 +234,7 @@ namespace RssFeed
         #endregion
 
         #region Events
-        public virtual event EventHandler Updated;
+        public event EventHandler Updated;
         #endregion
     }
 }

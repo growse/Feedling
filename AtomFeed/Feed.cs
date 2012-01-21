@@ -21,14 +21,10 @@ namespace AtomFeed
     {
         #region Properties
 
+        private XmlDocument feedxml;
         public bool Loaded { get; set; }
         public bool HasError { get; set; }
         public string ErrorMessage { get; set; }
-        private XmlDocument feedxml;
-        protected IXPathNavigable FeedXml
-        {
-            get { return feedxml; }
-        }
         public int UpdateInterval { get; set; }
         public Uri FeedUri { get; set; }
         private readonly Collection<FeedItem> feeditems = new Collection<FeedItem>();

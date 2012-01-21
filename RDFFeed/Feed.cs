@@ -6,6 +6,7 @@ See LICENSE file for license details.
 */
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -19,10 +20,10 @@ namespace RdfFeed
     public class Feed : IFeed
     {
         #region Properties
+        private XmlDocument feedxml;
         public bool Loaded { get; set; }
         public bool HasError { get; set; }
         public string ErrorMessage { get; set; }
-        protected XmlDocument Feedxml { get; set; }
         public int UpdateInterval { get; set; }
         public Uri FeedUri { get; set; }
         protected Collection<FeedItem> feeditems = new Collection<FeedItem>();
@@ -66,8 +67,7 @@ namespace RdfFeed
         {
             var xmlDocument = new XmlDocument();
             var req = (HttpWebRequest)WebRequest.Create(feeduri);
-            req.UserAgent = string.Format("Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net",
-                                          System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            req.UserAgent = string.Format(CultureInfo.CurrentCulture, "Mozilla/5.0 (compatible; Feedling-RDFFeedHandler/{0}; http://feedling.net", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             req.Proxy = feedproxy;
             if (feedauthtype == FeedAuthTypes.Basic)
             {
@@ -90,9 +90,9 @@ namespace RdfFeed
             try
             {
                 var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
-                Feedxml = Fetch(FeedUri);
+                feedxml = Fetch(FeedUri);
 
-                var xPathNavigator = Feedxml.CreateNavigator();
+                var xPathNavigator = feedxml.CreateNavigator();
                 if (xPathNavigator.NameTable != null)
                 {
                     var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
