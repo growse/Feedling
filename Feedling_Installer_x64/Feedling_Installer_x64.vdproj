@@ -371,7 +371,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_8B913A30B9CF46E7A7180760D782EE4A"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFiles64Folder]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -420,7 +420,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
         "ProductCode" = "8:{A664ED32-0DB0-4E05-BFC0-7F5511B3BB0A}"
-        "PackageCode" = "8:{48F78678-6EBF-4599-8456-8F1EA8E161EE}"
+        "PackageCode" = "8:{6D9C23C7-60E6-4494-A530-3CCE9A3B4E40}"
         "UpgradeCode" = "8:{0A517869-B3F6-471C-AC89-C22C3E2344A6}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -955,7 +955,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_216D4ABF36FD4DD9A05F9630D1A11140"
             {
-            "SourcePath" = "8:..\\Feedling\\obj\\x64\\Debug\\Feedling.exe"
+            "SourcePath" = "8:..\\Feedling\\obj\\Debug\\Feedling.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -983,7 +983,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3D538749F3B94145953471C5AD018D93"
             {
-            "SourcePath" = "8:..\\RSSFeed\\obj\\x64\\Debug\\RssFeed.dll"
+            "SourcePath" = "8:..\\RSSFeed\\obj\\Debug\\RssFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -1011,7 +1011,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_70A8F1070F644A1D98A3523B776C070C"
             {
-            "SourcePath" = "8:..\\RDFFeed\\obj\\x64\\Debug\\RdfFeed.dll"
+            "SourcePath" = "8:..\\RDFFeed\\obj\\Debug\\RdfFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -1039,7 +1039,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_EC962CD2C68F48559172E9E1868EB680"
             {
-            "SourcePath" = "8:..\\AtomFeed\\obj\\x64\\Debug\\AtomFeed.dll"
+            "SourcePath" = "8:..\\AtomFeed\\obj\\Debug\\AtomFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"

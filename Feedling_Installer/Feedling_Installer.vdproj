@@ -51,6 +51,30 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
+        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
+        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
+        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9965A66DEF6E4E1C858439F5509D8B92"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -63,30 +87,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
-        "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
-        "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
-        "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
         "MsmSig" = "8:_UNDEFINED"
@@ -94,7 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
+        "OwnerKey" = "8:_93A0A3A668B0D07305D59D5566E118EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,10 +154,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
                     {
-                    "Name" = "8:.NET Framework 2.0 (x86)"
-                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -320,6 +320,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_93A0A3A668B0D07305D59D5566E118EE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_93A0A3A668B0D07305D59D5566E118EE"
+                    {
+                    "Name" = "8:FeedHanderPluginInterface.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FeedHanderPluginInterface.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9965A66DEF6E4E1C858439F5509D8B92"
             {
             "SourcePath" = "8:..\\Feedling\\Resources\\Feedling.ico"
@@ -354,37 +385,6 @@
                     }
                 }
             "SourcePath" = "8:NLog.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A668852FF3D9A788E8B4FF415F809E8F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_A668852FF3D9A788E8B4FF415F809E8F"
-                    {
-                    "Name" = "8:FeedHanderPluginInterface.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FeedHanderPluginInterface.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -470,7 +470,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
         "ProductCode" = "8:{2E6CACC7-6C42-4EA9-9821-749163B617C4}"
-        "PackageCode" = "8:{5EB6D1E5-3C05-44C4-9A5D-B601ECFF1BEA}"
+        "PackageCode" = "8:{90194C0E-98DC-4EC4-80B0-0A1049BF6640}"
         "UpgradeCode" = "8:{513C01DE-2A25-4226-85EB-D46EFC493ECA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
