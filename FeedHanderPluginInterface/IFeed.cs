@@ -16,7 +16,7 @@ namespace FeedHanderPluginInterface
         /// Called by the host when it has initialized the feed object and it's ready to begin listening.
         /// The host calls this method as a new thread.
         /// </summary>
-        void Watch(object state);
+        void Watch();
         /// <summary>
         /// A list of the FeedItems that currently exist in the feed
         /// </summary>

@@ -25,6 +25,7 @@ namespace RssFeed
         public int UpdateInterval { get; set; }
         public Uri FeedUri { get; set; }
         private readonly Collection<FeedItem> feeditems = new Collection<FeedItem>();
+
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
@@ -196,7 +197,7 @@ namespace RssFeed
             FireUpdated();
         }
 
-        public void Watch(object state)
+        public void Watch()
         {
             while (true)
             {

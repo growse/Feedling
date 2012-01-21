@@ -10,8 +10,10 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Xml;
+using System.Xml.XPath;
 using FeedHanderPluginInterface;
 
+[assembly: CLSCompliant(false)]
 namespace RdfFeed
 {
     public class Feed : IFeed
@@ -36,6 +38,7 @@ namespace RdfFeed
         private readonly string feedusername;
         private readonly string feedpassword;
         public DateTime LastUpdate { get; private set; }
+        public bool RunWatchLoop { get; set; }
         #endregion
 
         #region Methods
@@ -88,81 +91,39 @@ namespace RdfFeed
             {
                 var oldfeeditems = feeditems.Select(item => (FeedItem)item.Clone()).ToList();
                 Feedxml = Fetch(FeedUri);
+
                 var xPathNavigator = Feedxml.CreateNavigator();
-
-                var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
-                xmlNamespaceManager.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                xmlNamespaceManager.AddNamespace("rss", "http://purl.org/rss/1.0/");
-                xmlNamespaceManager.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
-                var xPathExpression = xPathNavigator.Compile("/rdf:RDF//rss:item");
-                xPathExpression.SetContext(xmlNamespaceManager);
-                var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
-
-                var titlenode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xmlNamespaceManager);
-                Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
-
-                var feedlinknode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
-
-                if (feedlinknode != null)
+                if (xPathNavigator.NameTable != null)
                 {
-                    Uri result;
-                    if (Uri.TryCreate(feedlinknode.ToString(), UriKind.Absolute, out result))
+                    var xmlNamespaceManager = new XmlNamespaceManager(xPathNavigator.NameTable);
+                    xmlNamespaceManager.AddNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+                    xmlNamespaceManager.AddNamespace("rss", "http://purl.org/rss/1.0/");
+                    xmlNamespaceManager.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
+
+                    SetFeedTitle(xPathNavigator, xmlNamespaceManager);
+                    SetFeedLink(xPathNavigator, xmlNamespaceManager);
+                    SetFeedDescription(xPathNavigator, xmlNamespaceManager);
+
+                    //Set up the node iterater to jump through all the entries
+                    var xPathExpression = xPathNavigator.Compile("/rdf:RDF//rss:item");
+                    xPathExpression.SetContext(xmlNamespaceManager);
+                    var xPathNodeIterator = xPathNavigator.Select(xPathExpression);
+
+                    feeditems.Clear();
+                    while (xPathNodeIterator.MoveNext())
                     {
-                        Url = result;
-                    }
-                }
-
-                var descriptionnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()", xmlNamespaceManager);
-
-                if (descriptionnode != null)
-                {
-                    Description = descriptionnode.ToString().Trim();
-                }
-                feeditems.Clear();
-                while (xPathNodeIterator.MoveNext())
-                {
-                    if (xPathNodeIterator.Current == null || !xPathNodeIterator.Current.HasChildren) continue;
-                    var item = new FeedItem();
-                    var subnav = xPathNodeIterator.Current.CreateNavigator();
-
-                    titlenode = subnav.SelectSingleNode("rss:title", xmlNamespaceManager);
-                    item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
-
-                    var linknode = subnav.SelectSingleNode("rss:link", xmlNamespaceManager);
-                    if (linknode != null)
-                    {
-                        Uri result;
-                        if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                        if (xPathNodeIterator.Current != null)
                         {
-                            item.Link = result;
-                        }
-                    }
-                    descriptionnode = subnav.SelectSingleNode("rss:description", xmlNamespaceManager);
-                    if (descriptionnode != null)
-                    {
-                        item.Description = descriptionnode.ToString();
-                    }
-                    try
-                    {
-                        var tempnav = subnav.SelectSingleNode("dc:date", xmlNamespaceManager);
-                        if (tempnav != null)
-                        {
-                            DateTime gdt;
-                            var res = DateTime.TryParse(tempnav.ToString(), out gdt);
-                            if (res)
+                            if (!xPathNodeIterator.Current.HasChildren) continue;
+                            var item = GetItemFromFeedEntry(xmlNamespaceManager, xPathNodeIterator);
+                            if (!oldfeeditems.Contains(item))
                             {
-                                item.Date = gdt;
+                                item.Updated = true;
                             }
+                            feeditems.Add(item);
                         }
                     }
-                    catch (FormatException) { }
-                    if (!oldfeeditems.Contains(item))
-                    {
-                        item.Updated = true;
-                    }
-                    feeditems.Add(item);
                 }
-
             }
             catch (WebException ex)
             {
@@ -191,9 +152,81 @@ namespace RdfFeed
             FireUpdated();
         }
 
-        public void Watch(object state)
+        private static FeedItem GetItemFromFeedEntry(IXmlNamespaceResolver xmlNamespaceManager,
+                                                     XPathNodeIterator xPathNodeIterator)
         {
-            while (true)
+            var item = new FeedItem();
+            if (xPathNodeIterator.Current != null)
+            {
+                var subnav = xPathNodeIterator.Current.CreateNavigator();
+
+                var titlenode = subnav.SelectSingleNode("rss:title", xmlNamespaceManager);
+                item.Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString()).Trim();
+
+                var linknode = subnav.SelectSingleNode("rss:link", xmlNamespaceManager);
+                if (linknode != null)
+                {
+                    Uri result;
+                    if (Uri.TryCreate(linknode.ToString(), UriKind.Absolute, out result))
+                    {
+                        item.Link = result;
+                    }
+                }
+                var descriptionnode = subnav.SelectSingleNode("rss:description", xmlNamespaceManager);
+                if (descriptionnode != null)
+                {
+                    item.Description = descriptionnode.ToString();
+                }
+
+                var tempnav = subnav.SelectSingleNode("dc:date", xmlNamespaceManager);
+                if (tempnav != null)
+                {
+                    DateTime gdt;
+                    var res = DateTime.TryParse(tempnav.ToString(), out gdt);
+                    if (res)
+                    {
+                        item.Date = gdt;
+                    }
+                }
+
+            }
+            return item;
+        }
+
+        private void SetFeedDescription(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var descriptionnode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:description/text()",
+                                                                  xmlNamespaceManager);
+
+            if (descriptionnode != null)
+            {
+                Description = descriptionnode.ToString().Trim();
+            }
+        }
+
+        private void SetFeedLink(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var feedlinknode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:link/text()", xmlNamespaceManager);
+            if (feedlinknode != null)
+            {
+                Uri result;
+                if (Uri.TryCreate(feedlinknode.ToString(), UriKind.Absolute, out result))
+                {
+                    Url = result;
+                }
+            }
+        }
+
+        private void SetFeedTitle(XPathNavigator xPathNavigator, IXmlNamespaceResolver xmlNamespaceManager)
+        {
+            var titlenode = xPathNavigator.SelectSingleNode("/rdf:RDF/rss:channel/rss:title/text()", xmlNamespaceManager);
+            Title = titlenode == null ? "(untitled)" : WebUtility.HtmlDecode(titlenode.ToString().Trim());
+        }
+
+        public void Watch()
+        {
+            RunWatchLoop = true;
+            while (RunWatchLoop)
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
@@ -210,7 +243,7 @@ namespace RdfFeed
         #endregion
 
         #region Events
-        public virtual event EventHandler Updated;
+        public event EventHandler Updated;
         #endregion
     }
 }

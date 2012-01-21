@@ -252,7 +252,7 @@ namespace AtomFeed
             }
         }
 
-        public void Watch(object state)
+        public void Watch()
         {
             RunWatchLoop = true;
             while (RunWatchLoop)
