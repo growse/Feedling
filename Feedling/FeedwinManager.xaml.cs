@@ -418,16 +418,12 @@ namespace Feedling
                         }
                         windowlist.Clear();
                     }
-                    foreach (var fci in FeedConfigItems.Items)
+                    foreach (var fw in from fci in FeedConfigItems.Items where !windowlist.ContainsKey(fci.Guid) select new FeedWin(fci))
                     {
-                        if (!windowlist.ContainsKey(fci.Guid))
-                        {
-                            var fw = new FeedWin(fci);
-                            fw.LocationChanged += fw_LocationChanged;
-                            fw.SizeChanged += fw_SizeChanged;
-                            fw.Show();
-                            windowlist.Add(fw.FeedConfig.Guid, fw);
-                        }
+                        fw.LocationChanged += fw_LocationChanged;
+                        fw.SizeChanged += fw_SizeChanged;
+                        fw.Show();
+                        windowlist.Add(fw.FeedConfig.Guid, fw);
                     }
                 }
                 catch (Exception ex)

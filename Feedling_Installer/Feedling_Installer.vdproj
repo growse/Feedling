@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:Feedling_Installer"
+"ProjectName" = "8:Feedling_Installer_x86"
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
@@ -13,6 +13,12 @@
 "SccProvider" = "8:"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_05E94E6E324D41AE87E965C17AA6B174"
+        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
+        "MsmSig" = "8:_UNDEFINED"
+        }
         "Entry"
         {
         "MsmKey" = "8:_4193F6BAFF404DA2893BB4E4355B561C"
@@ -51,38 +57,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A131C19BE8354188544BD223172BB369"
+        "MsmKey" = "8:_A2E71674A92CEE7821D47AA0C738F52F"
         "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
         "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
         "OwnerKey" = "8:_6EDBDBFAD8924553BB46F86FC6D3B546"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
         "OwnerKey" = "8:_4F4918D3B6C24E51B2B2EA817FBE6189"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "MsmKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
         "OwnerKey" = "8:_4A7B8D73863340878E13AEC7C9203668"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B27BA205BE7816689C23413972272654"
-        "OwnerKey" = "8:_4969685637D642D782D5B0C0902BE404"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,7 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF11835866A305E17EC76A7B3859F26F"
+        "OwnerKey" = "8:_A668852FF3D9A788E8B4FF415F809E8F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -118,13 +118,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B27BA205BE7816689C23413972272654"
+        "OwnerKey" = "8:_A2E71674A92CEE7821D47AA0C738F52F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A131C19BE8354188544BD223172BB369"
+        "OwnerKey" = "8:_05E94E6E324D41AE87E965C17AA6B174"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -136,6 +136,43 @@
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
         "OutputFilename" = "8:Debug\\Feedling_Installer.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    {
+                    "Name" = "8:.NET Framework 2.0 (x86)"
+                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
+        }
+        "Debug (x64)"
+        {
+        "DisplayName" = "8:Debug (x64)"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Debug (x64)\\Feedling_Installer.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -232,6 +269,37 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_05E94E6E324D41AE87E965C17AA6B174"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FontDialog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_05E94E6E324D41AE87E965C17AA6B174"
+                    {
+                    "Name" = "8:FontDialog.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FontDialog.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4193F6BAFF404DA2893BB4E4355B561C"
             {
             "SourcePath" = "8:..\\Feedling\\NLog.config"
@@ -272,13 +340,18 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A131C19BE8354188544BD223172BB369"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A2E71674A92CEE7821D47AA0C738F52F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A2E71674A92CEE7821D47AA0C738F52F"
+                    {
+                    "Name" = "8:NLog.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NLog.dll"
             "TargetName" = "8:"
@@ -298,41 +371,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AF11835866A305E17EC76A7B3859F26F"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A668852FF3D9A788E8B4FF415F809E8F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
+                    "_A668852FF3D9A788E8B4FF415F809E8F"
+                    {
+                    "Name" = "8:FeedHanderPluginInterface.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:FeedHanderPluginInterface.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B27BA205BE7816689C23413972272654"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FontDialog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:FontDialog.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FF19DFEBA279403384AAB5D435240C03"
@@ -418,7 +470,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Feedling"
         "ProductCode" = "8:{2E6CACC7-6C42-4EA9-9821-749163B617C4}"
-        "PackageCode" = "8:{27727005-940F-47D1-8203-01BE63D1237F}"
+        "PackageCode" = "8:{5EB6D1E5-3C05-44C4-9A5D-B601ECFF1BEA}"
         "UpgradeCode" = "8:{513C01DE-2A25-4226-85EB-D46EFC493ECA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

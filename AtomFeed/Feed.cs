@@ -22,36 +22,26 @@ namespace AtomFeed
         #region Properties
 
         public bool Loaded { get; set; }
-
         public bool HasError { get; set; }
-
         public string ErrorMessage { get; set; }
-
         private XmlDocument feedxml;
-
         protected IXPathNavigable FeedXml
         {
             get { return feedxml; }
         }
-
         public int UpdateInterval { get; set; }
-
         public Uri FeedUri { get; set; }
-
         private readonly Collection<FeedItem> feeditems = new Collection<FeedItem>();
         public Collection<FeedItem> FeedItems
         {
             get { return feeditems; }
         }
-
         public string Title { get; set; }
-
         public Uri Url { get; set; }
-
         public string Description { get; set; }
 
         public DateTime LastUpdate { get; private set; }
-
+        public bool RunWatchLoop { get; set; }
         private readonly IWebProxy feedproxy;
         private readonly FeedAuthTypes feedauthtype;
         private readonly string feedusername;
@@ -172,44 +162,47 @@ namespace AtomFeed
         {
             var item = new FeedItem();
 
-            var subnav = xPathNodeIterator.Current.CreateNavigator();
-            var textnode = subnav.SelectSingleNode("atom:title/text()", xmlNamespaceManager);
-            item.Title = textnode == null ? "(untitled)" : WebUtility.HtmlDecode(textnode.ToString()).Trim();
-            var linkiterator = subnav.Select("atom:link", xmlNamespaceManager);
-            while (linkiterator.MoveNext() && item.Link == null)
+            if (xPathNodeIterator.Current != null)
             {
-                var linknav = linkiterator.Current;
-                if (linknav != null)
+                var subnav = xPathNodeIterator.Current.CreateNavigator();
+                var textnode = subnav.SelectSingleNode("atom:title/text()", xmlNamespaceManager);
+                item.Title = textnode == null ? "(untitled)" : WebUtility.HtmlDecode(textnode.ToString()).Trim();
+                var linkiterator = subnav.Select("atom:link", xmlNamespaceManager);
+                while (linkiterator.MoveNext() && item.Link == null)
                 {
-                    if (!linknav.HasAttributes) continue;
-                    var rel = linknav.GetAttribute("rel", "");
-                    if (rel.Equals("alternate"))
+                    var linknav = linkiterator.Current;
+                    if (linknav != null)
                     {
-                        item.Link = new Uri(linknav.GetAttribute("href", ""));
+                        if (!linknav.HasAttributes) continue;
+                        var rel = linknav.GetAttribute("rel", "");
+                        if (rel.Equals("alternate"))
+                        {
+                            item.Link = new Uri(linknav.GetAttribute("href", ""));
+                        }
                     }
                 }
-            }
-            // If no link with rel = 'alternate' in the entry, just pick the first link
-            if (item.Link == null)
-            {
-                var linknav = subnav.SelectSingleNode("atom:link", xmlNamespaceManager);
-                if (linknav != null)
+                // If no link with rel = 'alternate' in the entry, just pick the first link
+                if (item.Link == null)
                 {
-                    Uri result;
-                    if (Uri.TryCreate(linknav.GetAttribute("href", ""), UriKind.Absolute, out result))
+                    var linknav = subnav.SelectSingleNode("atom:link", xmlNamespaceManager);
+                    if (linknav != null)
                     {
-                        item.Link = result;
+                        Uri result;
+                        if (Uri.TryCreate(linknav.GetAttribute("href", ""), UriKind.Absolute, out result))
+                        {
+                            item.Link = result;
+                        }
                     }
                 }
-            }
-            var updatednav = subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager);
-            if (updatednav != null)
-            {
-                DateTime gdt;
-                var res = DateTime.TryParse(updatednav.ToString(), out gdt);
-                if (res)
+                var updatednav = subnav.SelectSingleNode("atom:updated/text()", xmlNamespaceManager);
+                if (updatednav != null)
                 {
-                    item.Date = gdt;
+                    DateTime gdt;
+                    var res = DateTime.TryParse(updatednav.ToString(), out gdt);
+                    if (res)
+                    {
+                        item.Date = gdt;
+                    }
                 }
             }
             return item;
@@ -261,7 +254,8 @@ namespace AtomFeed
 
         public void Watch(object state)
         {
-            while (true)
+            RunWatchLoop = true;
+            while (RunWatchLoop)
             {
                 Update();
                 //Add Fuzz factor of up to 30s to prevent everything from fetching at the same time.
@@ -279,7 +273,7 @@ namespace AtomFeed
         #endregion
 
         #region Events
-        public virtual event EventHandler Updated;
+        public event EventHandler Updated;
         #endregion
 
     }

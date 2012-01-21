@@ -108,8 +108,6 @@ namespace Feedling
             movehandle.MouseDown += movehandle_MouseDown;
             movehandle.Visibility = Visibility.Collapsed;
             Grid.SetRow(movehandle, maingrid.RowDefinitions.Count);
-
-
         }
 
         #region Methods
@@ -297,7 +295,7 @@ namespace Feedling
             {
                 rssfeed.Updated += rssfeed_Updated;
                 Log.Debug("Kicking off the watcher thread");
-                var t = new Thread(rssfeed.Watch) {IsBackground = true};
+                var t = new Thread(rssfeed.Watch) { IsBackground = true };
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
             }
@@ -358,8 +356,8 @@ namespace Feedling
         {
             pinned = true;
             RedrawWin();
-//            NativeMethods.SendWpfWindowBack(this);
-//            Cursor = Cursors.Arrow;
+            //            NativeMethods.SendWpfWindowBack(this);
+            //            Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -392,7 +390,7 @@ namespace Feedling
                 //I'm sure there's a good reason why this works. Notifier doens't show up otherwise, as we're on our own Thread.
                 //Also, this needs to go right at the end, because everything after this stops working. Hmm.
                 System.Windows.Threading.Dispatcher.Run();
-            }            
+            }
         }
 
         protected override void OnActivated(EventArgs e)
