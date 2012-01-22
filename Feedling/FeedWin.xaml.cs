@@ -264,7 +264,7 @@ namespace Feedling
                     Log.Debug("Testing {0} to see if it can handle feed", feedplugin.PluginName);
                     if (!feedplugin.CanHandle(document)) continue;
                     Log.Debug("It can! Yay!");
-                    var reqproxy = feedConfigItem.ProxyType != ProxyType.Global ? feedConfigItem.Proxy : FeedwinManager.GetGlobalProxy();
+                    var reqproxy = feedConfigItem.ProxyType != HttpProxyHelper.ProxyType.Global ? feedConfigItem.Proxy : HttpProxyHelper.GetGlobalProxy();
                     if (reqproxy != null)
                     {
                         Log.Debug("Set Proxy for feed to {0}", reqproxy.GetProxy(new Uri(feedConfigItem.Url)));

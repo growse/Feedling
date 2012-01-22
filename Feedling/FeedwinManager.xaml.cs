@@ -32,19 +32,19 @@ namespace Feedling
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class FeedwinManager : Window
+    public partial class FeedwinManager
     {
 
         #region Vars and Consts
 
-        private readonly System.Windows.Forms.NotifyIcon notifyicon;
-        private readonly System.Windows.Forms.ContextMenuStrip contextmenustrip;
-        private readonly System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private readonly System.Windows.Forms.ToolStripMenuItem checkforUpdatesToolStripMenuItem;
-        private readonly System.Windows.Forms.ToolStripMenuItem updateAllToolStripMenuItem;
-        private readonly System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
-        private readonly System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
-        private readonly System.Windows.Forms.ToolStripMenuItem quititem;
+        private System.Windows.Forms.NotifyIcon notifyicon;
+        private System.Windows.Forms.ContextMenuStrip contextmenustrip;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkforUpdatesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem updateAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quititem;
         private List<IPlugin> plugins;
         private readonly OpenFileDialog importfeeddlg = new OpenFileDialog();
         private readonly SaveFileDialog exportfeeddlg = new SaveFileDialog();
@@ -80,90 +80,14 @@ namespace Feedling
                 InitializeComponent();
 
                 //We're going to use the notifyicon and context menu from Winforms, because the WPF versions are a bit shit at the moment.
-                #region ContextMenu
-
-                aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                updateAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                checkforUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                moveModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-                quititem = new System.Windows.Forms.ToolStripMenuItem();
-                contextmenustrip = new System.Windows.Forms.ContextMenuStrip();
-                // 
-                // aboutToolStripMenuItem
-                // 
-                aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-                aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                aboutToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_About___;
-                aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
-                // 
-                // checkforUpdatesToolStripMenuItem
-                // 
-                checkforUpdatesToolStripMenuItem.Name = "checkforUpdatesToolStripMenuItem";
-                checkforUpdatesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                checkforUpdatesToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Check_for_updates___;
-                checkforUpdatesToolStripMenuItem.Click += checkforUpdatesToolStripMenuItem_Click;
-                // 
-                // updateAllToolStripMenuItem
-                // 
-                updateAllToolStripMenuItem.Name = "updateAllToolStripMenuItem";
-                updateAllToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                updateAllToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Update_All;
-                updateAllToolStripMenuItem.Click += updateAllToolStripMenuItem_Click;
-                // 
-                // moveModeToolStripMenuItem
-                // 
-                //moveModeToolStripMenuItem.CanSelect
-                moveModeToolStripMenuItem.Name = "moveModeToolStripMenuItem";
-                moveModeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                moveModeToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Move_Mode;
-                moveModeToolStripMenuItem.CheckOnClick = true;
-                moveModeToolStripMenuItem.Click += moveModeToolStripMenuItem_Click;
-                // 
-                // configurationToolStripMenuItem
-                // 
-                configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
-                configurationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-                configurationToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Configuration___;
-                configurationToolStripMenuItem.Click += configurationToolStripMenuItem_Click;
-                // 
-                // quititem
-                // 
-                quititem.Name = "quititem";
-                quititem.Size = new System.Drawing.Size(157, 22);
-                quititem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Quit;
-                quititem.Click += quititem_Click;
-
-                contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                    aboutToolStripMenuItem,
-                    checkforUpdatesToolStripMenuItem,
-                    updateAllToolStripMenuItem,
-                    moveModeToolStripMenuItem,
-                    configurationToolStripMenuItem,
-                    quititem});
-                contextmenustrip.Name = "menustrip";
-                contextmenustrip.Size = new System.Drawing.Size(158, 114);
-
-                notifyicon = new System.Windows.Forms.NotifyIcon
-                                 {
-                                     BalloonTipText = Properties.Resources.FirstTimeStartBalloonText,
-                                     Text = Properties.Resources.FeedwinManager_FeedwinManager_Feedling,
-                                     Icon = Properties.Resources.FeedlingIcon,
-                                     Visible = true,
-                                     ContextMenuStrip = contextmenustrip
-                                 };
-
-
-                importfeeddlg.Filter = exportfeeddlg.Filter = "Feeling Config Files (*.xml)|*.xml";
-
-                #endregion
-
-                ServicePointManager.Expect100Continue = false;
+                CreateIconContextMenu();
 
                 LoadSettings();
 
                 thisinst = this;
+
                 Log.Debug("Removing SSL cert validation");
+                ServicePointManager.Expect100Continue = false;
                 //We currently don't care if your RSS feed is being MITM'd.
                 ServicePointManager.ServerCertificateValidationCallback =
                     (sender, certificate, chain, sslPolicyErrors) => true;
@@ -197,6 +121,89 @@ namespace Feedling
                 Log.Error("Exception caught during FeedwinManager constructor", ex);
                 throw;
             }
+        }
+
+        private void CreateIconContextMenu()
+        {
+            #region ContextMenu
+
+            aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            updateAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            checkforUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            moveModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            quititem = new System.Windows.Forms.ToolStripMenuItem();
+            contextmenustrip = new System.Windows.Forms.ContextMenuStrip();
+            // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            aboutToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_About___;
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
+            // 
+            // checkforUpdatesToolStripMenuItem
+            // 
+            checkforUpdatesToolStripMenuItem.Name = "checkforUpdatesToolStripMenuItem";
+            checkforUpdatesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            checkforUpdatesToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Check_for_updates___;
+            checkforUpdatesToolStripMenuItem.Click += checkforUpdatesToolStripMenuItem_Click;
+            // 
+            // updateAllToolStripMenuItem
+            // 
+            updateAllToolStripMenuItem.Name = "updateAllToolStripMenuItem";
+            updateAllToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            updateAllToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Update_All;
+            updateAllToolStripMenuItem.Click += updateAllToolStripMenuItem_Click;
+            // 
+            // moveModeToolStripMenuItem
+            // 
+            //moveModeToolStripMenuItem.CanSelect
+            moveModeToolStripMenuItem.Name = "moveModeToolStripMenuItem";
+            moveModeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            moveModeToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Move_Mode;
+            moveModeToolStripMenuItem.CheckOnClick = true;
+            moveModeToolStripMenuItem.Click += moveModeToolStripMenuItem_Click;
+            // 
+            // configurationToolStripMenuItem
+            // 
+            configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
+            configurationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            configurationToolStripMenuItem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Configuration___;
+            configurationToolStripMenuItem.Click += configurationToolStripMenuItem_Click;
+            // 
+            // quititem
+            // 
+            quititem.Name = "quititem";
+            quititem.Size = new System.Drawing.Size(157, 22);
+            quititem.Text = Properties.Resources.FeedwinManager_FeedwinManager_Quit;
+            quititem.Click += quititem_Click;
+
+            contextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+                                                {
+                                                    aboutToolStripMenuItem,
+                                                    checkforUpdatesToolStripMenuItem,
+                                                    updateAllToolStripMenuItem,
+                                                    moveModeToolStripMenuItem,
+                                                    configurationToolStripMenuItem,
+                                                    quititem
+                                                });
+            contextmenustrip.Name = "menustrip";
+            contextmenustrip.Size = new System.Drawing.Size(158, 114);
+
+            notifyicon = new System.Windows.Forms.NotifyIcon
+                             {
+                                 BalloonTipText = Properties.Resources.FirstTimeStartBalloonText,
+                                 Text = Properties.Resources.FeedwinManager_FeedwinManager_Feedling,
+                                 Icon = Properties.Resources.FeedlingIcon,
+                                 Visible = true,
+                                 ContextMenuStrip = contextmenustrip
+                             };
+
+
+            importfeeddlg.Filter = exportfeeddlg.Filter = "Feeling Config Files (*.xml)|*.xml";
+
+            #endregion
         }
 
         #region Methods
@@ -238,25 +245,25 @@ namespace Feedling
         private void LoadProxy()
         {
             Log.Debug("Loading proxy");
-            ProxyType proxytype;
-            if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
+            HttpProxyHelper.ProxyType proxytype;
+            if (Enum.IsDefined(typeof(HttpProxyHelper.ProxyType), Properties.Settings.Default.ProxyType))
             {
-                proxytype = (ProxyType)Enum.Parse(typeof(ProxyType), Properties.Settings.Default.ProxyType);
+                proxytype = (HttpProxyHelper.ProxyType)Enum.Parse(typeof(HttpProxyHelper.ProxyType), Properties.Settings.Default.ProxyType);
             }
             else
             {
-                proxytype = ProxyType.System;
+                proxytype = HttpProxyHelper.ProxyType.System;
             }
-            if (proxytype == ProxyType.Global) { proxytype = ProxyType.System; }
+            if (proxytype == HttpProxyHelper.ProxyType.Global) { proxytype = HttpProxyHelper.ProxyType.System; }
             switch (proxytype)
             {
-                case ProxyType.None:
+                case HttpProxyHelper.ProxyType.None:
                     noproxybtn.IsChecked = true;
                     break;
-                case ProxyType.System:
+                case HttpProxyHelper.ProxyType.System:
                     systemproxybtn.IsChecked = true;
                     break;
-                case ProxyType.Custom:
+                case HttpProxyHelper.ProxyType.Custom:
                     customproxybtn.IsChecked = true;
                     break;
             }
@@ -269,21 +276,10 @@ namespace Feedling
             var pluginfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
             plugins = new List<IPlugin>();
             Log.Debug("{0} plugin candidates found", pluginfiles.Length);
-            foreach (var t in pluginfiles)
+            foreach (var plugintype in pluginfiles.Select(t => t.Substring(t.LastIndexOf("\\", StringComparison.Ordinal) + 1, t.IndexOf(".dll", StringComparison.Ordinal) - t.LastIndexOf("\\", StringComparison.Ordinal) - 1)).Select(Assembly.Load).Select(ass => ass.GetTypes()).SelectMany(types => types.Where(plugintype => typeof(IPlugin).IsAssignableFrom(plugintype) && !plugintype.IsAbstract)))
             {
-                var args = t.Substring(t.LastIndexOf("\\", StringComparison.Ordinal) + 1, t.IndexOf(".dll", StringComparison.Ordinal) - t.LastIndexOf("\\", StringComparison.Ordinal) - 1);
-                var ass = Assembly.Load(args);
-
-                var types = ass.GetTypes();
-                foreach (var plugintype in types)
-                {
-                    if (typeof(IPlugin).IsAssignableFrom(plugintype) && !plugintype.IsAbstract)
-                    {
-                        Log.Debug("Found valid plugin: {0}", plugintype);
-                        plugins.Add((IPlugin)Activator.CreateInstance(plugintype));
-                    }
-                }
-                //type = ass.GetTypes(args + ".Feed");
+                Log.Debug("Found valid plugin: {0}", plugintype);
+                plugins.Add((IPlugin)Activator.CreateInstance(plugintype));
             }
             foreach (var feedplugin in plugins)
             {
@@ -291,7 +287,7 @@ namespace Feedling
             }
         }
 
-        private void LoadSettings()
+        private static void LoadSettings()
         {
             //Update those settings.
             Log.Debug("Loading Settings");
@@ -345,7 +341,7 @@ namespace Feedling
                 var requri = new Uri(fci.Url);
                 var req = (HttpWebRequest)WebRequest.Create(requri);
                 req.UserAgent = FetchUserAgentString();
-                req.Proxy = fci.ProxyType != ProxyType.Global ? fci.Proxy : GetGlobalProxy();
+                req.Proxy = fci.ProxyType != HttpProxyHelper.ProxyType.Global ? fci.Proxy : HttpProxyHelper.GetGlobalProxy();
                 switch (fci.AuthType)
                 {
                     case FeedAuthTypes.Basic:
@@ -509,54 +505,12 @@ namespace Feedling
             }
         }
 
-        internal static IWebProxy GetGlobalProxy()
-        {
-            Log.Debug("Fetching the global proxy");
-            IWebProxy proxy = null;
-            ProxyType proxytype;
-            if (Enum.IsDefined(typeof(ProxyType), Properties.Settings.Default.ProxyType))
-            {
-                proxytype = (ProxyType)Enum.Parse(typeof(ProxyType), Properties.Settings.Default.ProxyType);
-            }
-            else
-            {
-                return null;
-            }
-            switch (proxytype)
-            {
-                case ProxyType.Custom:
-                    proxy = new WebProxy(Properties.Settings.Default.ProxyHost, Properties.Settings.Default.ProxyPort);
-                    if (Properties.Settings.Default.ProxyAuth)
-                    {
-                        string user, domain = null;
-                        if (Properties.Settings.Default.ProxyUser.Contains("\\"))
-                        {
-                            string[] bits = Properties.Settings.Default.ProxyUser.Split("\\".ToCharArray(), 2);
-                            user = bits[1];
-                            domain = bits[0];
-                        }
-                        else
-                        {
-                            user = Properties.Settings.Default.ProxyUser;
-                        }
-                        proxy.Credentials = new NetworkCredential(user, Properties.Settings.Default.ProxyPass, domain);
-                    }
-                    break;
-                case ProxyType.System:
-                    proxy = WebRequest.GetSystemWebProxy();
-                    break;
-                case ProxyType.None:
-                    break;
-                case ProxyType.Global:
-                    break;
-            }
-            return proxy;
-        }
 
         #endregion
 
         #region Events
-        void checkforUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+
+        static void checkforUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var updater = new AutoUpdate();
             updater.CheckForUpdates();
@@ -567,7 +521,7 @@ namespace Feedling
             OKBtn_Click(this, new RoutedEventArgs());
         }
 
-        void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        static void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var aboutfrm = new About();
             aboutfrm.ShowDialog();
@@ -577,15 +531,12 @@ namespace Feedling
         private void pluginaboutbtn_Click(object sender, EventArgs e)
         {
             if (pluginlistbox.SelectedItems.Count != 1) return;
-            foreach (var feedplugin in plugins)
+            foreach (var feedplugin in plugins.Where(feedplugin => feedplugin.PluginName == pluginlistbox.SelectedItem.ToString()))
             {
-                if (feedplugin.PluginName == pluginlistbox.SelectedItem.ToString())
-                {
-                    MessageBox.Show(
-                        string.Format("{0}\nVersion:\t{1}\n{2}", feedplugin.PluginName, feedplugin.PluginVersion,
-                                      feedplugin.PluginCopyright), feedplugin.PluginName, MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                }
+                MessageBox.Show(
+                    string.Format("{0}\nVersion:\t{1}\n{2}", feedplugin.PluginName, feedplugin.PluginVersion,
+                                  feedplugin.PluginCopyright), feedplugin.PluginName, MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -631,15 +582,15 @@ namespace Feedling
                 }
                 if (noproxybtn.IsChecked == true)
                 {
-                    Properties.Settings.Default.ProxyType = ProxyType.Global.ToString();
+                    Properties.Settings.Default.ProxyType = HttpProxyHelper.ProxyType.Global.ToString();
                 }
                 else if (systemproxybtn.IsChecked == true)
                 {
-                    Properties.Settings.Default.ProxyType = ProxyType.System.ToString();
+                    Properties.Settings.Default.ProxyType = HttpProxyHelper.ProxyType.System.ToString();
                 }
                 else if (customproxybtn.IsChecked == true)
                 {
-                    Properties.Settings.Default.ProxyType = ProxyType.Custom.ToString();
+                    Properties.Settings.Default.ProxyType = HttpProxyHelper.ProxyType.Custom.ToString();
                 }
 
                 Properties.Settings.Default.ProxyAuth = Convert.ToBoolean(proxyauthcheck.IsChecked);
@@ -828,7 +779,6 @@ namespace Feedling
             }
         }
 
-
         private void feedexportbtn_Click(object sender, RoutedEventArgs e)
         {
             var dr = exportfeeddlg.ShowDialog();
@@ -847,7 +797,6 @@ namespace Feedling
                 MessageBox.Show("There was an error writing to the file.");
             }
         }
-
 
         private void applytoallbtn_Click(object sender, RoutedEventArgs e)
         {
@@ -959,14 +908,6 @@ namespace Feedling
             if (notifycheckbox.IsChecked != null)
                 Properties.Settings.Default.NotifyOnNewFeedItem = notifycheckbox.IsChecked.Value;
         }
-    }
-
-    public enum ProxyType
-    {
-        Global,
-        None,
-        System,
-        Custom
     }
 
 }

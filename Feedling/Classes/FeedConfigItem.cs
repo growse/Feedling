@@ -4,15 +4,15 @@ All rights reserved.
 
 See LICENSE file for license details.
 */
+
 using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using FeedHanderPluginInterface;
-using Feedling.Classes;
 
-namespace Feedling
+namespace Feedling.Classes
 {
     public class FeedConfigItem : Object
     {
@@ -248,7 +248,7 @@ namespace Feedling
         public string FeedLabel { get; set; }
 
         [XmlAttribute("Proxytype")]
-        public ProxyType ProxyType { get; set; }
+        public HttpProxyHelper.ProxyType ProxyType { get; set; }
 
         [XmlAttribute("Proxyhost")]
         public string ProxyHost { get; set; }
@@ -257,7 +257,11 @@ namespace Feedling
         [XmlAttribute("Proxyport")]
         public int ProxyPort
         {
-            get { if (proxyport > 0 && proxyport < 63536) { return proxyport; } else { return 80; } }
+            get
+            {
+                if (proxyport > 0 && proxyport < 63536) { return proxyport; }
+                return 80;
+            }
             set { proxyport = value; }
         }
 
@@ -279,7 +283,7 @@ namespace Feedling
                 IWebProxy proxy = null;
                 switch (ProxyType)
                 {
-                    case ProxyType.Custom:
+                    case HttpProxyHelper.ProxyType.Custom:
                         proxy = new WebProxy(ProxyHost, ProxyPort);
                         if (ProxyAuth)
                         {
@@ -297,11 +301,11 @@ namespace Feedling
                             proxy.Credentials = new NetworkCredential(user, ProxyPass, domain);
                         }
                         break;
-                    case ProxyType.System:
+                    case HttpProxyHelper.ProxyType.System:
                         proxy = WebRequest.GetSystemWebProxy();
                         break;
-                    case ProxyType.None:
-                    case ProxyType.Global:
+                    case HttpProxyHelper.ProxyType.None:
+                    case HttpProxyHelper.ProxyType.Global:
                         break;
                 }
                 return proxy;

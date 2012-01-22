@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using FeedHanderPluginInterface;
+using Feedling.Classes;
 using NLog;
 
 namespace Feedling
@@ -16,7 +17,7 @@ namespace Feedling
     /// <summary>
     /// Interaction logic for NewFeed.xaml
     /// </summary>
-    public partial class NewFeed : Window
+    public partial class NewFeed
     {
         private readonly Logger Log = LogManager.GetCurrentClassLogger();
         public NewFeed()
@@ -76,16 +77,16 @@ namespace Feedling
                 //Proxy
                 switch (FeedConfig.ProxyType)
                 {
-                    case ProxyType.Global:
+                    case HttpProxyHelper.ProxyType.Global:
                         globalproxybtn.IsChecked = true;
                         break;
-                    case ProxyType.System:
+                    case HttpProxyHelper.ProxyType.System:
                         systemproxybtn.IsChecked = true;
                         break;
-                    case ProxyType.None:
+                    case HttpProxyHelper.ProxyType.None:
                         noproxybtn.IsChecked = true;
                         break;
-                    case ProxyType.Custom:
+                    case HttpProxyHelper.ProxyType.Custom:
                         customproxybtn.IsChecked = true;
                         proxyhostbox.IsEnabled = proxyportbox.IsEnabled = proxyauthcheck.IsEnabled = proxyuserbox.IsEnabled = proxypassbox.IsEnabled = true;
                         break;
@@ -160,18 +161,18 @@ namespace Feedling
             FeedConfig.FontWeight = fontlabel.FontWeight;
             FeedConfig.Password = passwordbox.Password;
 
-            FeedConfig.ProxyType = ProxyType.Global;
+            FeedConfig.ProxyType = HttpProxyHelper.ProxyType.Global;
             if (noproxybtn.IsChecked == true)
             {
-                FeedConfig.ProxyType = ProxyType.None;
+                FeedConfig.ProxyType = HttpProxyHelper.ProxyType.None;
             }
             if (systemproxybtn.IsChecked == true)
             {
-                FeedConfig.ProxyType = ProxyType.System;
+                FeedConfig.ProxyType = HttpProxyHelper.ProxyType.System;
             }
             if (customproxybtn.IsChecked == true)
             {
-                FeedConfig.ProxyType = ProxyType.Custom;
+                FeedConfig.ProxyType = HttpProxyHelper.ProxyType.Custom;
             }
             FeedConfig.ProxyAuth = (proxyauthcheck.IsChecked == true);
             FeedConfig.ProxyHost = proxyhostbox.Text;

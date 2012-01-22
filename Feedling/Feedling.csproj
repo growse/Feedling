@@ -193,6 +193,7 @@
     <Compile Include="Classes\FeedConfigItem.cs" />
     <Compile Include="Classes\FeedConfigItemList.cs" />
     <Compile Include="Classes\FontConversions.cs" />
+    <Compile Include="Classes\HttpProxyHelper.cs" />
     <Compile Include="FeedwinManager.xaml.cs">
       <DependentUpon>FeedwinManager.xaml</DependentUpon>
       <SubType>Code</SubType>

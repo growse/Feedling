@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 using Feedling;
+using Feedling.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FeedlingTests

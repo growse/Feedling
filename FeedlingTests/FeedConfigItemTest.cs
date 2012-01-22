@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Feedling;
+using Feedling.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using FeedHanderPluginInterface;
@@ -237,7 +238,7 @@ namespace FeedlingTests
         [TestMethod]
         public void ProxyTest()
         {
-            var target = new FeedConfigItem { ProxyHost = "1.2.3.4", ProxyPass = "ProxyPassword", ProxyType = ProxyType.Custom, ProxyUser = "proxydomain\\proxyusername", ProxyAuth = true, ProxyPort = 3848 };
+            var target = new FeedConfigItem { ProxyHost = "1.2.3.4", ProxyPass = "ProxyPassword", ProxyType = HttpProxyHelper.ProxyType.Custom, ProxyUser = "proxydomain\\proxyusername", ProxyAuth = true, ProxyPort = 3848 };
             IWebProxy expected = new WebProxy { Address = new Uri("http://1.2.3.4:3848"), Credentials = new NetworkCredential("proxyusername", "ProxyPassword", "proxydomain") };
             var actual = target.Proxy;
             Assert.AreEqual(expected.GetProxy(new Uri("http://www.google.com")), actual.GetProxy(new Uri("http://www.google.com")));
