@@ -24,7 +24,7 @@ namespace Feedling
     /// <summary>
     /// Interaction logic for FeedWin.xaml
     /// </summary>
-    public partial class FeedWin : Window
+    public partial class FeedWin
     {
         #region Vars and Consts
         private FeedConfigItem fci;

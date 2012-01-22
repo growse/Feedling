@@ -6,6 +6,7 @@ See LICENSE file for license details.
 */
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
@@ -18,7 +19,7 @@ namespace Feedling
     /// <summary>
     /// Interaction logic for AutoUpdate.xaml
     /// </summary>
-    public partial class AutoUpdate : Window
+    public partial class AutoUpdate
     {
         public AutoUpdate()
         {
@@ -39,30 +40,40 @@ namespace Feedling
 
                 var request = (HttpWebRequest)WebRequest.Create(applicationupdateuri);
                 request.UserAgent = string.Format("Feedling v{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
-                    
+
 
                 Log.Debug("Downloading version definition");
                 var response = request.GetResponse();
                 if (response.ContentLength > 0)
                 {
-                    var sr = new StreamReader(response.GetResponseStream());
-                    var upgrademeta = sr.ReadToEnd();
-                    if (upgrademeta.Contains("|"))
+                    using (var stream = response.GetResponseStream())
                     {
-                        Log.Info("Received valid version definition");
-                        var parts = upgrademeta.Split("|".ToCharArray(), 3);
-                        remoteMsiPath = Properties.Settings.Default.ApplicationUpdateUrl.Replace(applicationupdateuri.Segments[applicationupdateuri.Segments.Length - 1].ToString(), parts[1]).Trim();
-                        var availableversion = new Version(parts[0]);
-                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
+                        if (stream != null)
                         {
-                            Log.Debug("New version available: {0}", availableversion);
-                            Visibility = Visibility.Visible;
-                            ApplyBtn.IsEnabled = true;
-                            UpdateDescription.Text = string.Format(Properties.Resources.UpdatesAvailableText, availableversion, parts[2]);
-                        }
-                        else
-                        {
-                            UpdateDescription.Text = Properties.Resources.NoUpdatesAvailableText;
+                            var sr = new StreamReader(stream);
+                            var upgrademeta = sr.ReadToEnd();
+                            if (upgrademeta.Contains("|"))
+                            {
+                                Log.Info("Received valid version definition");
+                                var parts = upgrademeta.Split("|".ToCharArray(), 3);
+                                remoteMsiPath =
+                                    Properties.Settings.Default.ApplicationUpdateUrl.Replace(
+                                        applicationupdateuri.Segments[applicationupdateuri.Segments.Length - 1].ToString(CultureInfo.InvariantCulture),
+                                        parts[1]).Trim();
+                                var availableversion = new Version(parts[0]);
+                                if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(availableversion) < 0)
+                                {
+                                    Log.Debug("New version available: {0}", availableversion);
+                                    Visibility = Visibility.Visible;
+                                    ApplyBtn.IsEnabled = true;
+                                    UpdateDescription.Text = string.Format(Properties.Resources.UpdatesAvailableText,
+                                                                           availableversion, parts[2]);
+                                }
+                                else
+                                {
+                                    UpdateDescription.Text = Properties.Resources.NoUpdatesAvailableText;
+                                }
+                            }
                         }
                     }
                 }
@@ -96,10 +107,10 @@ namespace Feedling
 
                 var nocachepolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
-                var wc = new WebClient {CachePolicy = nocachepolicy};
+                var wc = new WebClient { CachePolicy = nocachepolicy };
 
-                wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
-                wc.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(wc_DownloadFileCompleted);
+                wc.DownloadProgressChanged += wc_DownloadProgressChanged;
+                wc.DownloadFileCompleted += wc_DownloadFileCompleted;
                 wc.DownloadFileAsync(new Uri(remoteMsiPath), localMsiFilePath);
 
             }
@@ -116,7 +127,7 @@ namespace Feedling
             if (e.Error == null)
             {
                 Log.Debug("MSI saved.");
-                var psi = new ProcessStartInfo {Arguments = "", FileName = localMsiFilePath};
+                var psi = new ProcessStartInfo { Arguments = "", FileName = localMsiFilePath };
                 Log.Info("Starting installer");
                 Process.Start(psi);
                 Log.Info("Exiting.");
@@ -137,7 +148,7 @@ namespace Feedling
 
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }
