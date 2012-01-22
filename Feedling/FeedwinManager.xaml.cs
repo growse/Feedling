@@ -685,6 +685,7 @@ namespace Feedling
 
         private void updateAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //TODO: Don't handle the threads here, set a flag. Probably on feedwin.
             foreach (var t in from FeedWin fw in windowlist.Values select new Thread(fw.UpdateNow) { IsBackground = true })
             {
                 t.SetApartmentState(ApartmentState.STA);

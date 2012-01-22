@@ -59,7 +59,7 @@ namespace Feedling
             Left = fci.Position.X;
             Top = fci.Position.Y;
             //Kick of thread to figure out what sort of plugin to load for this sort of feed.
-            ThreadPool.QueueUserWorkItem(GetFeedType, fci);
+            ThreadPool.QueueUserWorkItem(state => GetFeedType(fci));
 
             //Set up the animations for the mouseovers
             fadein = new ColorAnimation { AutoReverse = false, From = fci.DefaultColor, To = fci.HoverColor, Duration = new Duration(TimeSpan.FromMilliseconds(200)), RepeatBehavior = new RepeatBehavior(1) };
@@ -253,12 +253,10 @@ namespace Feedling
         /// <summary>
         /// Takes a given FeedConfiItem and iterates through all the available plugins to see if any of them can handle it.
         /// </summary>
-        /// <param name="state"></param>
-        private void GetFeedType(object state)
+        private void GetFeedType(FeedConfigItem feedConfigItem)
         {
             try
             {
-                var feedConfigItem = (FeedConfigItem)state;
                 Log.Debug("Getting the Feed Type");
                 var document = (XmlDocument)FeedwinManager.Fetch(feedConfigItem);
                 foreach (var feedplugin in FeedwinManager.thisinst.Plugins)
@@ -305,8 +303,7 @@ namespace Feedling
         /// <summary>
         /// Called to request the feed to update itself.
         /// </summary>
-        /// <param name="state">Unused. Useless. Pointless.</param>
-        public void UpdateNow(object state)
+        public void UpdateNow()
         {
             Log.Debug("Received request to update feed");
             if (rssfeed == null)
@@ -384,6 +381,7 @@ namespace Feedling
 
             if (FeedConfig.NotifyOnNewItem && rssfeed.FeedItems.Count > 0 && !rssfeed.FeedItems[0].Title.Equals(previouscurrenttopstory) && !string.IsNullOrEmpty(previouscurrenttopstory))
             {
+                //TODO: Redo the notifier so it's effectively a singleton
                 var newitemlist = rssfeed.FeedItems.TakeWhile(item => !item.Title.Equals(CurrentTopStory)).Select(item => new Tuple<string, string>(item.Title, item.Link.ToString())).ToList();
                 var notifier = new Notifier(rssfeed.Title, newitemlist);
                 notifier.Show();
