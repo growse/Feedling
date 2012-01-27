@@ -26,21 +26,31 @@ namespace Feedling
         {
             return thisinst ?? (thisinst = new Notifier());
         }
-
-        private readonly Storyboard board;
+        private readonly Timer holdWindowOpenTimer = new Timer();
+        private readonly Storyboard fadeoutStoryboard;
         private PresentationSource presentationSource;
+        private const int WINDOW_HOLD_OPEN=3500;
+
         public Notifier()
         {
             InitializeComponent();
             Opacity = 0;
-            board = (Storyboard)FindResource("fader");
+            fadeoutStoryboard = (Storyboard)FindResource("fadeout");
+            holdWindowOpenTimer.Interval = WINDOW_HOLD_OPEN;
+            holdWindowOpenTimer.Tick += holdWindowOpenTimer_Tick;
+           }
+
+        void holdWindowOpenTimer_Tick(object sender, EventArgs e)
+        {
+            fadeoutStoryboard.Begin(this);
+            holdWindowOpenTimer.Stop();
         }
 
         public void ShowNotifier(string feedtitle, IEnumerable<Tuple<string, string>> newitemlist)
         {
             if (Opacity > 0)
             {
-                board.Stop(this);
+                holdWindowOpenTimer.Stop();
             }
             else
             {
@@ -60,15 +70,14 @@ namespace Feedling
                 titlebox.Inlines.Add(hyperlink);
             }
             PositionWindow();
+            holdWindowOpenTimer.Start();
         }
 
         private void FadeInWindowThingieLikeAnEpicAwesomeToaster()
         {
             Opacity = 0;
-            Show();
             Visibility = Visibility.Visible;
-            PositionWindow();
-            board.Begin(this);
+            Show();
         }
 
         private void PositionWindow()
