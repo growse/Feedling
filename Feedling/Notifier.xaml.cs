@@ -28,19 +28,21 @@ namespace Feedling
         }
         private readonly Timer holdWindowOpenTimer = new Timer();
         private readonly Storyboard fadeoutStoryboard;
+        private readonly Storyboard fadeinStoryboard;
         private PresentationSource presentationSource;
-        private const int WINDOW_HOLD_OPEN=3500;
+        private const int WINDOW_HOLD_OPEN = 3500;
 
         public Notifier()
         {
             InitializeComponent();
             Opacity = 0;
             fadeoutStoryboard = (Storyboard)FindResource("fadeout");
+            fadeinStoryboard = (Storyboard)FindResource("fadein");
             holdWindowOpenTimer.Interval = WINDOW_HOLD_OPEN;
-            holdWindowOpenTimer.Tick += holdWindowOpenTimer_Tick;
-           }
+            holdWindowOpenTimer.Tick += HoldWindowOpenTimerTick;
+        }
 
-        void holdWindowOpenTimer_Tick(object sender, EventArgs e)
+        void HoldWindowOpenTimerTick(object sender, EventArgs e)
         {
             fadeoutStoryboard.Begin(this);
             holdWindowOpenTimer.Stop();
@@ -65,7 +67,7 @@ namespace Feedling
                 Uri linkuri;
                 Uri.TryCreate(link.Item2, UriKind.Absolute, out linkuri);
                 var hyperlink = new Hyperlink { NavigateUri = linkuri };
-                hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+                hyperlink.RequestNavigate += HyperlinkRequestNavigate;
                 hyperlink.Inlines.Add(link.Item1);
                 titlebox.Inlines.Add(hyperlink);
             }
@@ -78,6 +80,8 @@ namespace Feedling
             Opacity = 0;
             Visibility = Visibility.Visible;
             Show();
+            PositionWindow();
+            fadeinStoryboard.Begin(this);
         }
 
         private void PositionWindow()
@@ -99,13 +103,13 @@ namespace Feedling
             ShowNotifier("sdflijlij", new List<Tuple<string, string>> { new Tuple<string, string>("dsfl", "sddf") });
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void HyperlinkRequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             presentationSource = PresentationSource.FromVisual(this);
             NativeMethods.HideFromAltTab(this);

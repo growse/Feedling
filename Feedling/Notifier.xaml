@@ -8,12 +8,18 @@
         ShowInTaskbar="False"
         Topmost="True"
         ShowActivated="False"
-        Loaded="Window_Loaded">
+        Loaded="WindowLoaded">
     <Window.Resources>
         <Storyboard x:Key="fadeout">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)">
                 <SplineDoubleKeyFrame KeyTime="0:0:0" Value="1"/>
                 <SplineDoubleKeyFrame KeyTime="0:0:2" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="fadein">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
@@ -24,7 +30,7 @@
                 <StackPanel  Margin="0">
 
                     <TextBlock Name="titlebox" TextWrapping="Wrap" Margin="5">
-                        <Hyperlink NavigateUri="http://google.com" RequestNavigate="Hyperlink_RequestNavigate">Hi there</Hyperlink>
+                        <Hyperlink NavigateUri="http://google.com" RequestNavigate="HyperlinkRequestNavigate">Hi there</Hyperlink>
                     </TextBlock>
                     <Button Content="Dismiss" HorizontalAlignment="Right" Click="DismissButtonClick" />
                 </StackPanel>
