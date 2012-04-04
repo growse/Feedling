@@ -1,0 +1,190 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+	x:Class="FeedlingUI.MainWindow"
+	x:Name="Window"
+	Title="MainWindow"
+	Width="640" Height="480" WindowStartupLocation="CenterScreen" Background="White">
+	<Window.Resources>
+		<!--Primary Button Template-->
+		<ControlTemplate x:Key="PrimaryButton" TargetType="{x:Type Button}">
+		<Grid  x:Name="maingrid">
+				<Border Name="buttonborder" ClipToBounds="True" BorderBrush="#7F000000" BorderThickness="1" CornerRadius="4">
+				
+					<Border.Background>
+						<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+								<GradientStop Color="#FF0064CD" Offset="1"/>
+								<GradientStop Color="#FF049CDB"/>
+							</LinearGradientBrush>
+					</Border.Background>
+					<Border CornerRadius="4" Background="Transparent" BorderBrush="#55000000" Name="pressedborder" BorderThickness="0">
+					<TextBlock Margin="5" Foreground="white" VerticalAlignment="center" HorizontalAlignment="center" x:Name="buttontext">
+						<ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+						
+						</TextBlock>
+</Border>
+				</Border>
+			</Grid>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter TargetName="maingrid" Property="Opacity" Value="0.65" />
+				</Trigger>
+<Trigger Property="IsDefaulted" Value="True">
+   <Setter TargetName="buttonborder" Property="BorderBrush" Value="#FF282828" />
+</Trigger>
+<Trigger Property="IsFocused" Value="True">
+   <Setter TargetName="buttonborder" Property="BorderBrush" Value="#FF282828" />
+</Trigger>				
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter TargetName="buttonborder" Property="Background">
+						<Setter.Value>
+							<SolidColorBrush Color="#FF0064CD"></SolidColorBrush>
+						</Setter.Value>
+					</Setter>
+					<Setter TargetName="buttonborder" Property="BorderBrush">
+						<Setter.Value>
+							<SolidColorBrush Color="Black"></SolidColorBrush>
+						</Setter.Value>
+					</Setter>
+				</Trigger>
+				<Trigger Property="IsPressed" Value="True">
+					<Setter TargetName="pressedborder" Property="BorderThickness">
+						<Setter.Value>1,2,1,0</Setter.Value>
+					</Setter>
+				</Trigger>
+			</ControlTemplate.Triggers>
+			
+				</ControlTemplate>
+				
+				<!--Secondary Button Template-->
+		<ControlTemplate x:Key="SecondaryButton" TargetType="{x:Type Button}">
+		<Grid x:Name="maingrid">
+				<Border Name="buttonborder" ClipToBounds="True" BorderBrush="#FFcccccc" BorderThickness="1" CornerRadius="4">
+				
+					<Border.Background>
+						<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+								<GradientStop Color="#FFffffff" Offset="0"/>
+								<GradientStop Color="#FFffffff" Offset="0.25"/>
+								<GradientStop Color="#FFe6e6e6" Offset="1"/>
+							</LinearGradientBrush>
+					</Border.Background>
+					<Border CornerRadius="4" Background="Transparent" BorderBrush="#FFb6b6b6" Name="pressedborder" BorderThickness="0">
+					<TextBlock Margin="5" Foreground="#FF333333" VerticalAlignment="center" HorizontalAlignment="center" x:Name="buttontext">
+						<ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+						
+						</TextBlock>
+</Border>
+				</Border>
+			</Grid>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsEnabled" Value="False">
+<Setter TargetName="maingrid" Property="Opacity" Value="0.65" />				</Trigger>
+<Trigger Property="IsDefaulted" Value="True">
+   <Setter TargetName="buttonborder" Property="BorderBrush" Value="#FF666666" />
+</Trigger>
+<Trigger Property="IsFocused" Value="True">
+   <Setter TargetName="buttonborder" Property="BorderBrush" Value="#FF666666" />
+</Trigger>				
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter TargetName="buttonborder" Property="Background">
+						<Setter.Value>
+							<SolidColorBrush Color="#ffe6e6e6"></SolidColorBrush>
+						</Setter.Value>
+					</Setter>
+				</Trigger>
+				<Trigger Property="IsPressed" Value="True">
+					<Setter TargetName="pressedborder" Property="BorderThickness">
+						<Setter.Value>1,2,1,0</Setter.Value>
+					</Setter>
+				</Trigger>
+			</ControlTemplate.Triggers>
+			
+				</ControlTemplate>
+				<!--Style that sets the listbox item template-->
+				<Style TargetType="ListBoxItem">
+					<Setter Property="Template" Value="{DynamicResource ListBoxItemControlTemplate1}" />
+					</Style>
+					<!--Listbox item template-->
+		<ControlTemplate x:Key="ListBoxItemControlTemplate1" TargetType="{x:Type ListBoxItem}">
+			<Grid>
+				<Border BorderThickness="1" Margin="0,2" BorderBrush="#FFd6d6d6" Padding="5" Background="white" CornerRadius="2">
+					<DockPanel >
+				<ContentPresenter Margin="5"></ContentPresenter>
+				<StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button Template="{DynamicResource editbtncontrol}" Content="Edit" HorizontalAlignment="Right"></Button>
+				<Button Template="{DynamicResource deletebtncontrol}" Content="Delete" HorizontalAlignment="Right"></Button>
+				</StackPanel>
+				</DockPanel>
+				</Border>
+				</Grid>
+		</ControlTemplate>
+
+		<!--Edit button template layout-->
+		<ControlTemplate x:Key="editbtncontrol" TargetType="{x:Type Button}">
+			<Grid Width="20" Height="20">
+		<Image Name="editimage" Opacity="0.35" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Width="20" Height="20" Source="editbtn.png" HorizontalAlignment="Left" d:LayoutOverrides="Width"></Image>		
+			</Grid>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Opacity" Value="1" TargetName="editimage"></Setter>
+				</Trigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+
+		<!--Delete button template layout-->
+		<ControlTemplate x:Key="deletebtncontrol" TargetType="{x:Type Button}">
+			<Grid Width="20" Height="20">
+		<Image Name="deleteimage" Opacity="0.35" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Width="20" Height="20" Source="deletebtn.png" HorizontalAlignment="Left" d:LayoutOverrides="Width"></Image>		
+			</Grid>
+						<ControlTemplate.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Opacity" Value="1" TargetName="deleteimage"></Setter>
+				</Trigger>
+			</ControlTemplate.Triggers>
+
+		</ControlTemplate>
+
+		<!--Control Template for the tab items-->
+		<ControlTemplate x:Key="TabItemControlTemplate1" TargetType="{x:Type TabItem}">
+			<Grid Margin="5,0">
+				<Border BorderThickness="0" Name="border" CornerRadius="5,5,0,0" BorderBrush="#FFdddddd" Background="Transparent">
+					<ContentPresenter Name="content"  ContentSource="Header" TextBlock.Foreground="#ff0069D6" Margin="15,5"></ContentPresenter>
+				</Border>
+			</Grid>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsSelected" Value="True">
+					<Setter Property="BorderThickness" Value="1,1,1,0" TargetName="border"></Setter>
+					<Setter Property="TextBlock.Foreground" Value="#FF808080" TargetName="content"></Setter>
+				</Trigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+		<!--Style that sets the tabitem control-->
+		<Style TargetType="TabItem">
+	<Setter Property="Template" Value="{DynamicResource TabItemControlTemplate1}"></Setter>
+</Style>
+	</Window.Resources>
+
+	<Grid x:Name="LayoutRoot">
+		<ListBox  x:Name="lb" Margin="286,8,56,187" BorderThickness="0" Background="Transparent" ButtonBase.Click="lb_click">
+			<ListBoxItem>There</ListBoxItem>
+			<ListBoxItem>Hello</ListBoxItem>
+			<ListBoxItem Tag="http://google.com">Some kind of url</ListBoxItem>
+			<ListBoxItem>Test</ListBoxItem>
+		</ListBox>
+		<TabControl Background="Transparent" BorderBrush="#FFdddddd" BorderThickness="0,1,0,0" Name="tabs1" Margin="10,8,0,187" HorizontalAlignment="Left" Width="257.5">
+				<TabItem Header="Right then" Name="third">
+					<Grid>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Right" Name="first">b</TabItem>
+				<TabItem Header="General" Name="second"></TabItem>
+			</TabControl>
+			
+				<Grid Background="WhiteSmoke" Height="50" VerticalAlignment="Bottom">
+				<Button  x:Name="mybtn" Content="Button" IsEnabled="True" Width="100"  Template="{DynamicResource PrimaryButton}" Height="30" Margin="0,0,112,8" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" HorizontalAlignment="Right" />
+					<Button  x:Name="btn2" Margin="0,0,8,8" IsEnabled="True" Content="Button" Width="100" Height="30"  Template="{DynamicResource SecondaryButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height"   />
+					</Grid>
+			
+	</Grid>
+</Window>
