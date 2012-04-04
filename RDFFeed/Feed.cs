@@ -7,6 +7,7 @@ See LICENSE file for license details.
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -137,7 +138,10 @@ namespace RdfFeed
             {
                 retexception = ex;
             }
-
+            catch (IOException ex)
+            {
+                retexception = ex;
+            }
             if (retexception != null)
             {
                 HasError = true;
