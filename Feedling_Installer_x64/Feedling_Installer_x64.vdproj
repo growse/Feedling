@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C427A8CDB6B2355947CD2F552860DACB"
-        "OwnerKey" = "8:_EC962CD2C68F48559172E9E1868EB680"
+        "OwnerKey" = "8:_3D538749F3B94145953471C5AD018D93"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C427A8CDB6B2355947CD2F552860DACB"
-        "OwnerKey" = "8:_3D538749F3B94145953471C5AD018D93"
+        "OwnerKey" = "8:_EC962CD2C68F48559172E9E1868EB680"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,25 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EC962CD2C68F48559172E9E1868EB680"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_70A8F1070F644A1D98A3523B776C070C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3D538749F3B94145953471C5AD018D93"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1AF071A71899A3D48808DCBA5943F5EA"
+        "OwnerKey" = "8:_C427A8CDB6B2355947CD2F552860DACB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -124,7 +106,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C427A8CDB6B2355947CD2F552860DACB"
+        "OwnerKey" = "8:_1AF071A71899A3D48808DCBA5943F5EA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3D538749F3B94145953471C5AD018D93"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_70A8F1070F644A1D98A3523B776C070C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EC962CD2C68F48559172E9E1868EB680"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -189,6 +189,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -246,11 +259,6 @@
             "AssemblyAsmDisplayName" = "8:NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1AF071A71899A3D48808DCBA5943F5EA"
-                    {
-                    "Name" = "8:NLog.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:NLog.dll"
             "TargetName" = "8:"
@@ -297,11 +305,6 @@
             "AssemblyAsmDisplayName" = "8:FontDialog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6124829B357A997FF96DFDD5EF76A6E5"
-                    {
-                    "Name" = "8:FontDialog.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:FontDialog.dll"
             "TargetName" = "8:"
@@ -328,11 +331,6 @@
             "AssemblyAsmDisplayName" = "8:FeedHanderPluginInterface, Version=1.4.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_C427A8CDB6B2355947CD2F552860DACB"
-                    {
-                    "Name" = "8:FeedHanderPluginInterface.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:FeedHanderPluginInterface.dll"
             "TargetName" = "8:"
@@ -551,7 +549,7 @@
             "Target" = "8:_216D4ABF36FD4DD9A05F9630D1A11140"
             "Folder" = "8:_38E71BA65CDE44729ED61E8DE58742A2"
             "WorkingFolder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
-            "Icon" = "8:"
+            "Icon" = "8:_2A6004606E9D4A2BBC4E28A31C4D6FA4"
             "Feature" = "8:"
             }
         }
@@ -955,7 +953,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_216D4ABF36FD4DD9A05F9630D1A11140"
             {
-            "SourcePath" = "8:..\\Feedling\\obj\\Debug\\Feedling.exe"
+            "SourcePath" = "8:..\\Feedling\\obj\\x64\\Debug\\Feedling.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -983,7 +981,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3D538749F3B94145953471C5AD018D93"
             {
-            "SourcePath" = "8:..\\RSSFeed\\obj\\Debug\\RssFeed.dll"
+            "SourcePath" = "8:..\\RSSFeed\\obj\\x64\\Debug\\RssFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -1011,7 +1009,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_70A8F1070F644A1D98A3523B776C070C"
             {
-            "SourcePath" = "8:..\\RDFFeed\\obj\\Debug\\RdfFeed.dll"
+            "SourcePath" = "8:..\\RDFFeed\\obj\\x64\\Debug\\RdfFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
@@ -1039,7 +1037,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_EC962CD2C68F48559172E9E1868EB680"
             {
-            "SourcePath" = "8:..\\AtomFeed\\obj\\Debug\\AtomFeed.dll"
+            "SourcePath" = "8:..\\AtomFeed\\obj\\x64\\Debug\\AtomFeed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8B913A30B9CF46E7A7180760D782EE4A"
